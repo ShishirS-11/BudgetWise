@@ -1,11 +1,14 @@
 import { useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 
 import { supabase } from '../lib/supabaseClient'
 
 function Login() {
   const navigate = useNavigate()
 
+  const [isSignUp, setIsSignUp] = useState(false)
+
+  const [name, setName] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
 
@@ -21,25 +24,38 @@ function Login() {
   const [error, setError] =
     useState('')
 
+  const [success, setSuccess] =
+    useState('')
+
+
   /* ============================================================
-     LOGIN
+     LOGIN / SIGNUP
   ============================================================ */
 
   async function handleSubmit(event) {
     event.preventDefault()
 
     setError('')
+    setSuccess('')
+
+    if (isSignUp && !name.trim()) {
+      setError('Please enter your name.')
+      return
+    }
 
     if (!email.trim()) {
-      setError(
-        'Please enter your email address.',
-      )
+      setError('Please enter your email address.')
       return
     }
 
     if (!password) {
+      setError('Please enter your password.')
+      return
+    }
+
+    if (password.length < 6) {
       setError(
-        'Please enter your password.',
+        'Password must be at least 6 characters long.',
       )
       return
     }
@@ -47,6 +63,61 @@ function Login() {
     setLoading(true)
 
     try {
+
+      /* ========================================================
+         SIGN UP
+      ======================================================== */
+
+      if (isSignUp) {
+        const {
+          data,
+          error: signUpError,
+        } = await supabase.auth.signUp({
+          email: email.trim(),
+          password,
+          options: {
+            data: {
+              name: name.trim(),
+              full_name: name.trim(),
+            },
+          },
+        })
+
+        if (signUpError) {
+          throw signUpError
+        }
+
+        /*
+         * If Supabase automatically creates
+         * a session, go directly to Dashboard.
+         */
+
+        if (data?.session) {
+          navigate('/', {
+            replace: true,
+          })
+
+          return
+        }
+
+        /*
+         * Email confirmation enabled.
+         */
+
+        setSuccess(
+          'Account created successfully. Please check your email to confirm your account.',
+        )
+
+        setPassword('')
+
+        return
+      }
+
+
+      /* ========================================================
+         LOGIN
+      ======================================================== */
+
       const {
         data,
         error: loginError,
@@ -69,20 +140,24 @@ function Login() {
       navigate('/', {
         replace: true,
       })
-    } catch (loginError) {
+
+    } catch (authError) {
+
       console.error(
-        'Login error:',
-        loginError,
+        'Authentication error:',
+        authError,
       )
 
       setError(
-        loginError?.message ||
-          'Unable to sign in. Please check your credentials.',
+        authError?.message ||
+          'Something went wrong. Please try again.',
       )
+
     } finally {
       setLoading(false)
     }
   }
+
 
   /* ============================================================
      FORGOT PASSWORD
@@ -90,10 +165,11 @@ function Login() {
 
   async function handleForgotPassword() {
     setError('')
+    setSuccess('')
 
     if (!email.trim()) {
       setError(
-        'Enter your email address first, then click Forgot password.',
+        'Enter your email address first.',
       )
       return
     }
@@ -101,6 +177,7 @@ function Login() {
     setLoading(true)
 
     try {
+
       const {
         error: resetError,
       } =
@@ -116,10 +193,12 @@ function Login() {
         throw resetError
       }
 
-      setError(
+      setSuccess(
         'Password reset link sent. Check your email.',
       )
+
     } catch (resetError) {
+
       console.error(
         'Password reset error:',
         resetError,
@@ -129,16 +208,35 @@ function Login() {
         resetError?.message ||
           'Unable to send password reset email.',
       )
+
     } finally {
       setLoading(false)
     }
   }
 
+
+  /* ============================================================
+     SWITCH LOGIN / SIGNUP
+  ============================================================ */
+
+  function switchMode() {
+    setIsSignUp(
+      (current) => !current,
+    )
+
+    setError('')
+    setSuccess('')
+
+    setName('')
+    setPassword('')
+  }
+
+
   return (
     <div className="login-page">
 
       {/* ======================================================
-          BACKGROUND DECORATION
+          BACKGROUND
       ====================================================== */}
 
       <div
@@ -162,11 +260,13 @@ function Login() {
         "
       />
 
+
       {/* ======================================================
           MAIN
       ====================================================== */}
 
       <div className="login-container">
+
 
         {/* ====================================================
             LEFT SIDE
@@ -202,18 +302,35 @@ function Login() {
           <div className="login-hero">
 
             <p className="login-eyebrow">
-              YOUR MONEY, YOUR WAY
+              {isSignUp
+                ? 'START YOUR JOURNEY'
+                : 'YOUR MONEY, YOUR WAY'}
             </p>
 
             <h2 className="login-title">
-              Take control
-              <br />
-              of your money.
+
+              {isSignUp ? (
+                <>
+                  Build better
+                  <br />
+                  money habits.
+                </>
+              ) : (
+                <>
+                  Take control
+                  <br />
+                  of your money.
+                </>
+              )}
+
             </h2>
 
             <p className="login-description">
-              Track expenses, set goals and save
-              more every day.
+
+              {isSignUp
+                ? 'Create your BudgetWise account and start managing your money smarter.'
+                : 'Track expenses, set goals and save more every day.'}
+
             </p>
 
 
@@ -241,8 +358,6 @@ function Login() {
           </div>
 
 
-          {/* DESKTOP FOOTER */}
-
           <p className="login-footer">
             Simple money management for everyday life.
           </p>
@@ -258,10 +373,21 @@ function Login() {
 
           <div className="login-card">
 
-            {/* AMBER ACCENT */}
+            {/* AMBER ACCENTS */}
 
-            <div className="login-accent accent-one" />
-            <div className="login-accent accent-two" />
+            <div
+              className="
+                login-accent
+                accent-one
+              "
+            />
+
+            <div
+              className="
+                login-accent
+                accent-two
+              "
+            />
 
 
             {/* HEADER */}
@@ -269,11 +395,19 @@ function Login() {
             <div className="login-card-header">
 
               <h3 className="login-card-title">
-                Welcome back!
+
+                {isSignUp
+                  ? 'Create your account'
+                  : 'Welcome back!'}
+
               </h3>
 
               <p className="login-card-subtitle">
-                Login to continue
+
+                {isSignUp
+                  ? 'Join BudgetWise today'
+                  : 'Login to continue'}
+
               </p>
 
             </div>
@@ -288,12 +422,72 @@ function Login() {
             )}
 
 
+            {/* SUCCESS */}
+
+            {success && (
+              <div
+                className="
+                  mt-5
+                  rounded-xl
+                  border
+                  border-green-500/20
+                  bg-green-500/10
+                  px-4
+                  py-3
+                  text-sm
+                  leading-5
+                  text-green-400
+                "
+              >
+                {success}
+              </div>
+            )}
+
+
             {/* FORM */}
 
             <form
               onSubmit={handleSubmit}
               className="login-form"
             >
+
+              {/* NAME */}
+
+              {isSignUp && (
+                <div className="login-field">
+
+                  <label
+                    htmlFor="name"
+                    className="login-label"
+                  >
+                    Name
+                  </label>
+
+                  <div className="login-input-wrapper">
+
+                    <span className="login-input-icon">
+                      👤
+                    </span>
+
+                    <input
+                      id="name"
+                      type="text"
+                      autoComplete="name"
+                      value={name}
+                      onChange={(event) =>
+                        setName(
+                          event.target.value,
+                        )
+                      }
+                      placeholder="Your name"
+                      className="login-input"
+                    />
+
+                  </div>
+
+                </div>
+              )}
+
 
               {/* EMAIL */}
 
@@ -355,7 +549,11 @@ function Login() {
                         ? 'text'
                         : 'password'
                     }
-                    autoComplete="current-password"
+                    autoComplete={
+                      isSignUp
+                        ? 'new-password'
+                        : 'current-password'
+                    }
                     value={password}
                     onChange={(event) =>
                       setPassword(
@@ -363,7 +561,10 @@ function Login() {
                       )
                     }
                     placeholder="Enter your password"
-                    className="login-input login-password-input"
+                    className="
+                      login-input
+                      login-password-input
+                    "
                   />
 
                   <button
@@ -374,12 +575,9 @@ function Login() {
                           !current,
                       )
                     }
-                    className="login-password-toggle"
-                    aria-label={
-                      showPassword
-                        ? 'Hide password'
-                        : 'Show password'
-                    }
+                    className="
+                      login-password-toggle
+                    "
                   >
                     {showPassword
                       ? '◉'
@@ -391,71 +589,88 @@ function Login() {
               </div>
 
 
-              {/* REMEMBER / FORGOT */}
+              {/* LOGIN OPTIONS */}
 
-              <div className="login-options">
+              {!isSignUp && (
+                <div className="login-options">
 
-                <label className="remember-label">
+                  <label className="remember-label">
 
-                  <input
-                    type="checkbox"
-                    checked={rememberMe}
-                    onChange={(event) =>
-                      setRememberMe(
-                        event.target.checked,
-                      )
+                    <input
+                      type="checkbox"
+                      checked={rememberMe}
+                      onChange={(event) =>
+                        setRememberMe(
+                          event.target.checked,
+                        )
+                      }
+                      className="remember-checkbox"
+                    />
+
+                    <span>
+                      Remember me
+                    </span>
+
+                  </label>
+
+
+                  <button
+                    type="button"
+                    onClick={
+                      handleForgotPassword
                     }
-                    className="remember-checkbox"
-                  />
+                    disabled={loading}
+                    className="forgot-button"
+                  >
+                    Forgot password?
+                  </button>
 
-                  <span>
-                    Remember me
-                  </span>
-
-                </label>
-
-
-                <button
-                  type="button"
-                  onClick={
-                    handleForgotPassword
-                  }
-                  disabled={loading}
-                  className="forgot-button"
-                >
-                  Forgot password?
-                </button>
-
-              </div>
+                </div>
+              )}
 
 
-              {/* LOGIN BUTTON */}
+              {/* SUBMIT */}
 
               <button
                 type="submit"
                 disabled={loading}
                 className="login-button"
               >
+
                 {loading
-                  ? 'Logging in...'
-                  : 'Log in'}
+                  ? isSignUp
+                    ? 'Creating account...'
+                    : 'Logging in...'
+                  : isSignUp
+                    ? 'Create account'
+                    : 'Log in'}
+
               </button>
 
             </form>
 
 
-            {/* SIGN UP */}
+            {/* SWITCH */}
 
             <p className="signup-text">
 
-              Don't have an account?{' '}
+              {isSignUp
+                ? 'Already have an account?'
+                : "Don't have an account?"}
 
-              <Link
-                to="/signup"
+              {' '}
+
+              <button
+                type="button"
+                onClick={switchMode}
                 className="signup-link"
               >
-                Sign up
-              </Link>
+
+                {isSignUp
+                  ? 'Log in'
+                  : 'Sign up'}
+
+              </button>
 
             </p>
 
