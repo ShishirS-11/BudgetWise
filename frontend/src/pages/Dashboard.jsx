@@ -7,7 +7,6 @@ import {
 import { supabase } from '../lib/supabaseClient'
 import { useCurrency } from '../context/CurrencyContext'
 
-import StatCard from '../components/StatCard'
 import ProgressBar from '../components/ProgressBar'
 import SectionHeader from '../components/SectionHeader'
 import SpendingChart from '../components/SpendingChart'
@@ -20,6 +19,7 @@ import {
   getTotalSaved,
 } from '../utils/goalCalculations'
 
+
 function getGreeting() {
   const hour = new Date().getHours()
 
@@ -29,6 +29,7 @@ function getGreeting() {
 
   return 'Good night'
 }
+
 
 function getUserName(user) {
   const fullName =
@@ -59,6 +60,7 @@ function getUserName(user) {
   return 'there'
 }
 
+
 function formatDate(dateString) {
   if (!dateString) {
     return ''
@@ -77,6 +79,7 @@ function formatDate(dateString) {
     },
   )
 }
+
 
 function getDaysInMonth(monthString) {
   if (!monthString) {
@@ -97,6 +100,7 @@ function getDaysInMonth(monthString) {
   ).getDate()
 }
 
+
 function getMonthStart(
   date = new Date(),
 ) {
@@ -108,6 +112,7 @@ function getMonthStart(
 
   return `${year}-${month}-01`
 }
+
 
 function Dashboard() {
   const {
@@ -134,6 +139,11 @@ function Dashboard() {
 
   const [error, setError] =
     useState('')
+
+
+  /* ==========================================================
+     LOAD DASHBOARD
+  ========================================================== */
 
   useEffect(() => {
     let mounted = true
@@ -282,11 +292,10 @@ function Dashboard() {
     }
   }, [])
 
-  /*
-   * =========================================
-   * CURRENT DATE
-   * =========================================
-   */
+
+  /* ==========================================================
+     CURRENT DATE
+  ========================================================== */
 
   const today = new Date()
 
@@ -302,11 +311,10 @@ function Dashboard() {
       },
     )
 
-  /*
-   * =========================================
-   * BUDGET
-   * =========================================
-   */
+
+  /* ==========================================================
+     BUDGET
+  ========================================================== */
 
   const monthlyBudget = Number(
     budget?.amount || 0,
@@ -327,11 +335,10 @@ function Dashboard() {
         daysInBudgetMonth
       : 0
 
-  /*
-   * =========================================
-   * TRANSACTIONS
-   * =========================================
-   */
+
+  /* ==========================================================
+     TRANSACTIONS
+  ========================================================== */
 
   const expenseTransactions =
     useMemo(
@@ -355,11 +362,10 @@ function Dashboard() {
       [transactions],
     )
 
-  /*
-   * =========================================
-   * TOTALS
-   * =========================================
-   */
+
+  /* ==========================================================
+     TOTALS
+  ========================================================== */
 
   const totalSpent =
     useMemo(
@@ -394,11 +400,10 @@ function Dashboard() {
     totalCredits -
     totalSpent
 
-  /*
-   * =========================================
-   * BUDGET PERCENTAGE
-   * =========================================
-   */
+
+  /* ==========================================================
+     BUDGET PERCENTAGE
+  ========================================================== */
 
   const budgetUsed =
     monthlyBudget > 0
@@ -413,11 +418,10 @@ function Dashboard() {
       100,
     )
 
-  /*
-   * =========================================
-   * DAYS REMAINING
-   * =========================================
-   */
+
+  /* ==========================================================
+     DAYS REMAINING
+  ========================================================== */
 
   const daysRemaining =
     useMemo(() => {
@@ -479,11 +483,10 @@ function Dashboard() {
       todayDate,
     ])
 
-  /*
-   * =========================================
-   * TODAY'S SPENDING
-   * =========================================
-   */
+
+  /* ==========================================================
+     TODAY
+  ========================================================== */
 
   const todaySpent =
     useMemo(
@@ -519,18 +522,10 @@ function Dashboard() {
         ? 'Under your daily budget'
         : 'Over your daily budget'
 
-  const todayStatusClass =
-    todaySpent === 0
-      ? 'text-zinc-500'
-      : todaySpent <= dailyBudget
-        ? 'text-emerald-400'
-        : 'text-red-400'
 
-  /*
-   * =========================================
-   * SPENDING CHART
-   * =========================================
-   */
+  /* ==========================================================
+     SPENDING CHART
+  ========================================================== */
 
   const spendingChartData =
     useMemo(() => {
@@ -579,11 +574,10 @@ function Dashboard() {
         )
     }, [expenseTransactions])
 
-  /*
-   * =========================================
-   * CATEGORY TOTALS
-   * =========================================
-   */
+
+  /* ==========================================================
+     CATEGORY TOTALS
+  ========================================================== */
 
   const categoryTotals =
     useMemo(() => {
@@ -618,20 +612,18 @@ function Dashboard() {
         )
     }, [expenseTransactions])
 
-  /*
-   * =========================================
-   * RECENT TRANSACTIONS
-   * =========================================
-   */
+
+  /* ==========================================================
+     RECENT
+  ========================================================== */
 
   const recentExpenses =
     transactions.slice(0, 8)
 
-  /*
-   * =========================================
-   * GOALS
-   * =========================================
-   */
+
+  /* ==========================================================
+     GOALS
+  ========================================================== */
 
   const activeGoals =
     useMemo(
@@ -700,11 +692,10 @@ function Dashboard() {
         )
       : 0
 
-  /*
-   * =========================================
-   * FEATURED GOAL
-   * =========================================
-   */
+
+  /* ==========================================================
+     FEATURED GOAL
+  ========================================================== */
 
   const featuredGoal =
     useMemo(() => {
@@ -747,11 +738,10 @@ function Dashboard() {
       )[0]
     }, [activeGoals])
 
-  /*
-   * =========================================
-   * LOADING
-   * =========================================
-   */
+
+  /* ==========================================================
+     LOADING
+  ========================================================== */
 
   if (loading) {
     return (
@@ -759,9 +749,31 @@ function Dashboard() {
 
         <div className="text-center">
 
-          <div className="mx-auto h-8 w-8 animate-pulse rounded-full border border-violet-400/20 bg-violet-500/[0.06]" />
+          <div
+            className="
+              mx-auto
+              flex
+              h-12
+              w-12
+              items-center
+              justify-center
+              rounded-2xl
+              border
+              border-[var(--bw-border)]
+              bg-[var(--bw-accent-soft)]
+              text-xl
+            "
+          >
+            💰
+          </div>
 
-          <p className="mt-4 text-sm text-zinc-500">
+          <p
+            className="
+              mt-4
+              text-sm
+              text-[var(--bw-text-secondary)]
+            "
+          >
             Preparing your dashboard...
           </p>
 
@@ -771,23 +783,44 @@ function Dashboard() {
     )
   }
 
-  /*
-   * =========================================
-   * ERROR
-   * =========================================
-   */
+
+  /* ==========================================================
+     ERROR
+  ========================================================== */
 
   if (error) {
     return (
       <div className="mx-auto max-w-7xl px-6 py-10">
 
-        <div className="rounded-2xl border border-red-500/15 bg-red-500/[0.035] p-6">
+        <div
+          className="
+            rounded-2xl
+            border
+            border-[var(--bw-danger)]
+            bg-[var(--bw-danger-soft)]
+            p-6
+          "
+        >
 
-          <p className="text-xs font-medium uppercase tracking-[0.14em] text-red-400/80">
+          <p
+            className="
+              text-xs
+              font-medium
+              uppercase
+              tracking-[0.14em]
+              text-[var(--bw-danger)]
+            "
+          >
             Something went wrong
           </p>
 
-          <p className="mt-2 text-sm text-red-300">
+          <p
+            className="
+              mt-2
+              text-sm
+              text-[var(--bw-danger)]
+            "
+          >
             {error}
           </p>
 
@@ -797,37 +830,96 @@ function Dashboard() {
     )
   }
 
-  /*
-   * =========================================
-   * PAGE
-   * =========================================
-   */
+
+  /* ==========================================================
+     PAGE
+  ========================================================== */
 
   return (
     <div className="mx-auto max-w-7xl">
 
-      {/* ===================================== */}
-      {/* HEADER */}
-      {/* ===================================== */}
+      {/* ======================================================
+          HERO
+      ====================================================== */}
 
-      <section className="relative overflow-hidden rounded-[24px] border border-white/[0.06] bg-[#111417] px-6 py-7 sm:px-8 sm:py-8">
+      <section
+        className="
+          budgetwise-card
+          relative
+          overflow-hidden
+          rounded-[28px]
+          px-6
+          py-7
+          sm:px-8
+          sm:py-8
+        "
+      >
 
-        <div className="pointer-events-none absolute -right-24 -top-24 h-64 w-64 rounded-full bg-violet-500/[0.045] blur-3xl" />
+        <div
+          className="
+            pointer-events-none
+            absolute
+            -right-24
+            -top-24
+            h-64
+            w-64
+            rounded-full
+            bg-[var(--bw-accent)]
+            opacity-[0.07]
+            blur-3xl
+          "
+        />
 
-        <div className="relative flex flex-col justify-between gap-6 sm:flex-row sm:items-end">
+        <div
+          className="
+            relative
+            flex
+            flex-col
+            justify-between
+            gap-6
+            sm:flex-row
+            sm:items-end
+          "
+        >
 
           <div>
 
-            <p className="text-[11px] font-medium uppercase tracking-[0.16em] text-violet-400">
+            <p
+              className="
+                text-[11px]
+                font-semibold
+                uppercase
+                tracking-[0.16em]
+                text-[var(--bw-accent)]
+              "
+            >
               {currentMonth}
             </p>
 
-            <h1 className="mt-3 text-[30px] font-semibold tracking-[-0.045em] text-zinc-100 sm:text-[34px]">
+            <h1
+              className="
+                mt-3
+                font-serif
+                text-[32px]
+                font-semibold
+                tracking-[-0.035em]
+                text-[var(--bw-heading)]
+                sm:text-[38px]
+              "
+            >
               {getGreeting()},{' '}
               {getUserName(user)}
             </h1>
 
-            <p className="mt-2 max-w-xl text-sm leading-6 text-zinc-500">
+            <p
+              className="
+                mt-2
+                max-w-xl
+                text-sm
+                leading-6
+                text-[var(--bw-body)]
+              "
+            >
               A clear view of your spending,
               budget, and progress toward your
               goals.
@@ -837,18 +929,42 @@ function Dashboard() {
 
           <div className="shrink-0">
 
-            <div className="rounded-xl border border-white/[0.06] bg-white/[0.025] px-4 py-3">
+            <div
+              className="
+                rounded-2xl
+                border
+                border-[var(--bw-border)]
+                bg-[var(--bw-surface-soft)]
+                px-5
+                py-4
+              "
+            >
 
-              <p className="text-[10px] font-medium uppercase tracking-[0.12em] text-zinc-600">
+              <p
+                className="
+                  text-[10px]
+                  font-semibold
+                  uppercase
+                  tracking-[0.12em]
+                  text-[var(--bw-muted)]
+                "
+              >
                 Available
               </p>
 
               <p
-                className={`mt-1.5 text-lg font-semibold tracking-tight ${
-                  availableMoney >= 0
-                    ? 'text-zinc-100'
-                    : 'text-red-400'
-                }`}
+                className={`
+                  mt-1.5
+                  font-serif
+                  text-2xl
+                  font-semibold
+                  tracking-tight
+                  ${
+                    availableMoney >= 0
+                      ? 'text-[var(--bw-heading)]'
+                      : 'text-[var(--bw-danger)]'
+                  }
+                `}
               >
                 {formatCurrency(
                   availableMoney,
@@ -862,18 +978,33 @@ function Dashboard() {
         </div>
 
         {ratesLoading && (
-          <p className="relative mt-4 text-[11px] text-zinc-700">
+          <p
+            className="
+              relative
+              mt-4
+              text-[11px]
+              text-[var(--bw-muted)]
+            "
+          >
             Updating exchange rates...
           </p>
         )}
 
       </section>
 
-      {/* ===================================== */}
-      {/* FINANCIAL SUMMARY */}
-      {/* ===================================== */}
 
-      <section className="mt-6 grid gap-px overflow-hidden rounded-2xl border border-white/[0.06] bg-white/[0.06] md:grid-cols-4">
+      {/* ======================================================
+          FINANCIAL SUMMARY
+      ====================================================== */}
+
+      <section
+        className="
+          mt-6
+          grid
+          gap-4
+          md:grid-cols-4
+        "
+      >
 
         <DashboardStat
           label="Monthly budget"
@@ -885,6 +1016,7 @@ function Dashboard() {
               ? `${daysInBudgetMonth} days`
               : 'No budget set'
           }
+          icon="💰"
         />
 
         <DashboardStat
@@ -895,6 +1027,7 @@ function Dashboard() {
           detail={`${budgetUsed.toFixed(
             1,
           )}% used`}
+          icon="💳"
         />
 
         <DashboardStat
@@ -903,6 +1036,7 @@ function Dashboard() {
             totalCredits,
           )}`}
           detail="Money received"
+          icon="📈"
           positive
         />
 
@@ -916,6 +1050,7 @@ function Dashboard() {
               ? 'Within available funds'
               : 'Above available funds'
           }
+          icon="✨"
           accent={
             availableMoney >= 0
           }
@@ -923,35 +1058,90 @@ function Dashboard() {
 
       </section>
 
-      {/* ===================================== */}
-      {/* TODAY */}
-      {/* ===================================== */}
 
-      <section className="mt-6 grid gap-6 lg:grid-cols-[1.35fr_0.65fr]">
+      {/* ======================================================
+          TODAY
+      ====================================================== */}
 
-        <div className="rounded-2xl border border-white/[0.06] bg-[#111417] p-6 sm:p-7">
+      <section
+        className="
+          mt-6
+          grid
+          gap-6
+          lg:grid-cols-[1.35fr_0.65fr]
+        "
+      >
 
-          <div className="flex flex-col justify-between gap-6 sm:flex-row">
+        <div
+          className="
+            budgetwise-card
+            rounded-[24px]
+            p-6
+            sm:p-7
+          "
+        >
+
+          <div
+            className="
+              flex
+              flex-col
+              justify-between
+              gap-6
+              sm:flex-row
+            "
+          >
 
             <div>
 
               <div className="flex items-center gap-2">
 
-                <span className="h-1.5 w-1.5 rounded-full bg-violet-400" />
+                <span
+                  className="
+                    h-1.5
+                    w-1.5
+                    rounded-full
+                    bg-[var(--bw-accent)]
+                  "
+                />
 
-                <p className="text-[11px] font-medium uppercase tracking-[0.14em] text-zinc-500">
+                <p
+                  className="
+                    text-[11px]
+                    font-semibold
+                    uppercase
+                    tracking-[0.14em]
+                    text-[var(--bw-muted)]
+                  "
+                >
                   Today's budget
                 </p>
 
               </div>
 
-              <p className="mt-4 text-3xl font-semibold tracking-[-0.04em] text-zinc-100">
+              <p
+                className="
+                  mt-4
+                  font-serif
+                  text-3xl
+                  font-semibold
+                  tracking-[-0.04em]
+                  text-[var(--bw-heading)]
+                "
+              >
                 {formatCurrency(
                   dailyBudget,
                 )}
               </p>
 
-              <p className="mt-2 max-w-md text-sm leading-6 text-zinc-600">
+              <p
+                className="
+                  mt-2
+                  max-w-md
+                  text-sm
+                  leading-6
+                  text-[var(--bw-body)]
+                "
+              >
                 Your fixed daily allowance
                 based on this month's budget.
                 Unused money does not carry
@@ -962,16 +1152,32 @@ function Dashboard() {
 
             <div className="sm:text-right">
 
-              <p className="text-[11px] font-medium uppercase tracking-[0.14em] text-zinc-600">
+              <p
+                className="
+                  text-[11px]
+                  font-semibold
+                  uppercase
+                  tracking-[0.14em]
+                  text-[var(--bw-muted)]
+                "
+              >
                 Spent today
               </p>
 
               <p
-                className={`mt-3 text-2xl font-semibold tracking-tight ${
-                  todaySpent <= dailyBudget
-                    ? 'text-emerald-400'
-                    : 'text-red-400'
-                }`}
+                className={`
+                  mt-3
+                  font-serif
+                  text-2xl
+                  font-semibold
+                  tracking-tight
+                  ${
+                    todaySpent <=
+                    dailyBudget
+                      ? 'text-[var(--bw-success)]'
+                      : 'text-[var(--bw-danger)]'
+                  }
+                `}
               >
                 {formatCurrency(
                   todaySpent,
@@ -979,7 +1185,18 @@ function Dashboard() {
               </p>
 
               <p
-                className={`mt-1.5 text-xs ${todayStatusClass}`}
+                className={`
+                  mt-1.5
+                  text-xs
+                  ${
+                    todaySpent === 0
+                      ? 'text-[var(--bw-muted)]'
+                      : todaySpent <=
+                          dailyBudget
+                        ? 'text-[var(--bw-success)]'
+                        : 'text-[var(--bw-danger)]'
+                  }
+                `}
               >
                 {todayStatus}
               </p>
@@ -1005,9 +1222,17 @@ function Dashboard() {
 
           </div>
 
-          <div className="mt-4 flex justify-between gap-3 text-xs">
+          <div
+            className="
+              mt-4
+              flex
+              justify-between
+              gap-3
+              text-xs
+            "
+          >
 
-            <span className="text-zinc-600">
+            <span className="text-[var(--bw-muted)]">
               {todayDifference >= 0
                 ? 'Remaining today'
                 : 'Over today by'}
@@ -1016,8 +1241,8 @@ function Dashboard() {
             <span
               className={
                 todayDifference >= 0
-                  ? 'font-medium text-emerald-400'
-                  : 'font-medium text-red-400'
+                  ? 'font-semibold text-[var(--bw-success)]'
+                  : 'font-semibold text-[var(--bw-danger)]'
               }
             >
               {todayDifference >= 0
@@ -1034,26 +1259,64 @@ function Dashboard() {
 
         </div>
 
+
         {/* MONTHLY USAGE */}
 
-        <div className="rounded-2xl border border-white/[0.06] bg-[#111417] p-6 sm:p-7">
+        <div
+          className="
+            budgetwise-card
+            rounded-[24px]
+            p-6
+            sm:p-7
+          "
+        >
 
-          <p className="text-[11px] font-medium uppercase tracking-[0.14em] text-zinc-600">
+          <p
+            className="
+              text-[11px]
+              font-semibold
+              uppercase
+              tracking-[0.14em]
+              text-[var(--bw-muted)]
+            "
+          >
             Monthly usage
           </p>
 
-          <div className="mt-4 flex items-end justify-between gap-4">
+          <div
+            className="
+              mt-4
+              flex
+              items-end
+              justify-between
+              gap-4
+            "
+          >
 
-            <p className="text-3xl font-semibold tracking-[-0.04em] text-zinc-100">
+            <p
+              className="
+                font-serif
+                text-3xl
+                font-semibold
+                tracking-[-0.04em]
+                text-[var(--bw-heading)]
+              "
+            >
               {budgetUsed.toFixed(
                 1,
               )}
-              <span className="text-lg text-zinc-600">
+              <span className="text-lg text-[var(--bw-muted)]">
                 %
               </span>
             </p>
 
-            <p className="text-right text-xs text-zinc-600">
+            <p
+              className="
+                text-right
+                text-xs
+                text-[var(--bw-muted)]
+              "
+            >
               {daysRemaining}{' '}
               days remaining
             </p>
@@ -1068,11 +1331,25 @@ function Dashboard() {
 
           </div>
 
-          <div className="mt-5 border-t border-white/[0.05] pt-4">
+          <div
+            className="
+              mt-5
+              border-t
+              border-[var(--bw-border)]
+              pt-4
+            "
+          >
 
-            <div className="flex items-center justify-between text-xs">
+            <div
+              className="
+                flex
+                items-center
+                justify-between
+                text-xs
+              "
+            >
 
-              <span className="text-zinc-600">
+              <span className="text-[var(--bw-muted)]">
                 Remaining budget
               </span>
 
@@ -1081,8 +1358,8 @@ function Dashboard() {
                   monthlyBudget -
                     totalSpent >=
                   0
-                    ? 'font-medium text-zinc-300'
-                    : 'font-medium text-red-400'
+                    ? 'font-semibold text-[var(--bw-text)]'
+                    : 'font-semibold text-[var(--bw-danger)]'
                 }
               >
                 {formatCurrency(
@@ -1093,13 +1370,21 @@ function Dashboard() {
 
             </div>
 
-            <div className="mt-2 flex items-center justify-between text-xs">
+            <div
+              className="
+                mt-3
+                flex
+                items-center
+                justify-between
+                text-xs
+              "
+            >
 
-              <span className="text-zinc-600">
+              <span className="text-[var(--bw-muted)]">
                 Daily allowance
               </span>
 
-              <span className="font-medium text-zinc-400">
+              <span className="font-semibold text-[var(--bw-text)]">
                 {formatCurrency(
                   dailyBudget,
                 )}
@@ -1113,9 +1398,10 @@ function Dashboard() {
 
       </section>
 
-      {/* ===================================== */}
-      {/* GOALS */}
-      {/* ===================================== */}
+
+      {/* ======================================================
+          GOALS
+      ====================================================== */}
 
       <section className="mt-10">
 
@@ -1128,20 +1414,67 @@ function Dashboard() {
         <div className="mt-5">
 
           {goals.length === 0 ? (
-            <div className="rounded-2xl border border-dashed border-white/[0.08] bg-[#111417] px-6 py-10">
 
-              <p className="text-sm font-medium text-zinc-400">
+            <div
+              className="
+                budgetwise-card
+                rounded-[24px]
+                border-dashed
+                px-6
+                py-10
+              "
+            >
+
+              <div
+                className="
+                  flex
+                  h-12
+                  w-12
+                  items-center
+                  justify-center
+                  rounded-2xl
+                  bg-[var(--bw-accent-soft)]
+                  text-xl
+                "
+              >
+                🎯
+              </div>
+
+              <p
+                className="
+                  mt-4
+                  font-serif
+                  text-lg
+                  font-semibold
+                  text-[var(--bw-heading)]
+                "
+              >
                 No savings goals yet.
               </p>
 
-              <p className="mt-1 text-sm text-zinc-600">
+              <p
+                className="
+                  mt-1
+                  text-sm
+                  text-[var(--bw-body)]
+                "
+              >
                 Create a goal to start
                 tracking your progress.
               </p>
 
             </div>
+
           ) : (
-            <div className="rounded-2xl border border-white/[0.06] bg-[#111417] p-6 sm:p-7">
+
+            <div
+              className="
+                budgetwise-card
+                rounded-[24px]
+                p-6
+                sm:p-7
+              "
+            >
 
               <div className="grid gap-6 md:grid-cols-3">
 
@@ -1150,7 +1483,7 @@ function Dashboard() {
                   value={`+${formatCurrency(
                     totalGoalSaved,
                   )}`}
-                  className="text-emerald-400"
+                  className="text-[var(--bw-success)]"
                 />
 
                 <GoalMetric
@@ -1165,7 +1498,7 @@ function Dashboard() {
                   value={`${overallGoalProgress.toFixed(
                     1,
                   )}%`}
-                  className="text-violet-300"
+                  className="text-[var(--bw-accent)]"
                 />
 
               </div>
@@ -1181,23 +1514,63 @@ function Dashboard() {
               </div>
 
               {featuredGoal && (
-                <div className="mt-6 border-t border-white/[0.05] pt-6">
 
-                  <div className="flex flex-col justify-between gap-5 sm:flex-row sm:items-end">
+                <div
+                  className="
+                    mt-6
+                    border-t
+                    border-[var(--bw-border)]
+                    pt-6
+                  "
+                >
+
+                  <div
+                    className="
+                      flex
+                      flex-col
+                      justify-between
+                      gap-5
+                      sm:flex-row
+                      sm:items-end
+                    "
+                  >
 
                     <div>
 
-                      <p className="text-[10px] font-medium uppercase tracking-[0.14em] text-violet-400">
+                      <p
+                        className="
+                          text-[10px]
+                          font-semibold
+                          uppercase
+                          tracking-[0.14em]
+                          text-[var(--bw-accent)]
+                        "
+                      >
                         Next goal
                       </p>
 
-                      <h3 className="mt-2 text-lg font-medium tracking-tight text-zinc-200">
+                      <h3
+                        className="
+                          mt-2
+                          font-serif
+                          text-lg
+                          font-semibold
+                          tracking-tight
+                          text-[var(--bw-heading)]
+                        "
+                      >
                         {
                           featuredGoal.name
                         }
                       </h3>
 
-                      <p className="mt-1 text-sm text-zinc-600">
+                      <p
+                        className="
+                          mt-1
+                          text-sm
+                          text-[var(--bw-body)]
+                        "
+                      >
                         {formatCurrency(
                           getTotalSaved(
                             featuredGoal,
@@ -1213,14 +1586,28 @@ function Dashboard() {
 
                     <div className="sm:text-right">
 
-                      <p className="text-2xl font-semibold tracking-tight text-violet-300">
+                      <p
+                        className="
+                          font-serif
+                          text-2xl
+                          font-semibold
+                          tracking-tight
+                          text-[var(--bw-accent)]
+                        "
+                      >
                         {getProgressPercentage(
                           featuredGoal,
                         ).toFixed(1)}
                         %
                       </p>
 
-                      <p className="mt-1 text-xs text-zinc-600">
+                      <p
+                        className="
+                          mt-1
+                          text-xs
+                          text-[var(--bw-muted)]
+                        "
+                      >
                         {formatCurrency(
                           getRemainingAmount(
                             featuredGoal,
@@ -1244,7 +1631,13 @@ function Dashboard() {
                   </div>
 
                   {featuredGoal.targetDate && (
-                    <p className="mt-3 text-xs text-zinc-600">
+                    <p
+                      className="
+                        mt-3
+                        text-xs
+                        text-[var(--bw-muted)]
+                      "
+                    >
                       Target date:{' '}
                       {formatDate(
                         featuredGoal.targetDate,
@@ -1253,11 +1646,24 @@ function Dashboard() {
                   )}
 
                 </div>
+
               )}
 
-              <div className="mt-6 flex flex-wrap gap-x-6 gap-y-2 border-t border-white/[0.05] pt-4 text-xs text-zinc-600">
+              <div
+                className="
+                  mt-6
+                  flex
+                  flex-wrap
+                  gap-x-6
+                  gap-y-2
+                  border-t
+                  border-[var(--bw-border)]
+                  pt-4
+                  text-xs
+                "
+              >
 
-                <span>
+                <span className="text-[var(--bw-muted)]">
                   {activeGoals.length}{' '}
                   active goal
                   {activeGoals.length ===
@@ -1268,7 +1674,7 @@ function Dashboard() {
 
                 {completedGoals.length >
                   0 && (
-                  <span className="text-emerald-500">
+                  <span className="text-[var(--bw-success)]">
                     {completedGoals.length}{' '}
                     completed
                   </span>
@@ -1277,46 +1683,95 @@ function Dashboard() {
               </div>
 
             </div>
+
           )}
 
         </div>
 
       </section>
 
-      {/* ===================================== */}
-      {/* AVAILABLE MONEY */}
-      {/* ===================================== */}
+
+      {/* ======================================================
+          AVAILABLE MONEY
+      ====================================================== */}
 
       <section className="mt-10">
 
-        <div className="flex flex-col justify-between gap-6 rounded-2xl border border-emerald-400/[0.10] bg-emerald-400/[0.025] p-6 sm:flex-row sm:items-center sm:p-7">
+        <div
+          className="
+            rounded-[24px]
+            border
+            border-[var(--bw-success)]
+            bg-[var(--bw-success-soft)]
+            p-6
+            sm:flex
+            sm:items-center
+            sm:justify-between
+            sm:p-7
+          "
+        >
 
           <div>
 
-            <p className="text-[11px] font-medium uppercase tracking-[0.14em] text-zinc-600">
+            <p
+              className="
+                text-[11px]
+                font-semibold
+                uppercase
+                tracking-[0.14em]
+                text-[var(--bw-body)]
+              "
+            >
               Current available money
             </p>
 
             <p
-              className={`mt-3 text-3xl font-semibold tracking-[-0.04em] ${
-                availableMoney >= 0
-                  ? 'text-emerald-400'
-                  : 'text-red-400'
-              }`}
+              className={`
+                mt-3
+                font-serif
+                text-3xl
+                font-semibold
+                tracking-[-0.04em]
+                ${
+                  availableMoney >= 0
+                    ? 'text-[var(--bw-success)]'
+                    : 'text-[var(--bw-danger)]'
+                }
+              `}
             >
               {formatCurrency(
                 availableMoney,
               )}
             </p>
 
-            <p className="mt-2 text-sm text-zinc-600">
+            <p
+              className="
+                mt-2
+                text-sm
+                text-[var(--bw-body)]
+              "
+            >
               Monthly budget + credits -
               expenses
             </p>
 
           </div>
 
-          <div className="w-full max-w-xs border-t border-white/[0.06] pt-4 sm:border-l sm:border-t-0 sm:pl-6 sm:pt-0">
+          <div
+            className="
+              mt-5
+              w-full
+              max-w-xs
+              border-t
+              border-[var(--bw-border)]
+              pt-4
+              sm:mt-0
+              sm:border-l
+              sm:border-t-0
+              sm:pl-6
+              sm:pt-0
+            "
+          >
 
             <MoneyRow
               label="Budget"
@@ -1330,7 +1785,7 @@ function Dashboard() {
               value={`+${formatCurrency(
                 totalCredits,
               )}`}
-              valueClass="text-emerald-400"
+              valueClass="text-[var(--bw-success)]"
             />
 
             <MoneyRow
@@ -1338,7 +1793,7 @@ function Dashboard() {
               value={`-${formatCurrency(
                 totalSpent,
               )}`}
-              valueClass="text-red-400"
+              valueClass="text-[var(--bw-danger)]"
             />
 
           </div>
@@ -1347,9 +1802,10 @@ function Dashboard() {
 
       </section>
 
-      {/* ===================================== */}
-      {/* SPENDING TREND */}
-      {/* ===================================== */}
+
+      {/* ======================================================
+          SPENDING TREND
+      ====================================================== */}
 
       <section className="mt-10">
 
@@ -1361,9 +1817,10 @@ function Dashboard() {
 
       </section>
 
-      {/* ===================================== */}
-      {/* CATEGORY BREAKDOWN */}
-      {/* ===================================== */}
+
+      {/* ======================================================
+          CATEGORY BREAKDOWN
+      ====================================================== */}
 
       <section className="mt-10">
 
@@ -1373,14 +1830,36 @@ function Dashboard() {
         />
 
         {categoryTotals.length === 0 ? (
-          <div className="mt-5 rounded-2xl border border-dashed border-white/[0.08] bg-[#111417] p-8 text-center">
 
-            <p className="text-sm text-zinc-500">
+          <div
+            className="
+              budgetwise-card
+              mt-5
+              rounded-[24px]
+              border-dashed
+              p-8
+              text-center
+            "
+          >
+
+            <div className="text-2xl">
+              🧾
+            </div>
+
+            <p
+              className="
+                mt-3
+                text-sm
+                text-[var(--bw-body)]
+              "
+            >
               No expenses recorded yet.
             </p>
 
           </div>
+
         ) : (
+
           <div className="mt-5 grid gap-3 md:grid-cols-2">
 
             {categoryTotals.map(
@@ -1388,14 +1867,38 @@ function Dashboard() {
                 category,
                 index,
               ) => (
+
                 <div
                   key={
                     category.name
                   }
-                  className="group flex items-center gap-4 rounded-xl border border-white/[0.05] bg-[#111417] px-5 py-4 transition-colors duration-200 hover:border-white/[0.09] hover:bg-[#14171a]"
+                  className="
+                    budgetwise-card
+                    group
+                    flex
+                    items-center
+                    gap-4
+                    rounded-2xl
+                    px-5
+                    py-4
+                  "
                 >
 
-                  <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-white/[0.025] text-xs font-medium text-zinc-500">
+                  <div
+                    className="
+                      flex
+                      h-9
+                      w-9
+                      shrink-0
+                      items-center
+                      justify-center
+                      rounded-xl
+                      bg-[var(--bw-accent-soft)]
+                      text-xs
+                      font-semibold
+                      text-[var(--bw-accent-text)]
+                    "
+                  >
                     {String(
                       index + 1,
                     ).padStart(
@@ -1406,16 +1909,35 @@ function Dashboard() {
 
                   <div className="min-w-0 flex-1">
 
-                    <p className="truncate text-sm font-medium text-zinc-300">
+                    <p
+                      className="
+                        truncate
+                        text-sm
+                        font-semibold
+                        text-[var(--bw-text)]
+                      "
+                    >
                       {
                         category.name
                       }
                     </p>
 
-                    <div className="mt-2 h-1 overflow-hidden rounded-full bg-white/[0.04]">
+                    <div
+                      className="
+                        mt-2
+                        h-1
+                        overflow-hidden
+                        rounded-full
+                        bg-[var(--bw-border)]
+                      "
+                    >
 
                       <div
-                        className="h-full rounded-full bg-violet-400/60"
+                        className="
+                          h-full
+                          rounded-full
+                          bg-[var(--bw-accent)]
+                        "
                         style={{
                           width: `${totalSpent > 0
                             ? Math.min(
@@ -1432,24 +1954,35 @@ function Dashboard() {
 
                   </div>
 
-                  <span className="shrink-0 text-sm font-medium text-zinc-200">
+                  <span
+                    className="
+                      shrink-0
+                      font-serif
+                      text-sm
+                      font-semibold
+                      text-[var(--bw-text-strong)]
+                    "
+                  >
                     {formatCurrency(
                       category.amount,
                     )}
                   </span>
 
                 </div>
+
               ),
             )}
 
           </div>
+
         )}
 
       </section>
 
-      {/* ===================================== */}
-      {/* RECENT TRANSACTIONS */}
-      {/* ===================================== */}
+
+      {/* ======================================================
+          RECENT TRANSACTIONS
+      ====================================================== */}
 
       <section className="mt-10 pb-10">
 
@@ -1459,22 +1992,48 @@ function Dashboard() {
           action="View all"
         />
 
-        <div className="mt-5 overflow-hidden rounded-2xl border border-white/[0.06] bg-[#111417]">
+        <div
+          className="
+            budgetwise-card
+            mt-5
+            overflow-hidden
+            rounded-[24px]
+          "
+        >
 
           {recentExpenses.length === 0 ? (
+
             <div className="px-6 py-12 text-center">
 
-              <p className="text-sm text-zinc-500">
+              <div className="text-2xl">
+                🧾
+              </div>
+
+              <p
+                className="
+                  mt-3
+                  text-sm
+                  text-[var(--bw-body)]
+                "
+              >
                 No transactions yet.
               </p>
 
-              <p className="mt-1 text-xs text-zinc-700">
+              <p
+                className="
+                  mt-1
+                  text-xs
+                  text-[var(--bw-muted)]
+                "
+              >
                 Add your first expense or
                 credit.
               </p>
 
             </div>
+
           ) : (
+
             recentExpenses.map(
               (expense) => {
                 const isCredit =
@@ -1486,17 +2045,47 @@ function Dashboard() {
                     key={
                       expense.id
                     }
-                    className="group flex items-center justify-between gap-4 border-b border-white/[0.05] px-5 py-4 transition-colors duration-200 last:border-b-0 hover:bg-white/[0.018] sm:px-6"
+                    className="
+                      group
+                      flex
+                      items-center
+                      justify-between
+                      gap-4
+                      border-b
+                      border-[var(--bw-border)]
+                      px-5
+                      py-4
+                      transition-colors
+                      last:border-b-0
+                      hover:bg-[var(--bw-surface-hover)]
+                      sm:px-6
+                    "
                   >
 
-                    <div className="flex min-w-0 items-center gap-3">
+                    <div
+                      className="
+                        flex
+                        min-w-0
+                        items-center
+                        gap-3
+                      "
+                    >
 
                       <div
-                        className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-lg ${
-                          isCredit
-                            ? 'bg-emerald-400/[0.07] text-emerald-400'
-                            : 'bg-white/[0.025] text-zinc-600'
-                        }`}
+                        className={`
+                          flex
+                          h-10
+                          w-10
+                          shrink-0
+                          items-center
+                          justify-center
+                          rounded-xl
+                          ${
+                            isCredit
+                              ? 'bg-[var(--bw-success-soft)] text-[var(--bw-success)]'
+                              : 'bg-[var(--bw-accent-soft)] text-[var(--bw-accent)]'
+                          }
+                        `}
                       >
 
                         {isCredit ? (
@@ -1509,13 +2098,27 @@ function Dashboard() {
 
                       <div className="min-w-0">
 
-                        <p className="truncate text-sm font-medium text-zinc-300">
+                        <p
+                          className="
+                            truncate
+                            text-sm
+                            font-semibold
+                            text-[var(--bw-text)]
+                          "
+                        >
                           {
                             expense.name
                           }
                         </p>
 
-                        <p className="mt-1 truncate text-xs text-zinc-600">
+                        <p
+                          className="
+                            mt-1
+                            truncate
+                            text-xs
+                            text-[var(--bw-muted)]
+                          "
+                        >
                           {
                             expense.category
                           }
@@ -1530,11 +2133,17 @@ function Dashboard() {
                     </div>
 
                     <p
-                      className={`shrink-0 text-sm font-semibold ${
-                        isCredit
-                          ? 'text-emerald-400'
-                          : 'text-zinc-300'
-                      }`}
+                      className={`
+                        shrink-0
+                        font-serif
+                        text-sm
+                        font-semibold
+                        ${
+                          isCredit
+                            ? 'text-[var(--bw-success)]'
+                            : 'text-[var(--bw-danger)]'
+                        }
+                      `}
                     >
                       {isCredit
                         ? '+'
@@ -1548,6 +2157,7 @@ function Dashboard() {
                 )
               },
             )
+
           )}
 
         </div>
@@ -1558,49 +2168,97 @@ function Dashboard() {
   )
 }
 
-/*
- * =========================================
- * UI-ONLY HELPERS
- * =========================================
- */
+
+/* ============================================================
+   DASHBOARD STAT
+============================================================ */
 
 function DashboardStat({
   label,
   value,
   detail,
+  icon,
   positive = false,
   accent = false,
 }) {
   return (
-    <div className="bg-[#111417] px-5 py-5 sm:px-6 sm:py-6">
+    <div
+      className="
+        budgetwise-card
+        rounded-[22px]
+        p-5
+        sm:p-6
+      "
+    >
 
       <div className="flex items-center justify-between gap-3">
 
-        <p className="text-[10px] font-medium uppercase tracking-[0.13em] text-zinc-600">
-          {label}
-        </p>
+        <div
+          className="
+            flex
+            h-10
+            w-10
+            items-center
+            justify-center
+            rounded-xl
+            bg-[var(--bw-accent-soft)]
+            text-lg
+          "
+        >
+          {icon}
+        </div>
 
-        {accent && (
-          <span className="h-1.5 w-1.5 rounded-full bg-violet-400" />
-        )}
-
-        {positive && (
-          <span className="h-1.5 w-1.5 rounded-full bg-emerald-400" />
+        {(positive || accent) && (
+          <span
+            className="
+              h-1.5
+              w-1.5
+              rounded-full
+              bg-[var(--bw-accent)]
+            "
+          />
         )}
 
       </div>
 
       <p
-        className={`mt-3 truncate text-xl font-semibold tracking-[-0.025em] ${
-          positive
-            ? 'text-emerald-400'
-            : 'text-zinc-100'
-        }`}
+        className="
+          mt-5
+          text-[10px]
+          font-semibold
+          uppercase
+          tracking-[0.13em]
+          text-[var(--bw-muted)]
+        "
+      >
+        {label}
+      </p>
+
+      <p
+        className={`
+          mt-2
+          truncate
+          font-serif
+          text-2xl
+          font-semibold
+          tracking-[-0.025em]
+          ${
+            positive
+              ? 'text-[var(--bw-success)]'
+              : 'text-[var(--bw-heading)]'
+          }
+        `}
       >
         {value}
       </p>
 
-      <p className="mt-1.5 text-xs text-zinc-700">
+      <p
+        className="
+          mt-1.5
+          text-xs
+          text-[var(--bw-muted)]
+        "
+      >
         {detail}
       </p>
 
@@ -1608,20 +2266,40 @@ function DashboardStat({
   )
 }
 
+
+/* ============================================================
+   GOAL METRIC
+============================================================ */
+
 function GoalMetric({
   label,
   value,
-  className = 'text-zinc-100',
+  className = 'text-[var(--bw-heading)]',
 }) {
   return (
     <div>
 
-      <p className="text-[10px] font-medium uppercase tracking-[0.13em] text-zinc-600">
+      <p
+        className="
+          text-[10px]
+          font-semibold
+          uppercase
+          tracking-[0.13em]
+          text-[var(--bw-muted)]
+        "
+      >
         {label}
       </p>
 
       <p
-        className={`mt-2 text-xl font-semibold tracking-tight ${className}`}
+        className={`
+          mt-2
+          font-serif
+          text-xl
+          font-semibold
+          tracking-tight
+          ${className}
+        `}
       >
         {value}
       </p>
@@ -1630,20 +2308,33 @@ function GoalMetric({
   )
 }
 
+
+/* ============================================================
+   MONEY ROW
+============================================================ */
+
 function MoneyRow({
   label,
   value,
-  valueClass = 'text-zinc-300',
+  valueClass = 'text-[var(--bw-text)]',
 }) {
   return (
-    <div className="flex items-center justify-between gap-5 text-xs">
+    <div
+      className="
+        flex
+        items-center
+        justify-between
+        gap-5
+        text-xs
+      "
+    >
 
-      <span className="text-zinc-600">
+      <span className="text-[var(--bw-muted)]">
         {label}
       </span>
 
       <span
-        className={`font-medium ${valueClass}`}
+        className={`font-semibold ${valueClass}`}
       >
         {value}
       </span>
@@ -1652,11 +2343,10 @@ function MoneyRow({
   )
 }
 
-/*
- * =========================================
- * SMALL ICONS
- * =========================================
- */
+
+/* ============================================================
+   ICONS
+============================================================ */
 
 function ArrowDownIcon() {
   return (
@@ -1677,6 +2367,7 @@ function ArrowDownIcon() {
   )
 }
 
+
 function ArrowUpIcon() {
   return (
     <svg
@@ -1695,5 +2386,6 @@ function ArrowUpIcon() {
     </svg>
   )
 }
+
 
 export default Dashboard

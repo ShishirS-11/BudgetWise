@@ -6,6 +6,7 @@ import {
 } from 'react-router-dom'
 
 import AppLayout from './layouts/AppLayout'
+import TripWiseLayout from './layouts/TripWiseLayout'
 
 import Dashboard from './pages/Dashboard'
 import Expenses from './pages/Expenses'
@@ -17,6 +18,14 @@ import Insights from './pages/Insights'
 import Settings from './pages/Settings'
 import Login from './pages/Login'
 
+import TripWise from './pages/TripWise'
+import CreateTrip from './pages/CreateTrip'
+import TripItinerary from './pages/TripItinerary'
+import TripCalendar from './pages/TripCalendar'
+import TripExpenses from './pages/TripExpenses'
+import TripMembers from './pages/TripMembers'
+import TripPayments from './pages/TripPayments'
+
 import {
   AuthProvider,
   useAuth,
@@ -27,30 +36,34 @@ import {
 } from './context/CurrencyContext'
 
 
+/* ============================================================
+   PROTECTED ROUTES
+   ============================================================ */
+
 function ProtectedRoutes() {
   const {
     user,
     loading,
   } = useAuth()
 
-  /*
-   * Wait for Supabase to determine
-   * whether a session exists.
-   */
   if (loading) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-[#0b0d0f] text-zinc-500">
-        <p className="text-sm">
-          Loading BudgetWise...
-        </p>
+      <div className="flex min-h-screen items-center justify-center bg-[var(--bw-bg)] text-[var(--bw-text-secondary)]">
+        <div className="text-center">
+
+          <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-2xl bg-[var(--bw-accent-soft)] text-xl">
+            💰
+          </div>
+
+          <p className="text-sm">
+            Loading BudgetWise...
+          </p>
+
+        </div>
       </div>
     )
   }
 
-  /*
-   * No logged-in user:
-   * send them to Login.
-   */
   if (!user) {
     return (
       <Navigate
@@ -60,37 +73,44 @@ function ProtectedRoutes() {
     )
   }
 
-  /*
-   * User is authenticated:
-   * render the protected route.
-   */
   return <Outlet />
 }
 
 
+/* ============================================================
+   APP
+   ============================================================ */
+
 function App() {
   return (
     <AuthProvider>
+
       <CurrencyProvider>
 
         <Routes>
 
-          {/* =========================
-              PUBLIC ROUTES
-          ========================== */}
+          {/* ==================================================
+              PUBLIC
+          ================================================== */}
 
           <Route
             path="/login"
             element={<Login />}
           />
 
-          {/* =========================
-              PROTECTED ROUTES
-          ========================== */}
+
+          {/* ==================================================
+              EVERYTHING BELOW REQUIRES LOGIN
+          ================================================== */}
 
           <Route
             element={<ProtectedRoutes />}
           >
+
+
+            {/* =================================================
+                BUDGETWISE
+            ================================================= */}
 
             <Route
               element={<AppLayout />}
@@ -138,11 +158,58 @@ function App() {
 
             </Route>
 
+
+            {/* =================================================
+                TRIPWISE
+            ================================================= */}
+
+            <Route
+              element={<TripWiseLayout />}
+            >
+
+              <Route
+                path="/tripwise"
+                element={<TripWise />}
+              />
+
+              <Route
+                path="/tripwise/create"
+                element={<CreateTrip />}
+              />
+
+              <Route
+                path="/tripwise/itinerary"
+                element={<TripItinerary />}
+              />
+
+              <Route
+                path="/tripwise/calendar"
+                element={<TripCalendar />}
+              />
+
+              <Route
+                path="/tripwise/expenses"
+                element={<TripExpenses />}
+              />
+
+              <Route
+                path="/tripwise/members"
+                element={<TripMembers />}
+              />
+
+              <Route
+                path="/tripwise/payments"
+                element={<TripPayments />}
+              />
+
+            </Route>
+
           </Route>
 
-          {/* =========================
+
+          {/* ==================================================
               UNKNOWN ROUTES
-          ========================== */}
+          ================================================== */}
 
           <Route
             path="*"
@@ -157,6 +224,7 @@ function App() {
         </Routes>
 
       </CurrencyProvider>
+
     </AuthProvider>
   )
 }

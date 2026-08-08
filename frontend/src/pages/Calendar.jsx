@@ -109,7 +109,7 @@ function Calendar() {
   if (loading) {
     return (
       <div className="flex min-h-[60vh] items-center justify-center">
-        <p className="text-sm text-zinc-600">
+        <p className="text-sm text-[var(--bw-muted)]">
           Loading calendar...
         </p>
       </div>
@@ -117,13 +117,13 @@ function Calendar() {
   }
 
   return (
-    <div className="mx-auto max-w-7xl">
+    <div className="budgetwise-page mx-auto max-w-7xl">
 
       {/* Header */}
 
       <section>
 
-        <p className="text-xs font-medium uppercase tracking-wider text-violet-400">
+        <p className="text-xs font-medium uppercase tracking-wider text-[var(--bw-primary)]">
           Daily spending
         </p>
 
@@ -131,13 +131,13 @@ function Calendar() {
           Calendar
         </h1>
 
-        <p className="mt-2 text-sm text-zinc-500">
+        <p className="mt-2 text-sm text-[var(--bw-body)]">
           See your spending and budget
           day by day.
         </p>
 
         {ratesLoading && (
-          <p className="mt-2 text-xs text-zinc-600">
+          <p className="mt-2 text-xs text-[var(--bw-muted)]">
             Updating exchange rates...
           </p>
         )}
@@ -175,13 +175,13 @@ function Calendar() {
       {!budget && !error && (
         <section className="mt-8">
 
-          <div className="rounded-2xl border border-white/5 bg-[#111417] p-6">
+          <div className="rounded-2xl border border-[var(--bw-border)] bg-[var(--bw-surface)] p-6">
 
-            <p className="text-sm font-medium text-zinc-300">
+            <p className="text-sm font-medium text-[var(--bw-text)]">
               No budget created yet
             </p>
 
-            <p className="mt-2 text-sm text-zinc-600">
+            <p className="mt-2 text-sm text-[var(--bw-muted)]">
               Create a monthly budget
               first to see your daily
               budget here.
@@ -203,13 +203,13 @@ function Calendar() {
 
             {/* Monthly budget */}
 
-            <div className="rounded-2xl border border-white/5 bg-[#111417] p-5">
+            <div className="rounded-2xl border border-[var(--bw-border)] bg-[var(--bw-surface)] p-5">
 
-              <p className="text-xs text-zinc-600">
+              <p className="text-xs text-[var(--bw-muted)]">
                 Monthly budget
               </p>
 
-              <p className="mt-2 text-xl font-semibold text-zinc-200">
+              <p className="mt-2 text-xl font-semibold text-[var(--bw-heading)]">
                 {formatCurrency(
                   budget.amount,
                 )}
@@ -219,13 +219,13 @@ function Calendar() {
 
             {/* Days */}
 
-            <div className="rounded-2xl border border-white/5 bg-[#111417] p-5">
+            <div className="rounded-2xl border border-[var(--bw-border)] bg-[var(--bw-surface)] p-5">
 
-              <p className="text-xs text-zinc-600">
+              <p className="text-xs text-[var(--bw-muted)]">
                 Days in month
               </p>
 
-              <p className="mt-2 text-xl font-semibold text-zinc-200">
+              <p className="mt-2 text-xl font-semibold text-[var(--bw-heading)]">
                 {daysInBudgetMonth}
               </p>
 
@@ -233,13 +233,13 @@ function Calendar() {
 
             {/* Daily budget */}
 
-            <div className="rounded-2xl border border-violet-500/10 bg-violet-500/[0.03] p-5">
+            <div className="rounded-2xl border border-[color:var(--bw-border)] bg-[var(--bw-primary-soft)] p-5">
 
-              <p className="text-xs text-zinc-600">
+              <p className="text-xs text-[var(--bw-muted)]">
                 Actual daily budget
               </p>
 
-              <p className="mt-2 text-xl font-semibold text-violet-300">
+              <p className="mt-2 text-xl font-semibold text-[var(--bw-primary)]">
                 {formatCurrency(
                   dailyBudget,
                   {
@@ -248,7 +248,7 @@ function Calendar() {
                 )}
               </p>
 
-              <p className="mt-1 text-xs text-zinc-600">
+              <p className="mt-1 text-xs text-[var(--bw-muted)]">
                 No carry-forward
               </p>
 

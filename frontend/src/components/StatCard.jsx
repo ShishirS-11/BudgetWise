@@ -1,20 +1,20 @@
 function StatCard({ label, value, description, accent = false }) {
   return (
-    <div className="rounded-2xl border border-white/5 bg-[#111417] p-6">
-      <p className="text-sm text-zinc-500">
+    <div className="rounded-2xl border border-[var(--bw-border)] bg-[var(--bw-surface)] p-6">
+      <p className="text-sm text-[var(--bw-body)]">
         {label}
       </p>
 
       <p
         className={`mt-3 text-2xl font-semibold tracking-tight ${
-          accent ? 'text-violet-300' : 'text-zinc-100'
+          accent ? 'text-amber-300' : 'text-[var(--bw-heading)]'
         }`}
       >
         {value}
       </p>
 
       {description && (
-        <p className="mt-2 text-xs text-zinc-600">
+        <p className="mt-2 text-xs text-[var(--bw-muted)]">
           {description}
         </p>
       )}

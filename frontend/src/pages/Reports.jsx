@@ -31,13 +31,13 @@ import { generateMonthlyReport } from '../utils/pdfReport'
 import { useCurrency } from '../context/CurrencyContext'
 
 const CHART_COLORS = [
-  '#8b5cf6',
-  '#a78bfa',
-  '#c4b5fd',
-  '#7c3aed',
-  '#6d28d9',
-  '#4c1d95',
-  '#ddd6fe',
+  '#f59e0b',
+  '#fbbf24',
+  '#fcd34d',
+  '#d97706',
+  '#b45309',
+  '#92400e',
+  '#fde68a',
 ]
 
 function Reports() {
@@ -605,8 +605,8 @@ function Reports() {
   if (loading) {
     return (
       <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
-        <div className="rounded-3xl border border-white/5 bg-[#111417] p-10 text-center">
-          <p className="text-sm text-zinc-500">
+        <div className="rounded-3xl border border-[var(--bw-border)] bg-[var(--bw-surface)] p-10 text-center">
+          <p className="text-sm text-[var(--bw-text-muted)]">
             Preparing your financial report...
           </p>
         </div>
@@ -629,15 +629,15 @@ function Reports() {
         <div className="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
 
           <div>
-            <p className="text-xs font-medium uppercase tracking-[0.18em] text-violet-400">
+            <p className="text-xs font-medium uppercase tracking-[0.18em] text-amber-400">
               Financial overview
             </p>
 
-            <h1 className="mt-2 text-3xl font-semibold tracking-tight text-zinc-100">
+            <h1 className="mt-2 text-3xl font-semibold tracking-tight text-[var(--bw-text-strong)]">
               Reports
             </h1>
 
-            <p className="mt-2 max-w-xl text-sm leading-6 text-zinc-500">
+            <p className="mt-2 max-w-xl text-sm leading-6 text-[var(--bw-text-muted)]">
               Understand where your money went,
               how your spending compares, and
               how closely you are following your
@@ -651,7 +651,7 @@ function Reports() {
               handleDownloadPDF
             }
             disabled={downloading}
-            className="inline-flex items-center justify-center gap-2 rounded-xl bg-violet-500 px-5 py-3 text-sm font-medium text-white shadow-lg shadow-violet-500/10 transition hover:bg-violet-400 disabled:cursor-not-allowed disabled:opacity-50"
+            className="inline-flex items-center justify-center gap-2 rounded-xl bg-amber-500 px-5 py-3 text-sm font-medium text-white shadow-lg shadow-amber-500/10 transition hover:bg-amber-400 disabled:cursor-not-allowed disabled:opacity-50"
           >
             {downloading
               ? 'Preparing PDF...'
@@ -688,7 +688,7 @@ function Reports() {
       {/* Success */}
 
       {message && (
-        <div className="fixed bottom-6 right-6 z-50 max-w-sm rounded-2xl border border-emerald-500/20 bg-[#151918] px-5 py-4 shadow-2xl shadow-black/30">
+        <div className="fixed bottom-6 right-6 z-50 max-w-sm rounded-2xl border border-emerald-500/20 bg-[var(--bw-surface)] px-5 py-4 shadow-2xl shadow-black/30">
           <p className="text-sm text-emerald-300">
             {message}
           </p>
@@ -699,20 +699,20 @@ function Reports() {
 
       <section className="mt-8">
 
-        <div className="flex flex-col gap-5 rounded-3xl border border-white/5 bg-[#111417] p-5 sm:p-6 md:flex-row md:items-end md:justify-between">
+        <div className="flex flex-col gap-5 rounded-3xl border border-[var(--bw-border)] bg-[var(--bw-surface)] p-5 sm:p-6 md:flex-row md:items-end md:justify-between">
 
           <div>
-            <p className="text-xs font-medium uppercase tracking-wider text-zinc-600">
+            <p className="text-xs font-medium uppercase tracking-wider text-[var(--bw-text-faint)]">
               Report period
             </p>
 
-            <h2 className="mt-1 text-lg font-medium text-zinc-200">
+            <h2 className="mt-1 text-lg font-medium text-[var(--bw-text-secondary)]">
               {formatMonth(
                 selectedMonth,
               )}
             </h2>
 
-            <p className="mt-1 text-xs text-zinc-600">
+            <p className="mt-1 text-xs text-[var(--bw-text-faint)]">
               All figures are based on
               transactions recorded during this
               month.
@@ -722,7 +722,7 @@ function Reports() {
           <div>
             <label
               htmlFor="reportMonth"
-              className="mb-2 block text-xs text-zinc-500"
+              className="mb-2 block text-xs text-[var(--bw-text-muted)]"
             >
               Select month
             </label>
@@ -738,7 +738,7 @@ function Reports() {
                   event.target.value,
                 )
               }
-              className="rounded-xl border border-white/10 bg-[#0d0f11] px-4 py-3 text-sm text-zinc-200 outline-none transition focus:border-violet-500/50"
+              className="rounded-xl border border-[var(--bw-border)] bg-[var(--bw-surface-alt)] px-4 py-3 text-sm text-[var(--bw-text-secondary)] outline-none transition focus:border-amber-500/50"
             />
           </div>
 
@@ -802,16 +802,16 @@ function Reports() {
 
       <section className="mt-6">
 
-        <div className="rounded-3xl border border-white/5 bg-[#111417] p-6">
+        <div className="rounded-3xl border border-[var(--bw-border)] bg-[var(--bw-surface)] p-6">
 
           <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
 
             <div>
-              <p className="text-sm font-medium text-zinc-200">
+              <p className="text-sm font-medium text-[var(--bw-text-secondary)]">
                 Budget progress
               </p>
 
-              <p className="mt-1 text-xs text-zinc-600">
+              <p className="mt-1 text-xs text-[var(--bw-text-faint)]">
                 {monthlyBudget > 0
                   ? `${formatCurrency(
                       totalSpent,
@@ -829,7 +829,7 @@ function Reports() {
                     ? 'text-red-400'
                     : budgetUsed >= 80
                       ? 'text-amber-400'
-                      : 'text-violet-300'
+                      : 'text-amber-300'
                 }`}
               >
                 {budgetUsed.toFixed(
@@ -841,7 +841,7 @@ function Reports() {
 
           </div>
 
-          <div className="mt-5 h-2 overflow-hidden rounded-full bg-white/5">
+          <div className="mt-5 h-2 overflow-hidden rounded-full bg-[var(--bw-surface-alt)]">
 
             <div
               className={`h-full rounded-full transition-all ${
@@ -849,7 +849,7 @@ function Reports() {
                   ? 'bg-red-500'
                   : budgetUsed >= 80
                     ? 'bg-amber-500'
-                    : 'bg-violet-500'
+                    : 'bg-amber-500'
               }`}
               style={{
                 width: `${Math.min(
@@ -864,7 +864,7 @@ function Reports() {
 
           </div>
 
-          <div className="mt-3 flex justify-between text-xs text-zinc-600">
+          <div className="mt-3 flex justify-between text-xs text-[var(--bw-text-faint)]">
 
             <span>
               {monthlyBudget > 0
@@ -890,14 +890,14 @@ function Reports() {
 
         {/* Daily spending */}
 
-        <div className="rounded-3xl border border-white/5 bg-[#111417] p-6">
+        <div className="rounded-3xl border border-[var(--bw-border)] bg-[var(--bw-surface)] p-6">
 
           <div>
-            <p className="text-sm font-medium text-zinc-200">
+            <p className="text-sm font-medium text-[var(--bw-text-secondary)]">
               Daily spending
             </p>
 
-            <p className="mt-1 text-xs text-zinc-600">
+            <p className="mt-1 text-xs text-[var(--bw-text-faint)]">
               Spending activity across{' '}
               {formatMonth(
                 selectedMonth,
@@ -962,7 +962,7 @@ function Reports() {
                     cursor={false}
                     contentStyle={{
                       background:
-                        '#181b1f',
+                        '#171a1e',
                       border:
                         '1px solid rgba(255,255,255,0.08)',
                       borderRadius:
@@ -981,7 +981,7 @@ function Reports() {
                     }}
                     itemStyle={{
                       color:
-                        '#a78bfa',
+                        '#fbbf24',
                     }}
                     formatter={(
                       value,
@@ -1001,7 +1001,7 @@ function Reports() {
                       0,
                       0,
                     ]}
-                    fill="#8b5cf6"
+                    fill="#f59e0b"
                   />
 
                 </BarChart>
@@ -1014,14 +1014,14 @@ function Reports() {
 
         {/* Category chart */}
 
-        <div className="rounded-3xl border border-white/5 bg-[#111417] p-6">
+        <div className="rounded-3xl border border-[var(--bw-border)] bg-[var(--bw-surface)] p-6">
 
           <div>
-            <p className="text-sm font-medium text-zinc-200">
+            <p className="text-sm font-medium text-[var(--bw-text-secondary)]">
               Spending by category
             </p>
 
-            <p className="mt-1 text-xs text-zinc-600">
+            <p className="mt-1 text-xs text-[var(--bw-text-faint)]">
               Your largest spending areas.
             </p>
           </div>
@@ -1074,7 +1074,7 @@ function Reports() {
                       cursor={false}
                       contentStyle={{
                         background:
-                          '#181b1f',
+                          '#171a1e',
                         border:
                           '1px solid rgba(255,255,255,0.08)',
                         borderRadius:
@@ -1093,7 +1093,7 @@ function Reports() {
                       }}
                       itemStyle={{
                         color:
-                          '#a78bfa',
+                          '#fbbf24',
                       }}
                       formatter={(
                         value,
@@ -1134,7 +1134,7 @@ function Reports() {
                             }}
                           />
 
-                          <span className="truncate text-xs text-zinc-400">
+                          <span className="truncate text-xs text-[var(--bw-text-muted)]">
                             {
                               item.name
                             }
@@ -1142,7 +1142,7 @@ function Reports() {
 
                         </div>
 
-                        <span className="shrink-0 text-xs font-medium text-zinc-300">
+                        <span className="shrink-0 text-xs font-medium text-[var(--bw-text-secondary)]">
                           {formatCurrency(
                             item.value,
                           )}
@@ -1246,14 +1246,14 @@ function Reports() {
 
       <section className="mt-6 pb-12">
 
-        <div className="rounded-3xl border border-white/5 bg-[#111417] p-6">
+        <div className="rounded-3xl border border-[var(--bw-border)] bg-[var(--bw-surface)] p-6">
 
           <div>
-            <p className="text-sm font-medium text-zinc-200">
+            <p className="text-sm font-medium text-[var(--bw-text-secondary)]">
               Financial insights
             </p>
 
-            <p className="mt-1 text-xs leading-5 text-zinc-600">
+            <p className="mt-1 text-xs leading-5 text-[var(--bw-text-faint)]">
               A few observations based on your
               activity this month.
             </p>
@@ -1263,8 +1263,8 @@ function Reports() {
 
             {insights.length ===
             0 ? (
-              <div className="rounded-2xl border border-white/5 bg-[#0d0f11] p-5">
-                <p className="text-sm text-zinc-500">
+              <div className="rounded-2xl border border-[var(--bw-border)] bg-[var(--bw-surface-alt)] p-5">
+                <p className="text-sm text-[var(--bw-text-muted)]">
                   Keep recording your transactions
                   and BudgetWise will have more
                   information to analyze.
@@ -1278,15 +1278,15 @@ function Reports() {
                 ) => (
                   <div
                     key={index}
-                    className="flex gap-4 rounded-2xl border border-white/5 bg-[#0d0f11] p-5"
+                    className="flex gap-4 rounded-2xl border border-[var(--bw-border)] bg-[var(--bw-surface-alt)] p-5"
                   >
 
-                    <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-violet-500/10 text-sm text-violet-300">
+                    <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-amber-500/10 text-sm text-amber-300">
                       {index +
                         1}
                     </div>
 
-                    <p className="text-sm leading-6 text-zinc-400">
+                    <p className="text-sm leading-6 text-[var(--bw-text-muted)]">
                       {insight}
                     </p>
 
@@ -1338,20 +1338,20 @@ function ReportCard({
 
     violet: {
       border:
-        'border-violet-500/10',
+        'border-amber-500/10',
       background:
-        'bg-violet-500/[0.025]',
+        'bg-amber-500/[0.025]',
       text:
-        'text-violet-300',
+        'text-amber-300',
     },
 
     neutral: {
       border:
-        'border-white/5',
+        'border-[var(--bw-border)]',
       background:
-        'bg-[#111417]',
+        'bg-[var(--bw-surface)]',
       text:
-        'text-zinc-200',
+        'text-[var(--bw-text-secondary)]',
     },
   }
 
@@ -1363,7 +1363,7 @@ function ReportCard({
     <div
       className={`rounded-3xl border ${style.border} ${style.background} p-5`}
     >
-      <p className="text-xs text-zinc-600">
+      <p className="text-xs text-[var(--bw-text-faint)]">
         {label}
       </p>
 
@@ -1373,7 +1373,7 @@ function ReportCard({
         {value}
       </p>
 
-      <p className="mt-2 text-xs leading-5 text-zinc-600">
+      <p className="mt-2 text-xs leading-5 text-[var(--bw-text-faint)]">
         {description}
       </p>
     </div>
@@ -1393,9 +1393,9 @@ function AnalysisCard({
   positive = false,
 }) {
   return (
-    <div className="rounded-3xl border border-white/5 bg-[#111417] p-6">
+    <div className="rounded-3xl border border-[var(--bw-border)] bg-[var(--bw-surface)] p-6">
 
-      <p className="text-xs text-zinc-600">
+      <p className="text-xs text-[var(--bw-text-faint)]">
         {label}
       </p>
 
@@ -1403,13 +1403,13 @@ function AnalysisCard({
         className={`mt-3 text-lg font-medium ${
           positive
             ? 'text-emerald-300'
-            : 'text-zinc-200'
+            : 'text-[var(--bw-text-secondary)]'
         }`}
       >
         {value}
       </p>
 
-      <p className="mt-2 text-xs leading-5 text-zinc-600">
+      <p className="mt-2 text-xs leading-5 text-[var(--bw-text-faint)]">
         {description}
       </p>
 
@@ -1427,8 +1427,8 @@ function EmptyChart({
   text,
 }) {
   return (
-    <div className="flex h-full w-full items-center justify-center rounded-2xl border border-white/5 bg-[#0d0f11]">
-      <p className="text-xs text-zinc-600">
+    <div className="flex h-full w-full items-center justify-center rounded-2xl border border-[var(--bw-border)] bg-[var(--bw-surface-alt)]">
+      <p className="text-xs text-[var(--bw-text-faint)]">
         {text}
       </p>
     </div>

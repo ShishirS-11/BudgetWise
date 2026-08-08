@@ -1,89 +1,12 @@
 @import "tailwindcss";
 
-/* =========================================================
-   BUDGETWISE
-   PREMIUM WARM DESIGN SYSTEM
-   ========================================================= */
-
-/* =========================================================
-   LIGHT THEME
-   ========================================================= */
-
-html[data-theme="light"] {
-  --bw-bg: #f4efe8;
-  --bw-bg-secondary: #eee7de;
-
-  --bw-surface: #fffdf9;
-  --bw-surface-soft: #faf6f0;
-  --bw-surface-hover: #f5efe7;
-
-  --bw-text: #292521;
-  --bw-text-strong: #211e1a;
-  --bw-text-secondary: #625a51;
-  --bw-text-muted: #81776d;
-  --bw-text-faint: #9d9388;
-
-  --bw-border: rgba(63, 52, 42, 0.11);
-  --bw-border-soft: rgba(63, 52, 42, 0.07);
-
-  --bw-accent: #7c3aed;
-  --bw-accent-light: #8b5cf6;
-  --bw-accent-soft: rgba(124, 58, 237, 0.08);
-
-  --bw-positive: #059669;
-  --bw-negative: #dc2626;
-
-  --bw-shadow:
-    rgba(61, 47, 32, 0.08);
-
-  color-scheme: light;
-}
-
-
-/* =========================================================
-   DARK THEME
-   Warm charcoal — NOT pure black
-   ========================================================= */
-
-html[data-theme="dark"] {
-  --bw-bg: #1b1917;
-  --bw-bg-secondary: #211e1b;
-
-  --bw-surface: #25211e;
-  --bw-surface-soft: #2b2723;
-  --bw-surface-hover: #322d28;
-
-  --bw-text: #f4eee7;
-  --bw-text-strong: #fffaf4;
-  --bw-text-secondary: #d0c6bb;
-  --bw-text-muted: #aaa095;
-  --bw-text-faint: #81766c;
-
-  --bw-border: rgba(255, 244, 230, 0.10);
-  --bw-border-soft: rgba(255, 244, 230, 0.065);
-
-  --bw-accent: #a78bfa;
-  --bw-accent-light: #c4b5fd;
-  --bw-accent-soft: rgba(167, 139, 250, 0.12);
-
-  --bw-positive: #34d399;
-  --bw-negative: #f87171;
-
-  --bw-shadow:
-    rgba(0, 0, 0, 0.20);
-
-  color-scheme: dark;
-}
-
-
-/* =========================================================
-   DEFAULT
-   ========================================================= */
+/* ============================================================
+   GLOBAL THEME
+============================================================ */
 
 :root {
   font-family:
-    Inter,
-    ui-sans-serif,
+    "DM Sans",
     system-ui,
     -apple-system,
     BlinkMacSystemFont,
@@ -92,35 +15,180 @@ html[data-theme="dark"] {
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
+
   -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+
+  /* ==========================================================
+     BUDGETWISE — AMBER + CHARCOAL — LIGHT
+  ========================================================== */
+
+  --bw-bg: #f5f1e7;
+  --bw-surface: #fffdf8;
+  --bw-surface-soft: #f8f4e9;
+  --bw-surface-hover: #f0eadb;
+
+  --bw-border: #ddd5c4;
+  --bw-border-strong: #cec4ae;
+
+  --bw-heading: #2c2a24;
+  --bw-text-strong: #302e28;
+  --bw-text: #4d4a41;
+  --bw-text-secondary: #716c60;
+  --bw-body: #777166;
+  --bw-muted: #9a9384;
+  --bw-text-muted: #9a9384;
+
+  --bw-accent: #c28a22;
+  --bw-accent-hover: #a97116;
+  --bw-accent-soft: #ead39a;
+  --bw-accent-text: #8a6014;
+
+  --bw-primary: #c28a22;
+  --bw-primary-hover: #a97116;
+  --bw-primary-soft: #ead39a;
+
+  --bw-success: #4d8065;
+  --bw-success-soft: #e1eee6;
+
+  --bw-danger: #b85d4d;
+  --bw-danger-soft: #f6e4df;
+
+  --bw-warning: #ad7b32;
+  --bw-warning-soft: #f5ead3;
+
+  --bw-shadow:
+    0 12px 35px rgba(62, 52, 33, 0.07);
+
+  /* ==========================================================
+     TRIPWISE — LIGHT
+  ========================================================== */
+
+  --tw-bg: #f5f1e8;
+
+  --tw-card: #fffdf8;
+  --tw-card-hover: #ffffff;
+
+  --tw-border: #ddd6ca;
+  --tw-border-strong: #d0c8bb;
+
+  --tw-heading: #244b42;
+  --tw-text: #334843;
+  --tw-body: #62746d;
+  --tw-muted: #89958f;
+
+  --tw-link: #4d7d70;
+  --tw-link-hover: #3e695d;
+
+  --tw-icon-bg: #e2f0eb;
+
+  --tw-decoration: #d9ebe5;
+
+  --tw-header: #fffdf8;
+  --tw-sidebar: #fffdf8;
+
+  --tw-shadow:
+    0 12px 35px rgba(51, 72, 67, 0.06);
 }
 
+/* ============================================================
+   DARK MODE
+============================================================ */
 
-/* =========================================================
-   GLOBAL
-   ========================================================= */
+html[data-theme="dark"] {
+
+  /* ==========================================================
+     BUDGETWISE — DARK CHARCOAL + AMBER
+  ========================================================== */
+
+  --bw-bg: #151410;
+
+  --bw-surface: #201e18;
+  --bw-surface-soft: #28251e;
+  --bw-surface-hover: #302c22;
+
+  --bw-border: #3b372c;
+  --bw-border-strong: #4b4537;
+
+  --bw-heading: #f7f0df;
+  --bw-text-strong: #f5efdf;
+  --bw-text: #ddd5c3;
+  --bw-text-secondary: #b3aa98;
+  --bw-body: #aaa18f;
+  --bw-muted: #817a6b;
+  --bw-text-muted: #817a6b;
+
+  --bw-accent: #e0ad3e;
+  --bw-accent-hover: #efbd50;
+  --bw-accent-soft: #5c471c;
+  --bw-accent-text: #f1c65e;
+
+  --bw-primary: #e0ad3e;
+  --bw-primary-hover: #efbd50;
+  --bw-primary-soft: #5c471c;
+
+  --bw-success: #72ad8a;
+  --bw-success-soft: #203a31;
+
+  --bw-danger: #dc806c;
+  --bw-danger-soft: #40251f;
+
+  --bw-warning: #d0a15b;
+  --bw-warning-soft: #3c311f;
+
+  --bw-shadow:
+    0 16px 45px rgba(0, 0, 0, 0.26);
+
+  /* ==========================================================
+     TRIPWISE — DARK
+  ========================================================== */
+
+  --tw-bg: #101715;
+
+  --tw-card: #18221f;
+  --tw-card-hover: #1d2a26;
+
+  --tw-border: #2e4039;
+  --tw-border-strong: #40524b;
+
+  --tw-heading: #8ed1bb;
+  --tw-text: #dbe8e2;
+  --tw-body: #b7c8c1;
+  --tw-muted: #84928c;
+
+  --tw-link: #8dc9b5;
+  --tw-link-hover: #a5d9c6;
+
+  --tw-icon-bg: #213a32;
+
+  --tw-decoration: #234139;
+
+  --tw-header: #121b18;
+  --tw-sidebar: #121b18;
+
+  --tw-shadow:
+    0 14px 40px rgba(0, 0, 0, 0.22);
+}
+
+/* ============================================================
+   GLOBAL RESET
+============================================================ */
 
 * {
   box-sizing: border-box;
 }
 
-html,
-body,
-#root {
-  min-height: 100%;
-  margin: 0;
-}
-
 html {
+  min-height: 100%;
   background: var(--bw-bg);
-  color: var(--bw-text);
-
   transition:
-    background-color 220ms ease,
-    color 220ms ease;
+    background-color 300ms ease,
+    color 300ms ease;
 }
 
 body {
+  margin: 0;
+
   min-width: 320px;
   min-height: 100vh;
 
@@ -128,27 +196,27 @@ body {
   color: var(--bw-text);
 
   transition:
-    background-color 220ms ease,
-    color 220ms ease;
+    background-color 300ms ease,
+    color 300ms ease;
 }
 
-
-/* =========================================================
-   TYPOGRAPHY
-   ========================================================= */
-
-h1,
-h2,
-h3,
-h4,
-h5,
-h6 {
-  color: var(--bw-text-strong);
-  letter-spacing: -0.035em;
+button,
+input,
+textarea,
+select {
+  font: inherit;
 }
 
-p {
-  color: inherit;
+button {
+  cursor: pointer;
+}
+
+button:disabled {
+  cursor: not-allowed;
+}
+
+img {
+  max-width: 100%;
 }
 
 a {
@@ -156,574 +224,275 @@ a {
   text-decoration: none;
 }
 
+/* ============================================================
+   TYPOGRAPHY
+============================================================ */
 
-/* =========================================================
-   FORM ELEMENTS
-   ========================================================= */
-
-button,
-input,
-select,
-textarea {
-  font: inherit;
+.font-serif {
+  font-family:
+    "Playfair Display",
+    Georgia,
+    serif;
 }
 
-input,
-select,
-textarea {
+/* ============================================================
+   BUDGETWISE ROOT
+============================================================ */
+
+.budgetwise-root {
+  min-height: 100vh;
+
+  background: var(--bw-bg);
+  color: var(--bw-text);
+
+  transition:
+    background-color 300ms ease,
+    color 300ms ease;
+}
+
+.budgetwise-root h1,
+.budgetwise-root h2,
+.budgetwise-root h3,
+.budgetwise-root h4,
+.budgetwise-root h5,
+.budgetwise-root h6 {
+  color: var(--bw-heading);
+}
+
+/* ============================================================
+   BUDGETWISE CARDS
+============================================================ */
+
+.budgetwise-card {
+  background: var(--bw-surface);
+  border: 1px solid var(--bw-border);
+  color: var(--bw-text);
+
+  box-shadow: var(--bw-shadow);
+
+  transition:
+    background-color 300ms ease,
+    border-color 300ms ease,
+    color 300ms ease,
+    box-shadow 300ms ease,
+    transform 250ms ease;
+}
+
+.budgetwise-card:hover {
+  border-color: var(--bw-border-strong);
+}
+
+/* ============================================================
+   BUDGETWISE TEXT
+============================================================ */
+
+.budgetwise-title {
+  color: var(--bw-heading);
+  font-family:
+    "Playfair Display",
+    Georgia,
+    serif;
+}
+
+.budgetwise-body {
+  color: var(--bw-body);
+}
+
+.budgetwise-muted {
+  color: var(--bw-muted);
+}
+
+.budgetwise-accent {
+  color: var(--bw-accent);
+}
+
+/* ============================================================
+   BUDGETWISE INPUT
+============================================================ */
+
+.budgetwise-input {
+  background: var(--bw-surface);
+  border: 1px solid var(--bw-border);
   color: var(--bw-text);
 }
 
-input::placeholder,
-textarea::placeholder {
-  color: var(--bw-text-faint);
+.budgetwise-input::placeholder {
+  color: var(--bw-muted);
 }
 
+.budgetwise-input:focus {
+  outline: none;
+  border-color: var(--bw-accent);
+  box-shadow:
+    0 0 0 3px rgba(194, 138, 34, 0.12);
+}
 
-/* =========================================================
+/* ============================================================
+   TRIPWISE ROOT
+============================================================ */
+
+.tripwise-root {
+  min-height: 100vh;
+
+  background: var(--tw-bg);
+  color: var(--tw-text);
+
+  transition:
+    background-color 300ms ease,
+    color 300ms ease;
+}
+
+.tripwise-root h1,
+.tripwise-root h2,
+.tripwise-root h3,
+.tripwise-root h4,
+.tripwise-root h5,
+.tripwise-root h6 {
+  color: var(--tw-heading);
+}
+
+/* ============================================================
+   TRIPWISE CARDS
+============================================================ */
+
+.tripwise-card {
+  position: relative;
+
+  overflow: hidden;
+
+  background: var(--tw-card);
+
+  border: 1px solid var(--tw-border);
+
+  color: var(--tw-text);
+
+  box-shadow: var(--tw-shadow);
+
+  transition:
+    background-color 300ms ease,
+    border-color 300ms ease,
+    color 300ms ease,
+    transform 250ms ease,
+    box-shadow 250ms ease;
+}
+
+.tripwise-card:hover {
+  background: var(--tw-card-hover);
+
+  transform: translateY(-2px);
+}
+
+/* ============================================================
+   TRIPWISE CARD TEXT
+============================================================ */
+
+.tripwise-card-title {
+  color: var(--tw-heading);
+
+  font-family:
+    "Playfair Display",
+    Georgia,
+    serif;
+}
+
+.tripwise-card-description {
+  color: var(--tw-body);
+}
+
+.tripwise-card-link {
+  color: var(--tw-link);
+
+  transition:
+    color 200ms ease;
+}
+
+.tripwise-card-link:hover {
+  color: var(--tw-link-hover);
+}
+
+/* ============================================================
+   TRIPWISE ICON
+============================================================ */
+
+.tripwise-icon {
+  background: var(--tw-icon-bg);
+
+  transition:
+    background-color 300ms ease;
+}
+
+/* ============================================================
+   TRIPWISE DECORATION
+============================================================ */
+
+.tripwise-decoration {
+  background: var(--tw-decoration);
+}
+
+/* ============================================================
    SCROLLBAR
-   ========================================================= */
+============================================================ */
 
-* {
-  scrollbar-width: thin;
-  scrollbar-color:
-    rgba(124, 58, 237, 0.30)
-    transparent;
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
 }
 
-*::-webkit-scrollbar {
-  width: 7px;
-  height: 7px;
-}
-
-*::-webkit-scrollbar-track {
+::-webkit-scrollbar-track {
   background: transparent;
 }
 
-*::-webkit-scrollbar-thumb {
-  background: rgba(124, 58, 237, 0.28);
+::-webkit-scrollbar-thumb {
+  background: #aaa3ae;
+
   border-radius: 999px;
 }
 
-*::-webkit-scrollbar-thumb:hover {
-  background: rgba(124, 58, 237, 0.45);
+html[data-theme="dark"] ::-webkit-scrollbar-thumb {
+  background: #4b5550;
 }
 
-
-/* =========================================================
+/* ============================================================
    SELECTION
-   ========================================================= */
+============================================================ */
 
 ::selection {
-  background: rgba(124, 58, 237, 0.18);
-  color: var(--bw-text-strong);
+  background: rgba(194, 138, 34, 0.22);
 }
 
-
-/* =========================================================
-   SMOOTH TRANSITIONS
-   ========================================================= */
-
-body,
-aside,
-header,
-main,
-button,
-input,
-select,
-textarea,
-[class*="rounded-"],
-[class*="border-"] {
-  transition:
-    background-color 220ms ease,
-    color 180ms ease,
-    border-color 180ms ease,
-    box-shadow 180ms ease;
+.tripwise-root ::selection {
+  background: rgba(82, 125, 113, 0.25);
 }
 
-
-/* =========================================================
-   MAIN APP BACKGROUNDS
-   ========================================================= */
-
-html[data-theme="light"]
-[class~="bg-[#0b0d0f]"],
-html[data-theme="light"]
-[class~="bg-[#0f1113]"],
-html[data-theme="light"]
-[class~="bg-[#0e1012]"] {
-  background-color: var(--bw-bg) !important;
-}
-
-html[data-theme="dark"]
-[class~="bg-[#0b0d0f]"],
-html[data-theme="dark"]
-[class~="bg-[#0f1113]"],
-html[data-theme="dark"]
-[class~="bg-[#0e1012]"] {
-  background-color: var(--bw-bg) !important;
-}
-
-
-/* =========================================================
-   CARDS
-   ========================================================= */
-
-html[data-theme="light"]
-[class~="bg-[#111417]"],
-html[data-theme="light"]
-[class~="bg-[#131619]"],
-html[data-theme="light"]
-[class~="bg-[#171a1d]"],
-html[data-theme="light"]
-[class~="bg-[#171a1e]"],
-html[data-theme="light"]
-[class~="bg-[#181b1f]"],
-html[data-theme="light"]
-[class~="bg-[#0d0f11]"] {
-  background-color: var(--bw-surface) !important;
-}
-
-html[data-theme="dark"]
-[class~="bg-[#111417]"],
-html[data-theme="dark"]
-[class~="bg-[#131619]"],
-html[data-theme="dark"]
-[class~="bg-[#171a1d]"],
-html[data-theme="dark"]
-[class~="bg-[#171a1e]"],
-html[data-theme="dark"]
-[class~="bg-[#181b1f]"],
-html[data-theme="dark"]
-[class~="bg-[#0d0f11]"] {
-  background-color: var(--bw-surface) !important;
-}
-
-
-/* =========================================================
-   TRANSPARENT WHITE SURFACES
-   ========================================================= */
-
-html[data-theme="light"]
-[class*="bg-white/[0.02]"] {
-  background-color:
-    rgba(80, 64, 48, 0.025) !important;
-}
-
-html[data-theme="light"]
-[class*="bg-white/[0.025]"] {
-  background-color:
-    rgba(80, 64, 48, 0.03) !important;
-}
-
-html[data-theme="light"]
-[class*="bg-white/[0.03]"] {
-  background-color:
-    rgba(80, 64, 48, 0.035) !important;
-}
-
-html[data-theme="light"]
-[class*="bg-white/[0.04]"] {
-  background-color:
-    rgba(80, 64, 48, 0.045) !important;
-}
-
-html[data-theme="light"]
-[class*="bg-white/[0.05]"] {
-  background-color:
-    rgba(80, 64, 48, 0.055) !important;
-}
-
-
-/* DARK */
-
-html[data-theme="dark"]
-[class*="bg-white/[0.02]"] {
-  background-color:
-    rgba(255, 244, 230, 0.025) !important;
-}
-
-html[data-theme="dark"]
-[class*="bg-white/[0.025]"] {
-  background-color:
-    rgba(255, 244, 230, 0.03) !important;
-}
-
-html[data-theme="dark"]
-[class*="bg-white/[0.03]"] {
-  background-color:
-    rgba(255, 244, 230, 0.035) !important;
-}
-
-html[data-theme="dark"]
-[class*="bg-white/[0.04]"] {
-  background-color:
-    rgba(255, 244, 230, 0.045) !important;
-}
-
-html[data-theme="dark"]
-[class*="bg-white/[0.05]"] {
-  background-color:
-    rgba(255, 244, 230, 0.055) !important;
-}
-
-
-/* =========================================================
-   BORDERS
-   ========================================================= */
-
-html[data-theme="light"]
-[class*="border-white"] {
-  border-color: var(--bw-border) !important;
-}
-
-html[data-theme="dark"]
-[class*="border-white"] {
-  border-color: var(--bw-border) !important;
-}
-
-html[data-theme="light"]
-[class*="divide-white"] > * + * {
-  border-color: var(--bw-border-soft) !important;
-}
-
-html[data-theme="dark"]
-[class*="divide-white"] > * + * {
-  border-color: var(--bw-border-soft) !important;
-}
-
-
-/* =========================================================
-   TEXT — LIGHT
-   ========================================================= */
-
-html[data-theme="light"] .text-zinc-100 {
-  color: #292521 !important;
-}
-
-html[data-theme="light"] .text-zinc-200 {
-  color: #35302b !important;
-}
-
-html[data-theme="light"] .text-zinc-300 {
-  color: #4b443d !important;
-}
-
-html[data-theme="light"] .text-zinc-400 {
-  color: #655d54 !important;
-}
-
-html[data-theme="light"] .text-zinc-500 {
-  color: #766d64 !important;
-}
-
-html[data-theme="light"] .text-zinc-600 {
-  color: #8b8177 !important;
-}
-
-html[data-theme="light"] .text-zinc-700 {
-  color: #9b9186 !important;
-}
-
-
-/* =========================================================
-   TEXT — DARK
-   ========================================================= */
-
-html[data-theme="dark"] .text-zinc-100 {
-  color: #f7f1e9 !important;
-}
-
-html[data-theme="dark"] .text-zinc-200 {
-  color: #eee7de !important;
-}
-
-html[data-theme="dark"] .text-zinc-300 {
-  color: #d2c8bd !important;
-}
-
-html[data-theme="dark"] .text-zinc-400 {
-  color: #b0a59a !important;
-}
-
-html[data-theme="dark"] .text-zinc-500 {
-  color: #968b80 !important;
-}
-
-html[data-theme="dark"] .text-zinc-600 {
-  color: #81766c !important;
-}
-
-html[data-theme="dark"] .text-zinc-700 {
-  color: #70665d !important;
-}
-
-
-/* =========================================================
-   SIDEBAR
-   ========================================================= */
-
-html[data-theme="light"] aside {
-  background:
-    linear-gradient(
-      180deg,
-      #fffdf9 0%,
-      #faf6f0 100%
-    ) !important;
-
-  color: var(--bw-text) !important;
-}
-
-html[data-theme="dark"] aside {
-  background:
-    linear-gradient(
-      180deg,
-      #211e1b 0%,
-      #1c1917 100%
-    ) !important;
-
-  color: var(--bw-text) !important;
-}
-
-
-/* =========================================================
-   HEADER
-   ========================================================= */
-
-html[data-theme="light"] header {
-  background:
-    rgba(255, 253, 249, 0.94) !important;
-
-  color: var(--bw-text) !important;
-
-  border-color: var(--bw-border) !important;
-}
-
-html[data-theme="dark"] header {
-  background:
-    rgba(29, 27, 25, 0.96) !important;
-
-  color: var(--bw-text) !important;
-
-  border-color: var(--bw-border) !important;
-}
-
-
-/* =========================================================
-   MAIN
-   ========================================================= */
-
-html[data-theme="light"] main {
-  background: var(--bw-bg) !important;
-  color: var(--bw-text) !important;
-}
-
-html[data-theme="dark"] main {
-  background: var(--bw-bg) !important;
-  color: var(--bw-text) !important;
-}
-
-
-/* =========================================================
-   INPUTS
-   ========================================================= */
-
-html[data-theme="light"] input,
-html[data-theme="light"] select,
-html[data-theme="light"] textarea {
-  background-color: var(--bw-surface-soft) !important;
-  color: var(--bw-text) !important;
-  border-color: var(--bw-border) !important;
-}
-
-html[data-theme="dark"] input,
-html[data-theme="dark"] select,
-html[data-theme="dark"] textarea {
-  background-color: var(--bw-surface-soft) !important;
-  color: var(--bw-text) !important;
-  border-color: var(--bw-border) !important;
-}
-
-
-/* =========================================================
-   FOCUS
-   ========================================================= */
-
-input:focus,
-select:focus,
-textarea:focus {
-  border-color:
-    rgba(124, 58, 237, 0.42) !important;
-
-  box-shadow:
-    0 0 0 3px
-    rgba(124, 58, 237, 0.07) !important;
-}
-
-
-/* =========================================================
-   VIOLET
-   ========================================================= */
-
-html[data-theme="light"] .text-violet-300,
-html[data-theme="light"] .text-violet-400 {
-  color: #7c3aed !important;
-}
-
-html[data-theme="dark"] .text-violet-300,
-html[data-theme="dark"] .text-violet-400 {
-  color: #a78bfa !important;
-}
-
-.bg-violet-500 {
-  background-color: #7c3aed !important;
-}
-
-
-/* =========================================================
-   POSITIVE
-   ========================================================= */
-
-html[data-theme="light"] .text-emerald-300,
-html[data-theme="light"] .text-emerald-400 {
-  color: #059669 !important;
-}
-
-html[data-theme="dark"] .text-emerald-300,
-html[data-theme="dark"] .text-emerald-400 {
-  color: #34d399 !important;
-}
-
-
-/* =========================================================
-   NEGATIVE
-   ========================================================= */
-
-html[data-theme="light"] .text-red-300,
-html[data-theme="light"] .text-red-400 {
-  color: #dc2626 !important;
-}
-
-html[data-theme="dark"] .text-red-300,
-html[data-theme="dark"] .text-red-400 {
-  color: #f87171 !important;
-}
-
-
-/* =========================================================
-   SIDEBAR NAV
-   ========================================================= */
-
-html[data-theme="light"] aside a {
-  color: #766d64 !important;
-}
-
-html[data-theme="light"] aside a:hover {
-  color: #292521 !important;
-
-  background:
-    rgba(124, 58, 237, 0.055) !important;
-}
-
-html[data-theme="dark"] aside a {
-  color: #a79d93 !important;
-}
-
-html[data-theme="dark"] aside a:hover {
-  color: #f4eee7 !important;
-
-  background:
-    rgba(255, 244, 230, 0.045) !important;
-}
-
-
-/* =========================================================
-   ACTIVE NAV
-   ========================================================= */
-
-html[data-theme="light"]
-aside a[aria-current="page"] {
-  background:
-    linear-gradient(
-      135deg,
-      #f0e7ff,
-      #eee5fb
-    ) !important;
-
-  color: #6d28d9 !important;
-}
-
-html[data-theme="dark"]
-aside a[aria-current="page"] {
-  background:
-    rgba(167, 139, 250, 0.12) !important;
-
-  color: #c4b5fd !important;
-}
-
-
-/* =========================================================
-   BUTTON HOVER
-   ========================================================= */
-
-html[data-theme="light"]
-[class*="hover:bg-white"]:hover {
-  background:
-    rgba(80, 64, 48, 0.045) !important;
-}
-
-html[data-theme="dark"]
-[class*="hover:bg-white"]:hover {
-  background:
-    rgba(255, 244, 230, 0.045) !important;
-}
-
-
-/* =========================================================
-   RECHARTS TOOLTIP
-   ========================================================= */
-
-html[data-theme="light"]
-.recharts-default-tooltip {
-  background-color: #fffdf9 !important;
-
-  border:
-    1px solid
-    rgba(63, 52, 42, 0.10) !important;
-
-  border-radius: 12px !important;
-
-  color: #292521 !important;
-
-  box-shadow:
-    0 14px 40px
-    rgba(61, 47, 32, 0.12) !important;
-}
-
-html[data-theme="dark"]
-.recharts-default-tooltip {
-  background-color: #2b2723 !important;
-
-  border:
-    1px solid
-    rgba(255, 244, 230, 0.10) !important;
-
-  border-radius: 12px !important;
-
-  color: #f4eee7 !important;
-
-  box-shadow:
-    0 14px 40px
-    rgba(0, 0, 0, 0.25) !important;
-}
-
-
-/* =========================================================
+/* ============================================================
    MOBILE
-   ========================================================= */
+============================================================ */
 
-@media (max-width: 640px) {
+@media (max-width: 768px) {
   body {
-    font-size: 14px;
+    overflow-x: hidden;
   }
+}
+/* ============================================================
+   LOGIN PAGE — FULL VIEWPORT
+============================================================ */
+
+html:has(.budgetwise-login-page),
+body:has(.budgetwise-login-page),
+#root:has(.budgetwise-login-page) {
+  height: 100%;
+  min-height: 100%;
+  margin: 0;
+  background: #151716;
+}
+
+body:has(.budgetwise-login-page) {
+  overflow: hidden;
+}
+
+.budgetwise-login-page {
+  width: 100%;
+  height: 100vh;
+  min-height: 100vh;
+  overflow: hidden;
 }

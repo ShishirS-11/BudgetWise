@@ -275,7 +275,7 @@ function ExpenseForm({
   return (
     <form
       onSubmit={handleSubmit}
-      className="rounded-2xl border border-white/5 bg-[#111417] p-6"
+      className="rounded-2xl border border-[var(--bw-border)] bg-[var(--bw-surface)] p-6"
     >
 
       {/* ================================= */}
@@ -288,7 +288,7 @@ function ExpenseForm({
           Add transaction
         </p>
 
-        <p className="mt-1 text-sm text-zinc-500">
+        <p className="mt-1 text-sm text-[var(--bw-body)]">
           Record money you spent or
           money you received.
         </p>
@@ -301,7 +301,7 @@ function ExpenseForm({
 
       <div className="mt-6">
 
-        <p className="mb-3 text-sm text-zinc-400">
+        <p className="mb-3 text-sm text-[var(--bw-text)]">
           Transaction type
         </p>
 
@@ -317,8 +317,8 @@ function ExpenseForm({
             }
             className={`rounded-xl border px-4 py-3 text-sm font-medium transition ${
               !isCredit
-                ? 'border-violet-500/40 bg-violet-500/10 text-violet-300'
-                : 'border-white/5 bg-[#0d0f11] text-zinc-500 hover:border-white/10 hover:text-zinc-300'
+                ? 'border-amber-500/40 bg-amber-500/10 text-amber-300'
+                : 'border-[var(--bw-border)] bg-[var(--bw-surface-soft)] text-[var(--bw-body)] hover:border-[var(--bw-border)] hover:text-[var(--bw-text)]'
             } ${
               disabled
                 ? 'cursor-not-allowed opacity-50'
@@ -339,7 +339,7 @@ function ExpenseForm({
             className={`rounded-xl border px-4 py-3 text-sm font-medium transition ${
               isCredit
                 ? 'border-emerald-500/40 bg-emerald-500/10 text-emerald-300'
-                : 'border-white/5 bg-[#0d0f11] text-zinc-500 hover:border-white/10 hover:text-zinc-300'
+                : 'border-[var(--bw-border)] bg-[var(--bw-surface-soft)] text-[var(--bw-body)] hover:border-[var(--bw-border)] hover:text-[var(--bw-text)]'
             } ${
               disabled
                 ? 'cursor-not-allowed opacity-50'
@@ -395,16 +395,16 @@ function ExpenseForm({
 
           <label
             htmlFor="amount"
-            className="mb-2 block text-sm text-zinc-400"
+            className="mb-2 block text-sm text-[var(--bw-text)]"
           >
             Amount
           </label>
 
           <div
-            className={`flex items-center rounded-xl border bg-[#0d0f11] px-4 transition ${
+            className={`flex items-center rounded-xl border bg-[var(--bw-surface-soft)] px-4 transition ${
               isCredit
                 ? 'border-emerald-500/20 focus-within:border-emerald-500/50'
-                : 'border-white/10 focus-within:border-violet-500/50'
+                : 'border-[var(--bw-border)] focus-within:border-amber-500/50'
             }`}
           >
 
@@ -412,7 +412,7 @@ function ExpenseForm({
               className={
                 isCredit
                   ? 'text-emerald-400'
-                  : 'text-zinc-500'
+                  : 'text-[var(--bw-body)]'
               }
             >
               {currencyInfo.symbol}
@@ -431,7 +431,7 @@ function ExpenseForm({
                 )
               }
               placeholder="0"
-              className="w-full bg-transparent px-3 py-3 text-sm text-zinc-100 outline-none placeholder:text-zinc-700 disabled:cursor-not-allowed disabled:opacity-50"
+              className="w-full bg-transparent px-3 py-3 text-sm text-[var(--bw-heading)] outline-none placeholder:text-[var(--bw-muted)] disabled:cursor-not-allowed disabled:opacity-50"
             />
 
           </div>
@@ -440,9 +440,9 @@ function ExpenseForm({
 
           <div className="mt-2 flex items-center justify-between">
 
-            <p className="text-[11px] text-zinc-600">
+            <p className="text-[11px] text-[var(--bw-muted)]">
               Enter amount in{' '}
-              <span className="text-zinc-500">
+              <span className="text-[var(--bw-body)]">
                 {currencyInfo.code}
               </span>
             </p>
@@ -450,7 +450,7 @@ function ExpenseForm({
             {ratesLoading &&
               currency !==
                 'INR' && (
-                <p className="text-[11px] text-zinc-600">
+                <p className="text-[11px] text-[var(--bw-muted)]">
                   Updating rate...
                 </p>
               )}
@@ -464,15 +464,15 @@ function ExpenseForm({
               0 &&
             convertedAmount >
               0 && (
-              <div className="mt-3 rounded-xl border border-white/5 bg-white/[0.02] px-3 py-2.5">
+              <div className="mt-3 rounded-xl border border-[var(--bw-border)] bg-[var(--bw-surface-soft)] px-3 py-2.5">
 
                 <div className="flex items-center justify-between">
 
-                  <span className="text-xs text-zinc-600">
+                  <span className="text-xs text-[var(--bw-muted)]">
                     Stored value
                   </span>
 
-                  <span className="text-xs font-medium text-zinc-400">
+                  <span className="text-xs font-medium text-[var(--bw-text)]">
                     ₹
                     {convertedAmount.toLocaleString(
                       'en-IN',
@@ -498,7 +498,7 @@ function ExpenseForm({
 
           <label
             htmlFor="category"
-            className="mb-2 block text-sm text-zinc-400"
+            className="mb-2 block text-sm text-[var(--bw-text)]"
           >
             Category
           </label>
@@ -512,7 +512,7 @@ function ExpenseForm({
                 event.target.value,
               )
             }
-            className="w-full rounded-xl border border-white/10 bg-[#0d0f11] px-4 py-3 text-sm text-zinc-200 outline-none focus:border-violet-500/50 disabled:cursor-not-allowed disabled:opacity-50"
+            className="w-full color-scheme-auto rounded-xl border border-[var(--bw-border)] bg-[var(--bw-surface-soft)] px-4 py-3 text-sm text-[var(--bw-heading)] outline-none focus:border-amber-500/50 disabled:cursor-not-allowed disabled:opacity-50"
           >
 
             {categories.map(
@@ -538,7 +538,7 @@ function ExpenseForm({
 
           <label
             htmlFor="description"
-            className="mb-2 block text-sm text-zinc-400"
+            className="mb-2 block text-sm text-[var(--bw-text)]"
           >
             Description
           </label>
@@ -558,7 +558,7 @@ function ExpenseForm({
                 ? 'e.g. Monthly salary'
                 : 'e.g. Lunch with friends'
             }
-            className="w-full rounded-xl border border-white/10 bg-[#0d0f11] px-4 py-3 text-sm text-zinc-200 outline-none placeholder:text-zinc-700 focus:border-violet-500/50 disabled:cursor-not-allowed disabled:opacity-50"
+            className="w-full color-scheme-auto rounded-xl border border-[var(--bw-border)] bg-[var(--bw-surface-soft)] px-4 py-3 text-sm text-[var(--bw-heading)] outline-none placeholder:text-[var(--bw-muted)] focus:border-amber-500/50 disabled:cursor-not-allowed disabled:opacity-50"
           />
 
         </div>
@@ -571,7 +571,7 @@ function ExpenseForm({
 
           <label
             htmlFor="date"
-            className="mb-2 block text-sm text-zinc-400"
+            className="mb-2 block text-sm text-[var(--bw-text)]"
           >
             Date
           </label>
@@ -586,7 +586,7 @@ function ExpenseForm({
                 event.target.value,
               )
             }
-            className="w-full rounded-xl border border-white/10 bg-[#0d0f11] px-4 py-3 text-sm text-zinc-200 outline-none focus:border-violet-500/50 disabled:cursor-not-allowed disabled:opacity-50"
+            className="w-full color-scheme-auto rounded-xl border border-[var(--bw-border)] bg-[var(--bw-surface-soft)] px-4 py-3 text-sm text-[var(--bw-heading)] outline-none focus:border-amber-500/50 disabled:cursor-not-allowed disabled:opacity-50"
           />
 
         </div>
@@ -607,7 +607,7 @@ function ExpenseForm({
         className={`mt-6 rounded-xl px-5 py-3 text-sm font-medium text-white transition disabled:cursor-not-allowed disabled:opacity-50 ${
           isCredit
             ? 'bg-emerald-500 hover:bg-emerald-400'
-            : 'bg-violet-500 hover:bg-violet-400'
+            : 'bg-amber-500 hover:bg-amber-400'
         }`}
       >
         {disabled

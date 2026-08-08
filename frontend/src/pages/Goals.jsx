@@ -249,7 +249,7 @@ function Goals() {
   }
 
   return (
-    <div className="mx-auto max-w-7xl">
+    <div className="budgetwise-page mx-auto max-w-7xl">
 
       {/* ================================= */}
       {/* HEADER */}
@@ -257,7 +257,7 @@ function Goals() {
 
       <section>
 
-        <p className="text-sm text-zinc-500">
+        <p className="text-sm text-[var(--bw-body)]">
           Future purchases
         </p>
 
@@ -265,7 +265,7 @@ function Goals() {
           Goals
         </h1>
 
-        <p className="mt-2 text-sm text-zinc-500">
+        <p className="mt-2 text-sm text-[var(--bw-body)]">
           Save at your own pace and see
           when you can reach your goals.
         </p>
@@ -326,7 +326,7 @@ function Goals() {
             Your goals
           </h2>
 
-          <p className="mt-1 text-sm text-zinc-500">
+          <p className="mt-1 text-sm text-[var(--bw-body)]">
             Your progress is based on your
             actual contributions.
           </p>
@@ -334,21 +334,21 @@ function Goals() {
         </div>
 
         {loading ? (
-          <div className="rounded-2xl border border-white/5 bg-[#111417] px-6 py-12 text-center">
+          <div className="rounded-2xl border border-[var(--bw-border)] bg-[var(--bw-surface)] px-6 py-12 text-center">
 
-            <p className="text-sm text-zinc-500">
+            <p className="text-sm text-[var(--bw-body)]">
               Loading your goals...
             </p>
 
           </div>
         ) : goals.length === 0 ? (
-          <div className="rounded-2xl border border-white/5 bg-[#111417] px-6 py-12 text-center">
+          <div className="rounded-2xl border border-[var(--bw-border)] bg-[var(--bw-surface)] px-6 py-12 text-center">
 
-            <p className="text-sm text-zinc-400">
+            <p className="text-sm text-[var(--bw-text)]">
               No savings goals yet.
             </p>
 
-            <p className="mt-1 text-xs text-zinc-600">
+            <p className="mt-1 text-xs text-[var(--bw-muted)]">
               Create your first goal above.
             </p>
 
@@ -470,7 +470,7 @@ function GoalCard({
     )
 
   return (
-    <div className="rounded-2xl border border-white/5 bg-[#111417] p-6">
+    <div className="rounded-2xl border border-[var(--bw-border)] bg-[var(--bw-surface)] p-6">
 
       {/* ================================= */}
       {/* HEADER */}
@@ -480,11 +480,11 @@ function GoalCard({
 
         <div className="min-w-0">
 
-          <h3 className="truncate text-lg font-medium text-zinc-100">
+          <h3 className="truncate text-lg font-medium text-[var(--bw-heading)]">
             {goal.name}
           </h3>
 
-          <p className="mt-1 text-sm text-zinc-600">
+          <p className="mt-1 text-sm text-[var(--bw-muted)]">
             Target{' '}
             {formatCurrency(
               goal.targetAmount,
@@ -495,7 +495,7 @@ function GoalCard({
 
         <div className="flex shrink-0 items-center gap-3">
 
-          <p className="text-sm font-medium text-violet-300">
+          <p className="text-sm font-medium text-[var(--bw-primary)]">
             {progress.toFixed(0)}%
           </p>
 
@@ -506,7 +506,7 @@ function GoalCard({
                 goal.id,
               )
             }
-            className="rounded-lg border border-white/5 px-3 py-1.5 text-xs text-zinc-600 transition hover:border-red-500/20 hover:bg-red-500/5 hover:text-red-400"
+            className="rounded-lg border border-[var(--bw-border)] px-3 py-1.5 text-xs text-[var(--bw-muted)] transition hover:border-red-500/20 hover:bg-red-500/5 hover:text-red-400"
           >
             Delete
           </button>
@@ -519,13 +519,13 @@ function GoalCard({
       {/* PROGRESS */}
       {/* ================================= */}
 
-      <div className="mt-5 h-2 overflow-hidden rounded-full bg-white/5">
+      <div className="mt-5 h-2 overflow-hidden rounded-full bg-[var(--bw-surface-soft)]">
 
         <div
           className={`h-full rounded-full transition-all duration-500 ${
             remaining <= 0
               ? 'bg-emerald-500'
-              : 'bg-violet-500'
+              : 'bg-[var(--bw-primary)]'
           }`}
           style={{
             width: `${progress}%`,
@@ -573,9 +573,9 @@ function GoalCard({
       {/* FORECAST */}
       {/* ================================= */}
 
-      <div className="mt-6 rounded-xl border border-violet-500/10 bg-violet-500/[0.03] p-5">
+      <div className="mt-6 rounded-xl border border-[color:var(--bw-border)] bg-[var(--bw-primary-soft)] p-5">
 
-        <p className="text-sm text-zinc-500">
+        <p className="text-sm text-[var(--bw-body)]">
           Goal forecast
         </p>
 
@@ -586,7 +586,7 @@ function GoalCard({
               Goal completed
             </p>
 
-            <p className="mt-1 text-xs text-zinc-600">
+            <p className="mt-1 text-xs text-[var(--bw-muted)]">
               You've reached your target
               amount.
             </p>
@@ -596,12 +596,12 @@ function GoalCard({
           0 ? (
           <div>
 
-            <p className="mt-2 text-xl font-semibold text-zinc-300">
+            <p className="mt-2 text-xl font-semibold text-[var(--bw-text)]">
               Start saving to see your
               forecast
             </p>
 
-            <p className="mt-1 text-xs text-zinc-600">
+            <p className="mt-1 text-xs text-[var(--bw-muted)]">
               Add a few contributions and
               BudgetWise will estimate when
               you'll reach this goal.
@@ -613,14 +613,14 @@ function GoalCard({
 
             {estimatedCompletionDate && (
               <>
-                <p className="mt-2 text-xl font-semibold text-violet-300">
+                <p className="mt-2 text-xl font-semibold text-[var(--bw-primary)]">
                   Around{' '}
                   {formatDateObject(
                     estimatedCompletionDate,
                   )}
                 </p>
 
-                <p className="mt-1 text-xs text-zinc-600">
+                <p className="mt-1 text-xs text-[var(--bw-muted)]">
                   Based on your average
                   monthly saving of{' '}
                   {formatCurrency(
@@ -638,9 +638,9 @@ function GoalCard({
             {goal.targetDate &&
               requiredMonthlySaving !==
                 null && (
-                <div className="mt-5 border-t border-white/5 pt-5">
+                <div className="mt-5 border-t border-[var(--bw-border)] pt-5">
 
-                  <p className="text-sm text-zinc-500">
+                  <p className="text-sm text-[var(--bw-body)]">
                     Target-date requirement
                   </p>
 
@@ -650,7 +650,7 @@ function GoalCard({
                     </p>
                   ) : (
                     <>
-                      <p className="mt-2 text-lg font-semibold text-zinc-200">
+                      <p className="mt-2 text-lg font-semibold text-[var(--bw-heading)]">
                         {formatCurrency(
                           Math.ceil(
                             requiredMonthlySaving,
@@ -659,7 +659,7 @@ function GoalCard({
                         /month
                       </p>
 
-                      <p className="mt-1 text-xs text-zinc-600">
+                      <p className="mt-1 text-xs text-[var(--bw-muted)]">
                         Required to reach your
                         target by{' '}
                         {formatDate(
@@ -681,7 +681,7 @@ function GoalCard({
                         track.
                       </p>
 
-                      <p className="mt-1 text-xs text-zinc-600">
+                      <p className="mt-1 text-xs text-[var(--bw-muted)]">
                         Your average saving pace
                         is enough to meet the
                         target date.
@@ -701,7 +701,7 @@ function GoalCard({
                         your saving pace.
                       </p>
 
-                      <p className="mt-1 text-xs text-zinc-600">
+                      <p className="mt-1 text-xs text-[var(--bw-muted)]">
                         Your current average is
                         below the amount required
                         for the target date.
@@ -714,14 +714,14 @@ function GoalCard({
 
                   {goalStatus ===
                     'no-history' && (
-                    <div className="mt-4 rounded-lg border border-white/5 bg-white/[0.02] px-4 py-3">
+                    <div className="mt-4 rounded-lg border border-[var(--bw-border)] bg-[var(--bw-surface-soft)] px-4 py-3">
 
-                      <p className="text-sm text-zinc-400">
+                      <p className="text-sm text-[var(--bw-text)]">
                         Not enough saving history
                         yet.
                       </p>
 
-                      <p className="mt-1 text-xs text-zinc-600">
+                      <p className="mt-1 text-xs text-[var(--bw-muted)]">
                         Add contributions to see
                         whether you're on track.
                       </p>
@@ -754,13 +754,13 @@ function GoalCard({
 
       <div className="mt-6">
 
-        <p className="text-sm font-medium text-zinc-300">
+        <p className="text-sm font-medium text-[var(--bw-text)]">
           Monthly savings
         </p>
 
         {monthlyContributions.length ===
         0 ? (
-          <p className="mt-3 text-sm text-zinc-600">
+          <p className="mt-3 text-sm text-[var(--bw-muted)]">
             No contributions yet.
           </p>
         ) : (
@@ -770,10 +770,10 @@ function GoalCard({
               (item) => (
                 <div
                   key={item.month}
-                  className="flex items-center justify-between rounded-xl border border-white/5 bg-[#0d0f11] px-4 py-3"
+                  className="flex items-center justify-between rounded-xl border border-[var(--bw-border)] bg-[var(--bw-surface-soft)] px-4 py-3"
                 >
 
-                  <span className="text-sm text-zinc-500">
+                  <span className="text-sm text-[var(--bw-body)]">
                     {formatMonth(
                       item.month,
                     )}
@@ -801,17 +801,17 @@ function GoalCard({
 
       <div className="mt-6">
 
-        <p className="text-sm font-medium text-zinc-300">
+        <p className="text-sm font-medium text-[var(--bw-text)]">
           Contribution history
         </p>
 
         {goal.contributions.length ===
         0 ? (
-          <p className="mt-3 text-sm text-zinc-600">
+          <p className="mt-3 text-sm text-[var(--bw-muted)]">
             No contributions yet.
           </p>
         ) : (
-          <div className="mt-3 overflow-hidden rounded-xl border border-white/5">
+          <div className="mt-3 overflow-hidden rounded-xl border border-[var(--bw-border)]">
 
             {goal.contributions
               .slice()
@@ -822,10 +822,10 @@ function GoalCard({
                     key={
                       contribution.id
                     }
-                    className="flex items-center justify-between border-b border-white/5 px-4 py-3 last:border-b-0"
+                    className="flex items-center justify-between border-b border-[var(--bw-border)] px-4 py-3 last:border-b-0"
                   >
 
-                    <span className="text-sm text-zinc-500">
+                    <span className="text-sm text-[var(--bw-body)]">
                       {formatDate(
                         contribution.date,
                       )}
@@ -850,7 +850,7 @@ function GoalCard({
       {/* Target date */}
 
       {goal.targetDate && (
-        <p className="mt-5 text-xs text-zinc-600">
+        <p className="mt-5 text-xs text-[var(--bw-muted)]">
           Target date:{' '}
           {formatDate(
             goal.targetDate,
@@ -873,13 +873,13 @@ function GoalStat({
   value,
 }) {
   return (
-    <div className="rounded-xl border border-white/5 bg-[#0d0f11] p-4">
+    <div className="rounded-xl border border-[var(--bw-border)] bg-[var(--bw-surface-soft)] p-4">
 
-      <p className="text-xs text-zinc-600">
+      <p className="text-xs text-[var(--bw-muted)]">
         {label}
       </p>
 
-      <p className="mt-2 text-sm font-medium text-zinc-200">
+      <p className="mt-2 text-sm font-medium text-[var(--bw-heading)]">
         {value}
       </p>
 
@@ -912,7 +912,7 @@ function DeleteGoalModal({
     >
 
       <div
-        className="w-full max-w-md rounded-2xl border border-white/10 bg-[#111417] p-6 shadow-2xl shadow-black/50"
+        className="w-full max-w-md rounded-2xl border border-[var(--bw-border-strong)] bg-[var(--bw-surface)] p-6 shadow-2xl shadow-black/50"
         role="dialog"
         aria-modal="true"
         aria-labelledby="delete-goal-title"
@@ -945,17 +945,17 @@ function DeleteGoalModal({
 
         <h2
           id="delete-goal-title"
-          className="mt-5 text-lg font-semibold text-zinc-100"
+          className="mt-5 text-lg font-semibold text-[var(--bw-heading)]"
         >
           Delete this goal?
         </h2>
 
-        <p className="mt-2 text-sm leading-6 text-zinc-500">
+        <p className="mt-2 text-sm leading-6 text-[var(--bw-body)]">
 
           You're about to permanently
           delete
 
-          <span className="font-medium text-zinc-300">
+          <span className="font-medium text-[var(--bw-text)]">
             {' '}
             "{goal.name}"
           </span>
@@ -965,7 +965,7 @@ function DeleteGoalModal({
 
         </p>
 
-        <p className="mt-3 text-xs text-zinc-700">
+        <p className="mt-3 text-xs text-[var(--bw-muted)]">
           This action cannot be undone.
         </p>
 
@@ -976,7 +976,7 @@ function DeleteGoalModal({
           <button
             type="button"
             onClick={onCancel}
-            className="rounded-xl border border-white/10 px-4 py-2.5 text-sm font-medium text-zinc-400 transition hover:bg-white/[0.03] hover:text-zinc-200"
+            className="rounded-xl border border-[var(--bw-border-strong)] px-4 py-2.5 text-sm font-medium text-[var(--bw-text)] transition hover:bg-white/[0.03] hover:text-[var(--bw-heading)]"
           >
             Cancel
           </button>

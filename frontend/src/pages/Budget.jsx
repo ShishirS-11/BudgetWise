@@ -139,13 +139,13 @@ function Budget() {
     formatMonth(selectedMonth)
 
   return (
-    <div className="mx-auto max-w-7xl">
+    <div className="budgetwise-page mx-auto max-w-7xl">
 
       {/* Header */}
 
       <section>
 
-        <p className="text-sm text-zinc-500">
+        <p className="text-sm text-[var(--bw-body)]">
           Spending plan
         </p>
 
@@ -153,13 +153,13 @@ function Budget() {
           Budget
         </h1>
 
-        <p className="mt-2 text-sm text-zinc-500">
+        <p className="mt-2 text-sm text-[var(--bw-body)]">
           Create and manage your
           monthly spending plan.
         </p>
 
         {ratesLoading && (
-          <p className="mt-2 text-xs text-zinc-600">
+          <p className="mt-2 text-xs text-[var(--bw-muted)]">
             Updating exchange rates...
           </p>
         )}
@@ -198,11 +198,11 @@ function Budget() {
 
       <section className="mt-8">
 
-        <div className="rounded-2xl border border-white/5 bg-[#111417] p-6">
+        <div className="rounded-2xl border border-[var(--bw-border)] bg-[var(--bw-surface)] p-6">
 
           <label
             htmlFor="viewMonth"
-            className="block text-sm text-zinc-500"
+            className="block text-sm text-[var(--bw-body)]"
           >
             View budget for
           </label>
@@ -216,7 +216,7 @@ function Budget() {
                 event.target.value,
               )
             }
-            className="mt-3 rounded-xl border border-white/10 bg-[#0d0f11] px-4 py-3 text-sm text-zinc-200 outline-none focus:border-violet-500/50"
+            className="mt-3 rounded-xl border border-[var(--bw-border-strong)] bg-[var(--bw-surface-soft)] px-4 py-3 text-sm text-[var(--bw-heading)] outline-none focus:border-[color:var(--bw-primary)]"
           />
 
         </div>
@@ -227,9 +227,9 @@ function Budget() {
 
       <section className="mt-6 grid gap-4 md:grid-cols-3">
 
-        <div className="rounded-2xl border border-white/5 bg-[#111417] p-6">
+        <div className="rounded-2xl border border-[var(--bw-border)] bg-[var(--bw-surface)] p-6">
 
-          <p className="text-sm text-zinc-500">
+          <p className="text-sm text-[var(--bw-body)]">
             Monthly budget
           </p>
 
@@ -239,15 +239,15 @@ function Budget() {
             )}
           </p>
 
-          <p className="mt-2 text-xs text-zinc-600">
+          <p className="mt-2 text-xs text-[var(--bw-muted)]">
             {monthLabel}
           </p>
 
         </div>
 
-        <div className="rounded-2xl border border-white/5 bg-[#111417] p-6">
+        <div className="rounded-2xl border border-[var(--bw-border)] bg-[var(--bw-surface)] p-6">
 
-          <p className="text-sm text-zinc-500">
+          <p className="text-sm text-[var(--bw-body)]">
             Period
           </p>
 
@@ -255,19 +255,19 @@ function Budget() {
             {daysInMonth} days
           </p>
 
-          <p className="mt-2 text-xs text-zinc-600">
+          <p className="mt-2 text-xs text-[var(--bw-muted)]">
             Full calendar month
           </p>
 
         </div>
 
-        <div className="rounded-2xl border border-violet-500/10 bg-violet-500/[0.03] p-6">
+        <div className="rounded-2xl border border-[color:var(--bw-border)] bg-[var(--bw-primary-soft)] p-6">
 
-          <p className="text-sm text-zinc-500">
+          <p className="text-sm text-[var(--bw-body)]">
             Daily budget
           </p>
 
-          <p className="mt-3 text-2xl font-semibold text-violet-300">
+          <p className="mt-3 text-2xl font-semibold text-[var(--bw-primary)]">
             {formatCurrency(
               dailyBudget,
               {
@@ -276,7 +276,7 @@ function Budget() {
             )}
           </p>
 
-          <p className="mt-2 text-xs text-zinc-600">
+          <p className="mt-2 text-xs text-[var(--bw-muted)]">
             Based on {daysInMonth}{' '}
             days
           </p>
@@ -290,14 +290,14 @@ function Budget() {
       {!loading && !budget && (
         <section className="mt-6">
 
-          <div className="rounded-2xl border border-violet-500/10 bg-violet-500/[0.03] p-6">
+          <div className="rounded-2xl border border-[color:var(--bw-border)] bg-[var(--bw-primary-soft)] p-6">
 
-            <p className="text-sm font-medium text-violet-300">
+            <p className="text-sm font-medium text-[var(--bw-primary)]">
               No budget set for{' '}
               {monthLabel}.
             </p>
 
-            <p className="mt-2 text-sm text-zinc-500">
+            <p className="mt-2 text-sm text-[var(--bw-body)]">
               Enter an amount below to
               create one.
             </p>
@@ -312,9 +312,9 @@ function Budget() {
       {loading && (
         <section className="mt-6">
 
-          <div className="rounded-2xl border border-white/5 bg-[#111417] p-6">
+          <div className="rounded-2xl border border-[var(--bw-border)] bg-[var(--bw-surface)] p-6">
 
-            <p className="text-sm text-zinc-600">
+            <p className="text-sm text-[var(--bw-muted)]">
               Loading budget...
             </p>
 

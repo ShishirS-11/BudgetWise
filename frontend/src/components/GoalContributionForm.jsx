@@ -122,16 +122,16 @@ function GoalContributionForm({
   return (
     <form
       onSubmit={handleSubmit}
-      className="mt-6 border-t border-white/5 pt-6"
+      className="mt-6 border-t border-[var(--bw-border)] pt-6"
     >
 
       <div>
 
-        <p className="text-sm font-medium text-zinc-300">
+        <p className="text-sm font-medium text-[var(--bw-text)]">
           Add contribution
         </p>
 
-        <p className="mt-1 text-xs text-zinc-600">
+        <p className="mt-1 text-xs text-[var(--bw-muted)]">
           Add money you've put toward this
           goal.
         </p>
@@ -152,9 +152,9 @@ function GoalContributionForm({
 
         {/* Amount */}
 
-        <div className="flex items-center rounded-xl border border-white/10 bg-[#111417] px-4 focus-within:border-violet-500/50">
+        <div className="flex items-center rounded-xl border border-[var(--bw-border)] bg-[var(--bw-surface)] px-4 focus-within:border-amber-500/50">
 
-          <span className="text-zinc-500">
+          <span className="text-[var(--bw-body)]">
             {currencyInfo.symbol}
           </span>
 
@@ -171,7 +171,7 @@ function GoalContributionForm({
             }}
             placeholder="Amount"
             disabled={ratesLoading}
-            className="w-full bg-transparent px-3 py-3 text-sm text-zinc-100 outline-none placeholder:text-zinc-700 disabled:opacity-50"
+            className="w-full bg-transparent px-3 py-3 text-sm text-[var(--bw-heading)] outline-none placeholder:text-[var(--bw-muted)] disabled:opacity-50"
           />
 
         </div>
@@ -187,7 +187,7 @@ function GoalContributionForm({
             )
           }
           disabled={ratesLoading}
-          className="rounded-xl border border-white/10 bg-[#111417] px-4 py-3 text-sm text-zinc-200 outline-none focus:border-violet-500/50 disabled:opacity-50"
+          className="rounded-xl border border-[var(--bw-border)] bg-[var(--bw-surface)] px-4 py-3 text-sm text-[var(--bw-heading)] outline-none focus:border-amber-500/50 disabled:opacity-50"
         />
 
       </div>
@@ -198,7 +198,7 @@ function GoalContributionForm({
           Number(currentRate),
         ) &&
         Number(currentRate) > 0 && (
-          <p className="mt-2 text-[11px] text-zinc-600">
+          <p className="mt-2 text-[11px] text-[var(--bw-muted)]">
             This will be stored as
             approximately ₹
             {(
@@ -220,7 +220,7 @@ function GoalContributionForm({
           !amount ||
           Number(amount) <= 0
         }
-        className="mt-3 rounded-xl bg-violet-500 px-4 py-2.5 text-sm font-medium text-white transition hover:bg-violet-400 disabled:cursor-not-allowed disabled:opacity-50"
+        className="mt-3 rounded-xl bg-amber-500 px-4 py-2.5 text-sm font-medium text-white transition hover:bg-amber-400 disabled:cursor-not-allowed disabled:opacity-50"
       >
         {ratesLoading
           ? 'Updating exchange rate...'

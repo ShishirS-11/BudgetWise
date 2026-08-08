@@ -185,7 +185,7 @@ function GoalPlanner({
   return (
     <form
       onSubmit={handleSubmit}
-      className="rounded-2xl border border-white/5 bg-[#111417] p-6"
+      className="rounded-2xl border border-[var(--bw-border)] bg-[var(--bw-surface)] p-6"
     >
 
       {/* Header */}
@@ -196,7 +196,7 @@ function GoalPlanner({
           Create a goal
         </p>
 
-        <p className="mt-1 text-sm text-zinc-500">
+        <p className="mt-1 text-sm text-[var(--bw-body)]">
           Set something you want to
           save toward.
         </p>
@@ -233,7 +233,7 @@ function GoalPlanner({
 
           <label
             htmlFor="goalName"
-            className="mb-2 block text-sm text-zinc-400"
+            className="mb-2 block text-sm text-[var(--bw-text)]"
           >
             What are you saving for?
           </label>
@@ -250,7 +250,7 @@ function GoalPlanner({
             }}
             placeholder="e.g. New laptop"
             disabled={ratesLoading}
-            className="w-full rounded-xl border border-white/10 bg-[#0d0f11] px-4 py-3 text-sm text-zinc-200 outline-none placeholder:text-zinc-700 focus:border-violet-500/50 disabled:opacity-50"
+            className="w-full color-scheme-auto rounded-xl border border-[var(--bw-border)] bg-[var(--bw-surface-soft)] px-4 py-3 text-sm text-[var(--bw-heading)] outline-none placeholder:text-[var(--bw-muted)] focus:border-amber-500/50 disabled:opacity-50"
           />
 
         </div>
@@ -261,14 +261,14 @@ function GoalPlanner({
 
           <label
             htmlFor="targetAmount"
-            className="mb-2 block text-sm text-zinc-400"
+            className="mb-2 block text-sm text-[var(--bw-text)]"
           >
             Target amount
           </label>
 
-          <div className="flex items-center rounded-xl border border-white/10 bg-[#0d0f11] px-4 focus-within:border-violet-500/50">
+          <div className="flex items-center rounded-xl border border-[var(--bw-border)] bg-[var(--bw-surface-soft)] px-4 focus-within:border-amber-500/50">
 
-            <span className="text-zinc-500">
+            <span className="text-[var(--bw-body)]">
               {currencyInfo.symbol}
             </span>
 
@@ -286,7 +286,7 @@ function GoalPlanner({
               }}
               placeholder="70000"
               disabled={ratesLoading}
-              className="w-full bg-transparent px-3 py-3 text-sm text-zinc-100 outline-none placeholder:text-zinc-700 disabled:opacity-50"
+              className="w-full bg-transparent px-3 py-3 text-sm text-[var(--bw-heading)] outline-none placeholder:text-[var(--bw-muted)] disabled:opacity-50"
             />
 
           </div>
@@ -294,7 +294,7 @@ function GoalPlanner({
           {currency !== 'INR' &&
             target > 0 &&
             targetINR > 0 && (
-              <p className="mt-2 text-[11px] text-zinc-600">
+              <p className="mt-2 text-[11px] text-[var(--bw-muted)]">
                 Stored as approximately ₹
                 {targetINR.toLocaleString(
                   'en-IN',
@@ -313,14 +313,14 @@ function GoalPlanner({
 
           <label
             htmlFor="initialSavings"
-            className="mb-2 block text-sm text-zinc-400"
+            className="mb-2 block text-sm text-[var(--bw-text)]"
           >
             Already saved
           </label>
 
-          <div className="flex items-center rounded-xl border border-white/10 bg-[#0d0f11] px-4 focus-within:border-violet-500/50">
+          <div className="flex items-center rounded-xl border border-[var(--bw-border)] bg-[var(--bw-surface-soft)] px-4 focus-within:border-amber-500/50">
 
-            <span className="text-zinc-500">
+            <span className="text-[var(--bw-body)]">
               {currencyInfo.symbol}
             </span>
 
@@ -337,7 +337,7 @@ function GoalPlanner({
                 setError('')
               }}
               disabled={ratesLoading}
-              className="w-full bg-transparent px-3 py-3 text-sm text-zinc-100 outline-none disabled:opacity-50"
+              className="w-full bg-transparent px-3 py-3 text-sm text-[var(--bw-heading)] outline-none disabled:opacity-50"
             />
 
           </div>
@@ -345,7 +345,7 @@ function GoalPlanner({
           {currency !== 'INR' &&
             saved > 0 &&
             savedINR > 0 && (
-              <p className="mt-2 text-[11px] text-zinc-600">
+              <p className="mt-2 text-[11px] text-[var(--bw-muted)]">
                 Stored as approximately ₹
                 {savedINR.toLocaleString(
                   'en-IN',
@@ -364,11 +364,11 @@ function GoalPlanner({
 
           <label
             htmlFor="targetDate"
-            className="mb-2 block text-sm text-zinc-400"
+            className="mb-2 block text-sm text-[var(--bw-text)]"
           >
             Target date
 
-            <span className="ml-2 text-xs text-zinc-600">
+            <span className="ml-2 text-xs text-[var(--bw-muted)]">
               optional
             </span>
           </label>
@@ -382,7 +382,7 @@ function GoalPlanner({
                 event.target.value,
               )
             }
-            className="w-full rounded-xl border border-white/10 bg-[#0d0f11] px-4 py-3 text-sm text-zinc-200 outline-none focus:border-violet-500/50"
+            className="w-full color-scheme-auto rounded-xl border border-[var(--bw-border)] bg-[var(--bw-surface-soft)] px-4 py-3 text-sm text-[var(--bw-heading)] outline-none focus:border-amber-500/50"
           />
 
         </div>
@@ -394,7 +394,7 @@ function GoalPlanner({
         disabled={
           ratesLoading
         }
-        className="mt-6 rounded-xl bg-violet-500 px-5 py-3 text-sm font-medium text-white transition hover:bg-violet-400 disabled:cursor-not-allowed disabled:opacity-50"
+        className="mt-6 rounded-xl bg-amber-500 px-5 py-3 text-sm font-medium text-white transition hover:bg-amber-400 disabled:cursor-not-allowed disabled:opacity-50"
       >
         {ratesLoading
           ? 'Updating exchange rate...'

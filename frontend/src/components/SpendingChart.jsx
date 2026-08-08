@@ -16,7 +16,7 @@ function SpendingChart({ data = [] }) {
   } = useCurrency()
 
   return (
-    <div className="rounded-2xl border border-white/[0.06] bg-[#111417] p-6 transition-colors duration-300">
+    <div className="rounded-2xl border border-[var(--bw-border)] bg-[var(--bw-surface)] p-6 transition-colors duration-300">
 
       {/* ================================= */}
       {/* HEADER */}
@@ -25,25 +25,25 @@ function SpendingChart({ data = [] }) {
       <div className="flex items-start justify-between gap-4">
 
         <div>
-          <p className="text-[11px] font-medium uppercase tracking-[0.14em] text-violet-400">
+          <p className="text-[11px] font-medium uppercase tracking-[0.14em] text-amber-400">
             Spending activity
           </p>
 
-          <h2 className="mt-2 text-lg font-semibold tracking-[-0.02em] text-zinc-100">
+          <h2 className="mt-2 text-lg font-semibold tracking-[-0.02em] text-[var(--bw-text-strong)]">
             Spending trend
           </h2>
 
-          <p className="mt-1 text-sm text-zinc-500">
+          <p className="mt-1 text-sm text-[var(--bw-text-muted)]">
             Daily spending throughout this month.
           </p>
         </div>
 
         {data.length > 0 && (
-          <div className="hidden items-center gap-2 rounded-lg border border-white/[0.05] bg-white/[0.02] px-3 py-2 sm:flex">
+          <div className="hidden items-center gap-2 rounded-lg border border-[var(--bw-border)] bg-[var(--bw-surface-alt)] px-3 py-2 sm:flex">
 
-            <span className="h-2 w-2 rounded-full bg-violet-400" />
+            <span className="h-2 w-2 rounded-full bg-amber-400" />
 
-            <span className="text-[11px] text-zinc-500">
+            <span className="text-[11px] text-[var(--bw-text-muted)]">
               Daily spending
             </span>
 
@@ -63,7 +63,7 @@ function SpendingChart({ data = [] }) {
 
             <div className="text-center">
 
-              <div className="mx-auto flex h-10 w-10 items-center justify-center rounded-xl border border-white/[0.06] bg-white/[0.02]">
+              <div className="mx-auto flex h-10 w-10 items-center justify-center rounded-xl border border-[var(--bw-border)] bg-[var(--bw-surface-alt)]">
 
                 <svg
                   width="18"
@@ -74,7 +74,7 @@ function SpendingChart({ data = [] }) {
                   strokeWidth="1.6"
                   strokeLinecap="round"
                   strokeLinejoin="round"
-                  className="text-zinc-700"
+                  className="text-[var(--bw-text-faint)]"
                 >
                   <path d="M4 19V5" />
                   <path d="M4 19h16" />
@@ -83,11 +83,11 @@ function SpendingChart({ data = [] }) {
 
               </div>
 
-              <p className="mt-3 text-sm text-zinc-500">
+              <p className="mt-3 text-sm text-[var(--bw-text-muted)]">
                 No spending data yet.
               </p>
 
-              <p className="mt-1 text-xs text-zinc-700">
+              <p className="mt-1 text-xs text-[var(--bw-text-faint)]">
                 Your spending activity will appear here.
               </p>
 
@@ -126,19 +126,19 @@ function SpendingChart({ data = [] }) {
 
                   <stop
                     offset="0%"
-                    stopColor="#8b5cf6"
+                    stopColor="#f59e0b"
                     stopOpacity={0.24}
                   />
 
                   <stop
                     offset="55%"
-                    stopColor="#8b5cf6"
+                    stopColor="#f59e0b"
                     stopOpacity={0.08}
                   />
 
                   <stop
                     offset="100%"
-                    stopColor="#8b5cf6"
+                    stopColor="#f59e0b"
                     stopOpacity={0}
                   />
 
@@ -225,7 +225,7 @@ function SpendingChart({ data = [] }) {
                   marginBottom: '6px',
                 }}
                 itemStyle={{
-                  color: '#a78bfa',
+                  color: '#fbbf24',
                   fontSize: '12px',
                   padding: 0,
                 }}
@@ -248,14 +248,14 @@ function SpendingChart({ data = [] }) {
               <Area
                 type="monotone"
                 dataKey="amount"
-                stroke="#8b5cf6"
+                stroke="#f59e0b"
                 strokeWidth={2.2}
                 fill="url(#budgetwiseSpendingGradient)"
                 fillOpacity={1}
                 dot={false}
                 activeDot={{
                   r: 4,
-                  fill: '#a78bfa',
+                  fill: '#fbbf24',
                   stroke: '#171a1e',
                   strokeWidth: 2,
                 }}

@@ -221,7 +221,7 @@ function BudgetSetup({
   return (
     <form
       onSubmit={handleSubmit}
-      className="rounded-2xl border border-white/5 bg-[#111417] p-6"
+      className="rounded-2xl border border-[var(--bw-border)] bg-[var(--bw-surface)] p-6"
     >
 
       {/* Header */}
@@ -234,7 +234,7 @@ function BudgetSetup({
             : 'Create a budget'}
         </p>
 
-        <p className="mt-1 text-sm text-zinc-500">
+        <p className="mt-1 text-sm text-[var(--bw-body)]">
           Set how much you want to
           spend during a month.
         </p>
@@ -271,7 +271,7 @@ function BudgetSetup({
 
         <label
           htmlFor="budgetMonth"
-          className="mb-2 block text-sm text-zinc-400"
+          className="mb-2 block text-sm text-[var(--bw-text)]"
         >
           Budget month
         </label>
@@ -286,7 +286,7 @@ function BudgetSetup({
             )
           }
           disabled={saving}
-          className="w-full rounded-xl border border-white/10 bg-[#0d0f11] px-4 py-3 text-sm text-zinc-200 outline-none transition focus:border-violet-500/50 disabled:opacity-50"
+          className="w-full color-scheme-auto rounded-xl border border-[var(--bw-border)] bg-[var(--bw-surface-soft)] px-4 py-3 text-sm text-[var(--bw-heading)] outline-none transition focus:border-amber-500/50 disabled:opacity-50"
         />
 
       </div>
@@ -297,14 +297,14 @@ function BudgetSetup({
 
         <label
           htmlFor="budgetAmount"
-          className="mb-2 block text-sm text-zinc-400"
+          className="mb-2 block text-sm text-[var(--bw-text)]"
         >
           Budget amount
         </label>
 
-        <div className="flex items-center rounded-xl border border-white/10 bg-[#0d0f11] px-4 focus-within:border-violet-500/50">
+        <div className="flex items-center rounded-xl border border-[var(--bw-border)] bg-[var(--bw-surface-soft)] px-4 focus-within:border-amber-500/50">
 
-          <span className="text-zinc-500">
+          <span className="text-[var(--bw-body)]">
             {currencyInfo.symbol}
           </span>
 
@@ -322,16 +322,16 @@ function BudgetSetup({
             }}
             placeholder="Enter amount"
             disabled={saving}
-            className="w-full bg-transparent px-3 py-3 text-sm text-zinc-100 outline-none placeholder:text-zinc-700 disabled:opacity-50"
+            className="w-full bg-transparent px-3 py-3 text-sm text-[var(--bw-heading)] outline-none placeholder:text-[var(--bw-muted)] disabled:opacity-50"
           />
 
         </div>
 
         <div className="mt-2 flex items-center justify-between">
 
-          <p className="text-[11px] text-zinc-600">
+          <p className="text-[11px] text-[var(--bw-muted)]">
             Enter amount in{' '}
-            <span className="text-zinc-500">
+            <span className="text-[var(--bw-body)]">
               {currencyInfo.code}
             </span>
           </p>
@@ -339,7 +339,7 @@ function BudgetSetup({
           {ratesLoading &&
             currency !==
               'INR' && (
-            <p className="text-[11px] text-zinc-600">
+            <p className="text-[11px] text-[var(--bw-muted)]">
               Updating rate...
             </p>
           )}
@@ -351,15 +351,15 @@ function BudgetSetup({
         {currency !== 'INR' &&
           enteredAmount > 0 &&
           storedINR > 0 && (
-            <div className="mt-3 rounded-xl border border-white/5 bg-white/[0.02] px-3 py-2.5">
+            <div className="mt-3 rounded-xl border border-[var(--bw-border)] bg-[var(--bw-surface-soft)] px-3 py-2.5">
 
               <div className="flex items-center justify-between">
 
-                <span className="text-xs text-zinc-600">
+                <span className="text-xs text-[var(--bw-muted)]">
                   Stored budget
                 </span>
 
-                <span className="text-xs font-medium text-zinc-400">
+                <span className="text-xs font-medium text-[var(--bw-text)]">
                   ₹
                   {storedINR.toLocaleString(
                     'en-IN',
@@ -391,7 +391,7 @@ function BudgetSetup({
             ratesLoading
           )
         }
-        className="mt-6 rounded-xl bg-violet-500 px-5 py-3 text-sm font-medium text-white transition hover:bg-violet-400 disabled:cursor-not-allowed disabled:opacity-50"
+        className="mt-6 rounded-xl bg-amber-500 px-5 py-3 text-sm font-medium text-white transition hover:bg-amber-400 disabled:cursor-not-allowed disabled:opacity-50"
       >
         {saving
           ? 'Saving...'

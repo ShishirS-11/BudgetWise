@@ -511,9 +511,9 @@ function Insights() {
     return (
       <div className="flex min-h-[70vh] items-center justify-center">
         <div className="text-center">
-          <div className="mx-auto h-8 w-8 animate-spin rounded-full border-2 border-white/10 border-t-violet-400" />
+          <div className="mx-auto h-8 w-8 animate-spin rounded-full border-2 border-[var(--bw-border)] border-t-amber-400" />
 
-          <p className="mt-4 text-sm text-zinc-500">
+          <p className="mt-4 text-sm text-[var(--bw-text-muted)]">
             Preparing your insights...
           </p>
         </div>
@@ -555,15 +555,15 @@ function Insights() {
       {/* HEADER */}
 
       <section>
-        <p className="text-xs font-medium uppercase tracking-[0.18em] text-violet-400">
+        <p className="text-xs font-medium uppercase tracking-[0.18em] text-amber-400">
           Financial intelligence
         </p>
 
-        <h1 className="mt-3 text-3xl font-semibold tracking-tight text-zinc-100">
+        <h1 className="mt-3 text-3xl font-semibold tracking-tight text-[var(--bw-text-strong)]">
           Insights
         </h1>
 
-        <p className="mt-2 max-w-2xl text-sm leading-6 text-zinc-500">
+        <p className="mt-2 max-w-2xl text-sm leading-6 text-[var(--bw-text-muted)]">
           A clearer view of your spending,
           budget health, and financial
           direction.
@@ -634,16 +634,16 @@ function Insights() {
       {/* BUDGET HEALTH */}
 
       <section className="mt-6">
-        <div className="rounded-2xl border border-white/[0.07] bg-[#111417] p-6 shadow-sm">
+        <div className="rounded-2xl border border-[var(--bw-border)] bg-[var(--bw-surface)] p-6 shadow-sm">
 
           <div className="flex flex-col justify-between gap-5 sm:flex-row sm:items-start">
 
             <div>
-              <p className="text-xs font-medium uppercase tracking-wider text-zinc-600">
+              <p className="text-xs font-medium uppercase tracking-wider text-[var(--bw-text-faint)]">
                 Budget health
               </p>
 
-              <h2 className="mt-2 text-xl font-medium text-zinc-100">
+              <h2 className="mt-2 text-xl font-medium text-[var(--bw-text-strong)]">
                 {getBudgetHealthTitle(
                   spendingStatus,
                 )}
@@ -665,11 +665,11 @@ function Insights() {
           <div className="mt-7">
 
             <div className="flex items-center justify-between text-sm">
-              <span className="text-zinc-500">
+              <span className="text-[var(--bw-text-muted)]">
                 Monthly budget
               </span>
 
-              <span className="font-medium text-zinc-300">
+              <span className="font-medium text-[var(--bw-text-secondary)]">
                 {formatCurrency(
                   monthlyBudget,
                 )}
@@ -678,7 +678,7 @@ function Insights() {
 
             {monthlyBudget > 0 ? (
               <>
-                <div className="mt-3 h-2 overflow-hidden rounded-full bg-white/[0.06]">
+                <div className="mt-3 h-2 overflow-hidden rounded-full bg-[var(--bw-surface-alt)]">
                   <div
                     className={`h-full rounded-full transition-all ${getProgressClasses(
                       spendingStatus,
@@ -693,14 +693,14 @@ function Insights() {
                 </div>
 
                 <div className="mt-2 flex justify-between text-xs">
-                  <span className="text-zinc-600">
+                  <span className="text-[var(--bw-text-faint)]">
                     {budgetUsage.toFixed(
                       1,
                     )}
                     % used
                   </span>
 
-                  <span className="text-zinc-600">
+                  <span className="text-[var(--bw-text-faint)]">
                     {budgetUsage >=
                     100
                       ? `${formatCurrency(
@@ -721,8 +721,8 @@ function Insights() {
                 </div>
               </>
             ) : (
-              <div className="mt-4 rounded-xl border border-white/[0.06] bg-[#0d0f11] px-4 py-4">
-                <p className="text-sm leading-6 text-zinc-600">
+              <div className="mt-4 rounded-xl border border-[var(--bw-border)] bg-[var(--bw-surface-alt)] px-4 py-4">
+                <p className="text-sm leading-6 text-[var(--bw-text-faint)]">
                   Set a monthly budget to
                   start receiving budget
                   health insights.
@@ -732,8 +732,8 @@ function Insights() {
 
           </div>
 
-          <div className="mt-6 rounded-xl border border-white/[0.06] bg-[#0d0f11] px-4 py-4">
-            <p className="text-sm leading-6 text-zinc-400">
+          <div className="mt-6 rounded-xl border border-[var(--bw-border)] bg-[var(--bw-surface-alt)] px-4 py-4">
+            <p className="text-sm leading-6 text-[var(--bw-text-muted)]">
               {budgetInsight}
             </p>
           </div>
@@ -745,13 +745,13 @@ function Insights() {
 
       <section className="mt-6 grid gap-4 lg:grid-cols-2">
 
-        <div className="rounded-2xl border border-white/[0.07] bg-[#111417] p-6">
+        <div className="rounded-2xl border border-[var(--bw-border)] bg-[var(--bw-surface)] p-6">
 
-          <p className="text-xs font-medium uppercase tracking-wider text-zinc-600">
+          <p className="text-xs font-medium uppercase tracking-wider text-[var(--bw-text-faint)]">
             End-of-month forecast
           </p>
 
-          <p className="mt-3 text-3xl font-semibold tracking-tight text-violet-300">
+          <p className="mt-3 text-3xl font-semibold tracking-tight text-amber-300">
             {formatCurrency(
               Math.round(
                 projectedSpending,
@@ -759,27 +759,27 @@ function Insights() {
             )}
           </p>
 
-          <p className="mt-2 max-w-xl text-sm leading-6 text-zinc-500">
+          <p className="mt-2 max-w-xl text-sm leading-6 text-[var(--bw-text-muted)]">
             Estimated total spending if
             your current daily spending
             pace continues.
           </p>
 
-          <div className="mt-5 rounded-xl border border-violet-500/10 bg-violet-500/[0.035] px-4 py-4">
-            <p className="text-sm leading-6 text-zinc-400">
+          <div className="mt-5 rounded-xl border border-amber-500/10 bg-amber-500/[0.035] px-4 py-4">
+            <p className="text-sm leading-6 text-[var(--bw-text-muted)]">
               {projectionInsight}
             </p>
           </div>
 
         </div>
 
-        <div className="rounded-2xl border border-white/[0.07] bg-[#111417] p-6">
+        <div className="rounded-2xl border border-[var(--bw-border)] bg-[var(--bw-surface)] p-6">
 
-          <p className="text-xs font-medium uppercase tracking-wider text-zinc-600">
+          <p className="text-xs font-medium uppercase tracking-wider text-[var(--bw-text-faint)]">
             Monthly outlook
           </p>
 
-          <p className="mt-3 text-3xl font-semibold tracking-tight text-zinc-100">
+          <p className="mt-3 text-3xl font-semibold tracking-tight text-[var(--bw-text-strong)]">
             {monthlyBudget <= 0
               ? 'No budget'
               : projectedDifference >=
@@ -811,7 +811,7 @@ function Insights() {
             </p>
           )}
 
-          <p className="mt-3 text-sm leading-6 text-zinc-500">
+          <p className="mt-3 text-sm leading-6 text-[var(--bw-text-muted)]">
             Based on {daysElapsed}{' '}
             days of spending in a{' '}
             {daysInMonth}-day month.
@@ -824,14 +824,14 @@ function Insights() {
       {/* CATEGORY ANALYSIS */}
 
       <section className="mt-6">
-        <div className="rounded-2xl border border-white/[0.07] bg-[#111417] p-6">
+        <div className="rounded-2xl border border-[var(--bw-border)] bg-[var(--bw-surface)] p-6">
 
           <div>
-            <p className="text-xs font-medium uppercase tracking-wider text-zinc-600">
+            <p className="text-xs font-medium uppercase tracking-wider text-[var(--bw-text-faint)]">
               Spending by category
             </p>
 
-            <h2 className="mt-2 text-xl font-medium text-zinc-100">
+            <h2 className="mt-2 text-xl font-medium text-[var(--bw-text-strong)]">
               Where your money is going
             </h2>
           </div>
@@ -853,13 +853,13 @@ function Insights() {
                     <div className="flex items-center justify-between gap-4">
 
                       <div>
-                        <p className="text-sm font-medium text-zinc-300">
+                        <p className="text-sm font-medium text-[var(--bw-text-secondary)]">
                           {
                             category.category
                           }
                         </p>
 
-                        <p className="mt-1 text-xs text-zinc-600">
+                        <p className="mt-1 text-xs text-[var(--bw-text-faint)]">
                           {category.percentage.toFixed(
                             1,
                           )}
@@ -875,9 +875,9 @@ function Insights() {
 
                     </div>
 
-                    <div className="mt-3 h-1.5 overflow-hidden rounded-full bg-white/[0.05]">
+                    <div className="mt-3 h-1.5 overflow-hidden rounded-full bg-[var(--bw-surface-alt)]">
                       <div
-                        className="h-full rounded-full bg-violet-500 transition-all"
+                        className="h-full rounded-full bg-amber-500 transition-all"
                         style={{
                           width: `${Math.min(
                             category.percentage,
@@ -901,9 +901,9 @@ function Insights() {
 
       <section className="mt-6 grid gap-4 md:grid-cols-2">
 
-        <div className="rounded-2xl border border-white/[0.07] bg-[#111417] p-6">
+        <div className="rounded-2xl border border-[var(--bw-border)] bg-[var(--bw-surface)] p-6">
 
-          <p className="text-xs font-medium uppercase tracking-wider text-zinc-600">
+          <p className="text-xs font-medium uppercase tracking-wider text-[var(--bw-text-faint)]">
             Largest expense
           </p>
 
@@ -915,11 +915,11 @@ function Insights() {
                 )}
               </p>
 
-              <p className="mt-2 text-sm font-medium text-zinc-300">
+              <p className="mt-2 text-sm font-medium text-[var(--bw-text-secondary)]">
                 {largestExpense.name}
               </p>
 
-              <p className="mt-1 text-xs text-zinc-600">
+              <p className="mt-1 text-xs text-[var(--bw-text-faint)]">
                 {largestExpense.category ||
                   'Other'}{' '}
                 ·{' '}
@@ -929,7 +929,7 @@ function Insights() {
               </p>
             </>
           ) : (
-            <p className="mt-4 text-sm text-zinc-600">
+            <p className="mt-4 text-sm text-[var(--bw-text-faint)]">
               No expenses recorded yet.
             </p>
           )}
@@ -938,11 +938,11 @@ function Insights() {
 
         <div className="rounded-2xl border border-emerald-500/10 bg-emerald-500/[0.025] p-6">
 
-          <p className="text-xs font-medium uppercase tracking-wider text-zinc-600">
+          <p className="text-xs font-medium uppercase tracking-wider text-[var(--bw-text-faint)]">
             BudgetWise recommendation
           </p>
 
-          <p className="mt-3 text-lg font-medium leading-7 text-zinc-200">
+          <p className="mt-3 text-lg font-medium leading-7 text-[var(--bw-text-secondary)]">
             {getRecommendation(
               spendingStatus,
               topCategory,
@@ -950,7 +950,7 @@ function Insights() {
             )}
           </p>
 
-          <p className="mt-3 text-sm leading-6 text-zinc-500">
+          <p className="mt-3 text-sm leading-6 text-[var(--bw-text-muted)]">
             Based on your current month's
             spending activity.
           </p>
@@ -962,16 +962,16 @@ function Insights() {
       {/* PREVIOUS MONTH */}
 
       <section className="mt-6">
-        <div className="rounded-2xl border border-white/[0.07] bg-[#111417] p-6">
+        <div className="rounded-2xl border border-[var(--bw-border)] bg-[var(--bw-surface)] p-6">
 
           <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
 
             <div>
-              <p className="text-xs font-medium uppercase tracking-wider text-zinc-600">
+              <p className="text-xs font-medium uppercase tracking-wider text-[var(--bw-text-faint)]">
                 Compared with last month
               </p>
 
-              <h2 className="mt-2 text-xl font-medium text-zinc-100">
+              <h2 className="mt-2 text-xl font-medium text-[var(--bw-text-strong)]">
                 Spending comparison
               </h2>
             </div>
@@ -980,7 +980,7 @@ function Insights() {
 
               {spendingChange ===
               null ? (
-                <p className="text-sm text-zinc-600">
+                <p className="text-sm text-[var(--bw-text-faint)]">
                   No previous-month
                   spending data
                 </p>
@@ -994,7 +994,7 @@ function Insights() {
                         : spendingChange <
                             0
                           ? 'text-emerald-400'
-                          : 'text-zinc-300'
+                          : 'text-[var(--bw-text-secondary)]'
                     }`}
                   >
                     {spendingChange >
@@ -1007,7 +1007,7 @@ function Insights() {
                     %
                   </p>
 
-                  <p className="mt-1 text-xs text-zinc-600">
+                  <p className="mt-1 text-xs text-[var(--bw-text-faint)]">
                     {spendingChange >
                     0
                       ? 'More spent'
@@ -1053,13 +1053,13 @@ function Insights() {
       {/* KEY INSIGHTS */}
 
       <section className="mt-6 pb-10">
-        <div className="rounded-2xl border border-white/[0.07] bg-[#111417] p-6">
+        <div className="rounded-2xl border border-[var(--bw-border)] bg-[var(--bw-surface)] p-6">
 
-          <p className="text-xs font-medium uppercase tracking-wider text-zinc-600">
+          <p className="text-xs font-medium uppercase tracking-wider text-[var(--bw-text-faint)]">
             Key insights
           </p>
 
-          <h2 className="mt-2 text-xl font-medium text-zinc-100">
+          <h2 className="mt-2 text-xl font-medium text-[var(--bw-text-strong)]">
             What BudgetWise noticed
           </h2>
 
@@ -1162,14 +1162,14 @@ function InsightCard({
   const toneClasses = {
     danger: 'text-red-400',
     positive: 'text-emerald-400',
-    accent: 'text-violet-300',
-    default: 'text-zinc-100',
+    accent: 'text-amber-300',
+    default: 'text-[var(--bw-text-strong)]',
   }
 
   return (
-    <div className="rounded-2xl border border-white/[0.07] bg-[#111417] p-5 transition hover:border-white/[0.11]">
+    <div className="rounded-2xl border border-[var(--bw-border)] bg-[var(--bw-surface)] p-5 transition hover:border-[var(--bw-border)]">
 
-      <p className="text-xs font-medium uppercase tracking-wider text-zinc-600">
+      <p className="text-xs font-medium uppercase tracking-wider text-[var(--bw-text-faint)]">
         {label}
       </p>
 
@@ -1179,7 +1179,7 @@ function InsightCard({
         {value}
       </p>
 
-      <p className="mt-2 text-xs text-zinc-600">
+      <p className="mt-2 text-xs text-[var(--bw-text-faint)]">
         {description}
       </p>
 
@@ -1200,9 +1200,9 @@ function ComparisonBox({
   formatCurrency,
 }) {
   return (
-    <div className="rounded-xl border border-white/[0.06] bg-[#0d0f11] p-4">
+    <div className="rounded-xl border border-[var(--bw-border)] bg-[var(--bw-surface-alt)] p-4">
 
-      <p className="text-xs uppercase tracking-wider text-zinc-600">
+      <p className="text-xs uppercase tracking-wider text-[var(--bw-text-faint)]">
         {label}
       </p>
 
@@ -1233,13 +1233,13 @@ function InsightRow({
   children,
 }) {
   return (
-    <div className="rounded-xl border border-white/[0.06] bg-[#0d0f11] px-4 py-4">
+    <div className="rounded-xl border border-[var(--bw-border)] bg-[var(--bw-surface-alt)] px-4 py-4">
 
       <div className="flex gap-3">
 
-        <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-violet-400" />
+        <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-amber-400" />
 
-        <p className="text-sm leading-6 text-zinc-400">
+        <p className="text-sm leading-6 text-[var(--bw-text-muted)]">
           {children}
         </p>
 
@@ -1257,9 +1257,9 @@ function InsightRow({
 
 function EmptyState() {
   return (
-    <div className="mt-6 rounded-xl border border-white/[0.06] bg-[#0d0f11] px-4 py-10 text-center">
+    <div className="mt-6 rounded-xl border border-[var(--bw-border)] bg-[var(--bw-surface-alt)] px-4 py-10 text-center">
 
-      <p className="text-sm text-zinc-600">
+      <p className="text-sm text-[var(--bw-text-faint)]">
         Add some expenses to start seeing
         category insights.
       </p>
@@ -1321,7 +1321,7 @@ function getStatusClasses(status) {
     return 'bg-emerald-500/10 text-emerald-400'
   }
 
-  return 'bg-zinc-500/10 text-zinc-500'
+  return 'bg-zinc-500/10 text-[var(--bw-text-muted)]'
 }
 
 function getProgressClasses(status) {
@@ -1333,7 +1333,7 @@ function getProgressClasses(status) {
     return 'bg-amber-400'
   }
 
-  return 'bg-violet-500'
+  return 'bg-amber-500'
 }
 
 /*

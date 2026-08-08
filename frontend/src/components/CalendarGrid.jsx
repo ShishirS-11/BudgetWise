@@ -309,11 +309,11 @@ function CalendarGrid({
 
       {/* Calendar */}
 
-      <div className="overflow-hidden rounded-2xl border border-white/5 bg-[#111417]">
+      <div className="overflow-hidden rounded-2xl border border-[var(--bw-border)] bg-[var(--bw-surface)]">
 
         {/* Header */}
 
-        <div className="flex items-center justify-between border-b border-white/5 px-5 py-4">
+        <div className="flex items-center justify-between border-b border-[var(--bw-border)] px-5 py-4">
 
           <div>
 
@@ -321,7 +321,7 @@ function CalendarGrid({
               {monthName}
             </p>
 
-            <p className="mt-1 text-xs text-zinc-600">
+            <p className="mt-1 text-xs text-[var(--bw-muted)]">
               Fixed daily budget:{' '}
               {formatCurrency(
                 dailyBudget,
@@ -340,7 +340,7 @@ function CalendarGrid({
               onClick={
                 previousMonth
               }
-              className="flex h-8 w-8 items-center justify-center rounded-lg border border-white/5 text-zinc-500 transition hover:border-white/10 hover:text-zinc-200"
+              className="flex h-8 w-8 items-center justify-center rounded-lg border border-[var(--bw-border)] text-[var(--bw-body)] transition hover:border-[var(--bw-border)] hover:text-[var(--bw-heading)]"
               aria-label="Previous month"
             >
               ←
@@ -351,7 +351,7 @@ function CalendarGrid({
               onClick={
                 goToToday
               }
-              className="rounded-lg border border-white/5 px-3 py-2 text-xs text-zinc-500 transition hover:border-white/10 hover:text-zinc-200"
+              className="rounded-lg border border-[var(--bw-border)] px-3 py-2 text-xs text-[var(--bw-body)] transition hover:border-[var(--bw-border)] hover:text-[var(--bw-heading)]"
             >
               Today
             </button>
@@ -361,7 +361,7 @@ function CalendarGrid({
               onClick={
                 nextMonth
               }
-              className="flex h-8 w-8 items-center justify-center rounded-lg border border-white/5 text-zinc-500 transition hover:border-white/10 hover:text-zinc-200"
+              className="flex h-8 w-8 items-center justify-center rounded-lg border border-[var(--bw-border)] text-[var(--bw-body)] transition hover:border-[var(--bw-border)] hover:text-[var(--bw-heading)]"
               aria-label="Next month"
             >
               →
@@ -373,7 +373,7 @@ function CalendarGrid({
 
         {/* Weekdays */}
 
-        <div className="grid grid-cols-7 border-b border-white/5">
+        <div className="grid grid-cols-7 border-b border-[var(--bw-border)]">
 
           {[
             'Sun',
@@ -387,7 +387,7 @@ function CalendarGrid({
             (day) => (
               <div
                 key={day}
-                className="px-2 py-3 text-center text-[11px] font-medium uppercase tracking-wide text-zinc-600"
+                className="px-2 py-3 text-center text-[11px] font-medium uppercase tracking-wide text-[var(--bw-muted)]"
               >
                 {day}
               </div>
@@ -406,7 +406,7 @@ function CalendarGrid({
                 return (
                   <div
                     key={`empty-${index}`}
-                    className="min-h-[105px] border-b border-r border-white/5 bg-[#0d0f11]/50"
+                    className="min-h-[105px] border-b border-r border-[var(--bw-border)] bg-[var(--bw-surface-soft)]/50"
                   />
                 )
               }
@@ -453,9 +453,9 @@ function CalendarGrid({
                   onClick={() =>
                     selectDay(day)
                   }
-                  className={`relative min-h-[105px] border-b border-r border-white/5 p-2 text-left transition ${
+                  className={`relative min-h-[105px] border-b border-r border-[var(--bw-border)] p-2 text-left transition ${
                     isSelected
-                      ? 'bg-violet-500/[0.08]'
+                      ? 'bg-amber-500/[0.08]'
                       : 'hover:bg-white/[0.025]'
                   }`}
                 >
@@ -467,10 +467,10 @@ function CalendarGrid({
                     <span
                       className={`flex h-7 w-7 items-center justify-center rounded-full text-xs font-medium ${
                         isToday
-                          ? 'bg-violet-500 text-white'
+                          ? 'bg-amber-500 text-white'
                           : isSelected
-                            ? 'bg-violet-500/20 text-violet-300'
-                            : 'text-zinc-400'
+                            ? 'bg-amber-500/20 text-amber-300'
+                            : 'text-[var(--bw-text)]'
                       }`}
                     >
                       {day}
@@ -478,7 +478,7 @@ function CalendarGrid({
 
                     {dayTransactions.length >
                       0 && (
-                      <span className="text-[10px] text-zinc-700">
+                      <span className="text-[10px] text-[var(--bw-muted)]">
                         {
                           dayTransactions.length
                         }
@@ -512,7 +512,7 @@ function CalendarGrid({
                         className={`mt-1 text-[10px] ${
                           isOverBudget
                             ? 'text-red-400/70'
-                            : 'text-zinc-600'
+                            : 'text-[var(--bw-muted)]'
                         }`}
                       >
                         {isOverBudget
@@ -542,7 +542,7 @@ function CalendarGrid({
                       0 && (
                       <div className="mt-3">
 
-                        <p className="text-[10px] text-zinc-700">
+                        <p className="text-[10px] text-[var(--bw-muted)]">
                           No spending
                         </p>
 
@@ -596,13 +596,13 @@ function CalendarGrid({
 
       {/* Selected day */}
 
-      <div className="rounded-2xl border border-white/5 bg-[#111417] p-6">
+      <div className="rounded-2xl border border-[var(--bw-border)] bg-[var(--bw-surface)] p-6">
 
         <div className="flex flex-col justify-between gap-5 sm:flex-row sm:items-start">
 
           <div>
 
-            <p className="text-sm text-zinc-500">
+            <p className="text-sm text-[var(--bw-body)]">
               Selected day
             </p>
 
@@ -616,11 +616,11 @@ function CalendarGrid({
 
           <div className="text-left sm:text-right">
 
-            <p className="text-xs text-zinc-600">
+            <p className="text-xs text-[var(--bw-muted)]">
               Daily budget
             </p>
 
-            <p className="mt-1 text-lg font-semibold text-violet-300">
+            <p className="mt-1 text-lg font-semibold text-amber-300">
               {formatCurrency(
                 dailyBudget,
                 {
@@ -693,27 +693,27 @@ function CalendarGrid({
 
         <div className="mt-6">
 
-          <p className="text-sm font-medium text-zinc-300">
+          <p className="text-sm font-medium text-[var(--bw-text)]">
             Transactions
           </p>
 
           {selectedTransactions.length ===
           0 ? (
-            <div className="mt-4 rounded-xl border border-white/5 bg-[#0d0f11] p-6 text-center">
+            <div className="mt-4 rounded-xl border border-[var(--bw-border)] bg-[var(--bw-surface-soft)] p-6 text-center">
 
-              <p className="text-sm text-zinc-600">
+              <p className="text-sm text-[var(--bw-muted)]">
                 No transactions on this
                 day.
               </p>
 
-              <p className="mt-1 text-xs text-zinc-700">
+              <p className="mt-1 text-xs text-[var(--bw-muted)]">
                 Your unused daily budget
                 does not carry forward.
               </p>
 
             </div>
           ) : (
-            <div className="mt-3 overflow-hidden rounded-xl border border-white/5">
+            <div className="mt-3 overflow-hidden rounded-xl border border-[var(--bw-border)]">
 
               {selectedTransactions.map(
                 (transaction) => {
@@ -726,18 +726,18 @@ function CalendarGrid({
                       key={
                         transaction.id
                       }
-                      className="flex items-center justify-between border-b border-white/5 bg-[#0d0f11] px-4 py-4 last:border-b-0"
+                      className="flex items-center justify-between border-b border-[var(--bw-border)] bg-[var(--bw-surface-soft)] px-4 py-4 last:border-b-0"
                     >
 
                       <div className="min-w-0">
 
-                        <p className="truncate text-sm font-medium text-zinc-200">
+                        <p className="truncate text-sm font-medium text-[var(--bw-heading)]">
                           {transaction.name ||
                             transaction.description ||
                             'Transaction'}
                         </p>
 
-                        <p className="mt-1 text-xs text-zinc-600">
+                        <p className="mt-1 text-xs text-[var(--bw-muted)]">
                           {
                             transaction.category
                           }
@@ -786,9 +786,9 @@ function SummaryCard({
   className,
 }) {
   return (
-    <div className="rounded-xl border border-white/5 bg-[#0d0f11] p-4">
+    <div className="rounded-xl border border-[var(--bw-border)] bg-[var(--bw-surface-soft)] p-4">
 
-      <p className="text-xs text-zinc-600">
+      <p className="text-xs text-[var(--bw-muted)]">
         {label}
       </p>
 

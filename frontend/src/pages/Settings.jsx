@@ -149,7 +149,7 @@ function Settings() {
 
       <section>
 
-        <p className="text-xs font-medium uppercase tracking-[0.16em] text-violet-400">
+        <p className="text-xs font-medium uppercase tracking-[0.16em] text-amber-400">
           Preferences
         </p>
 
@@ -171,7 +171,7 @@ function Settings() {
 
       <section className="mt-8">
 
-        <div className="rounded-2xl border border-white/[0.06] bg-[var(--bw-surface)] p-6 shadow-sm">
+        <div className="rounded-2xl border border-[var(--bw-border)] bg-[var(--bw-surface)] p-6 shadow-sm">
 
           <p className="text-sm text-[var(--bw-text-muted)]">
             Profile
@@ -209,7 +209,7 @@ function Settings() {
 
       <section className="mt-6">
 
-        <div className="rounded-2xl border border-white/[0.06] bg-[var(--bw-surface)] p-6 shadow-sm">
+        <div className="rounded-2xl border border-[var(--bw-border)] bg-[var(--bw-surface)] p-6 shadow-sm">
 
           <p className="text-sm text-[var(--bw-text-muted)]">
             Preferences
@@ -264,7 +264,7 @@ function Settings() {
 
       <section className="mt-6">
 
-        <div className="rounded-2xl border border-white/[0.06] bg-[var(--bw-surface)] p-6 shadow-sm">
+        <div className="rounded-2xl border border-[var(--bw-border)] bg-[var(--bw-surface)] p-6 shadow-sm">
 
           <p className="text-sm text-[var(--bw-text-muted)]">
             Account
@@ -370,7 +370,7 @@ function Settings() {
 
       <section className="mt-6 pb-10">
 
-        <div className="rounded-2xl border border-white/[0.06] bg-[var(--bw-surface)] p-6 shadow-sm">
+        <div className="rounded-2xl border border-[var(--bw-border)] bg-[var(--bw-surface)] p-6 shadow-sm">
 
           <p className="text-sm text-[var(--bw-text-muted)]">
             About BudgetWise
@@ -406,7 +406,7 @@ function Settings() {
       ================================================= */}
 
       {message && (
-        <div className="fixed bottom-6 right-6 z-[70] max-w-sm rounded-xl border border-white/[0.08] bg-[var(--bw-surface)] px-4 py-3 shadow-2xl">
+        <div className="fixed bottom-6 right-6 z-[70] max-w-sm rounded-xl border border-[var(--bw-border)] bg-[var(--bw-surface)] px-4 py-3 shadow-2xl">
 
           <p className="text-sm text-[var(--bw-text-secondary)]">
             {message}
@@ -423,7 +423,7 @@ function Settings() {
       {showSignOut && (
         <div className="fixed inset-0 z-[60] flex items-center justify-center bg-black/50 px-4 backdrop-blur-sm">
 
-          <div className="w-full max-w-md rounded-2xl border border-white/[0.08] bg-[var(--bw-surface)] p-6 shadow-2xl">
+          <div className="w-full max-w-md rounded-2xl border border-[var(--bw-border)] bg-[var(--bw-surface)] p-6 shadow-2xl">
 
             <p className="text-xs font-medium uppercase tracking-[0.14em] text-[var(--bw-text-faint)]">
               Account
@@ -445,7 +445,7 @@ function Settings() {
                 onClick={() =>
                   setShowSignOut(false)
                 }
-                className="rounded-xl border border-white/[0.08] px-4 py-2.5 text-sm text-[var(--bw-text-muted)] transition hover:bg-white/[0.04] hover:text-[var(--bw-text-secondary)]"
+                className="rounded-xl border border-[var(--bw-border)] px-4 py-2.5 text-sm text-[var(--bw-text-muted)] transition hover:bg-[var(--bw-surface-alt)] hover:text-[var(--bw-text-secondary)]"
               >
                 Cancel
               </button>
@@ -518,7 +518,7 @@ function Settings() {
                   setShowReset(false)
                   setResetError('')
                 }}
-                className="rounded-xl border border-white/[0.08] px-4 py-2.5 text-sm text-[var(--bw-text-muted)] transition hover:bg-white/[0.04] hover:text-[var(--bw-text-secondary)] disabled:opacity-50"
+                className="rounded-xl border border-[var(--bw-border)] px-4 py-2.5 text-sm text-[var(--bw-text-muted)] transition hover:bg-[var(--bw-surface-alt)] hover:text-[var(--bw-text-secondary)] disabled:opacity-50"
               >
                 Cancel
               </button>
@@ -557,7 +557,7 @@ function SettingItem({
   value,
 }) {
   return (
-    <div className="rounded-xl border border-white/[0.05] bg-white/[0.02] p-4">
+    <div className="rounded-xl border border-[var(--bw-border)] bg-[var(--bw-surface-alt)] p-4">
 
       <p className="text-xs text-[var(--bw-text-faint)]">
         {label}
@@ -586,7 +586,7 @@ function PreferenceRow({
     <button
       type="button"
       onClick={onClick}
-      className="flex w-full items-center justify-between gap-5 py-5 text-left transition hover:bg-white/[0.02]"
+      className="flex w-full items-center justify-between gap-5 py-5 text-left transition hover:bg-[var(--bw-surface-alt)]"
     >
 
       <div className="min-w-0">
