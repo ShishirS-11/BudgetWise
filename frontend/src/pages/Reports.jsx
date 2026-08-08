@@ -1,316 +1,1217 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 
 import {
-  getAverageDailySpending,
-  getCategoryChanges,
+  BarChart,
+  Bar,
+  CartesianGrid,
+  Cell,
+  PieChart,
+  Pie,
+  ResponsiveContainer,
+  Tooltip,
+  XAxis,
+  YAxis,
+} from 'recharts'
+
+import { getExpenses } from '../services/expenseService'
+import { getBudget } from '../services/budgetService'
+
+import {
   getCategoryTotals,
+  getTopCategory,
   getHighestSpendingDay,
+  getDailyTotals,
   getPeriodExpenses,
   getPreviousMonthRange,
   getSpendingChange,
-  getTopCategory,
-  getTotalSpent,
 } from '../utils/reportCalculations'
 
-import { getExpenses } from '../services/expenseService'
 import { generateMonthlyReport } from '../utils/pdfReport'
 
+import { useCurrency } from '../context/CurrencyContext'
+
+const CHART_COLORS = [
+  '#8b5cf6',
+  '#a78bfa',
+  '#c4b5fd',
+  '#7c3aed',
+  '#6d28d9',
+  '#4c1d95',
+  '#ddd6fe',
+]
+
 function Reports() {
-  const [period, setPeriod] = useState('monthly')
+  const {
+    formatCurrency,
+    currency,
+    currencyInfo,
+    currentRate,
+  } = useCurrency()
 
-  const expenses = getExpenses()
-  const today = new Date()
+  const [expenses, setExpenses] = useState([])
+  const [budget, setBudget] = useState(null)
+
+  const [loading, setLoading] = useState(true)
+  const [downloading, setDownloading] =
+    useState(false)
+
+  const [error, setError] = useState('')
+  const [message, setMessage] = useState('')
+
+  const [selectedMonth, setSelectedMonth] =
+    useState(getCurrentMonth())
+
+  useEffect(() => {
+    loadReportData()
+  }, [selectedMonth])
+
+  async function loadReportData() {
+    try {
+      setLoading(true)
+      setError('')
+
+      const monthStart =
+        `${selectedMonth}-01`
+
+      const [
+        expenseData,
+        budgetData,
+      ] = await Promise.all([
+        getExpenses(),
+        getBudget(monthStart),
+      ])
+
+      setExpenses(
+        Array.isArray(expenseData)
+          ? expenseData
+          : [],
+      )
+
+      setBudget(
+        budgetData || null,
+      )
+    } catch (err) {
+      console.error(
+        'Failed to load report:',
+        err,
+      )
+
+      setError(
+        err?.message ||
+          'Unable to load your report.',
+      )
+    } finally {
+      setLoading(false)
+    }
+  }
 
   /*
-   * Current selected period
+   * =========================================
+   * CURRENT MONTH RANGE
+   * =========================================
    */
-  const periodRange = useMemo(
-    () => getPeriodRange(period, today),
-    [period, today.getMonth(), today.getFullYear()],
-  )
 
-  const periodExpenses = useMemo(
-    () =>
-      getPeriodExpenses(
+  const currentRange = useMemo(() => {
+    const [
+      year,
+      month,
+    ] = selectedMonth
+      .split('-')
+      .map(Number)
+
+    const lastDay =
+      new Date(
+        year,
+        month,
+        0,
+      ).getDate()
+
+    return {
+      start:
+        `${selectedMonth}-01`,
+
+      end:
+        `${selectedMonth}-${String(
+          lastDay,
+        ).padStart(2, '0')}`,
+    }
+  }, [selectedMonth])
+
+  const currentExpenses =
+    useMemo(() => {
+      return getPeriodExpenses(
         expenses,
-        periodRange.start,
-        periodRange.end,
-      ),
-    [
+        currentRange.start,
+        currentRange.end,
+      )
+    }, [
       expenses,
-      periodRange.start,
-      periodRange.end,
-    ],
-  )
+      currentRange,
+    ])
 
   /*
-   * Main statistics
+   * =========================================
+   * EXPENSE / CREDIT
+   * =========================================
    */
-  const totalSpent = useMemo(
-    () => getTotalSpent(periodExpenses),
-    [periodExpenses],
-  )
 
-  const daysInPeriod = getDaysBetween(
-    periodRange.start,
-    periodRange.end,
-  )
+  const spendingExpenses =
+    useMemo(() => {
+      return currentExpenses.filter(
+        (expense) =>
+          expense.transactionType !==
+          'credit',
+      )
+    }, [currentExpenses])
 
-  const averageDailySpending = useMemo(
-    () =>
-      getAverageDailySpending(
-        periodExpenses,
-        daysInPeriod,
-      ),
-    [
-      periodExpenses,
-      daysInPeriod,
-    ],
-  )
-
-  const topCategory = useMemo(
-    () => getTopCategory(periodExpenses),
-    [periodExpenses],
-  )
-
-  const highestSpendingDay = useMemo(
-    () =>
-      getHighestSpendingDay(
-        periodExpenses,
-      ),
-    [periodExpenses],
-  )
-
-  const categoryTotals = useMemo(
-    () =>
-      getCategoryTotals(periodExpenses),
-    [periodExpenses],
-  )
+  const creditTransactions =
+    useMemo(() => {
+      return currentExpenses.filter(
+        (expense) =>
+          expense.transactionType ===
+          'credit',
+      )
+    }, [currentExpenses])
 
   /*
-   * Previous month comparison
+   * =========================================
+   * TOTALS
+   * =========================================
    */
-  const previousMonthRange = useMemo(
-    () => getPreviousMonthRange(today),
-    [today.getMonth(), today.getFullYear()],
-  )
 
-  const previousMonthExpenses = useMemo(
-    () =>
-      getPeriodExpenses(
+  const totalSpent =
+    useMemo(() => {
+      return spendingExpenses.reduce(
+        (total, expense) =>
+          total +
+          Number(
+            expense.amount || 0,
+          ),
+        0,
+      )
+    }, [spendingExpenses])
+
+  const totalCredits =
+    useMemo(() => {
+      return creditTransactions.reduce(
+        (total, expense) =>
+          total +
+          Number(
+            expense.amount || 0,
+          ),
+        0,
+      )
+    }, [creditTransactions])
+
+  /*
+   * Budget remains stored in INR/base
+   * currency.
+   */
+
+  const monthlyBudget =
+    Number(
+      budget?.amount || 0,
+    )
+
+  const daysInMonth =
+    useMemo(() => {
+      const [
+        year,
+        month,
+      ] = selectedMonth
+        .split('-')
+        .map(Number)
+
+      return new Date(
+        year,
+        month,
+        0,
+      ).getDate()
+    }, [selectedMonth])
+
+  const averageDailySpending =
+    daysInMonth > 0
+      ? totalSpent /
+        daysInMonth
+      : 0
+
+  const budgetUsed =
+    monthlyBudget > 0
+      ? (totalSpent /
+          monthlyBudget) *
+        100
+      : 0
+
+  const budgetRemaining =
+    Math.max(
+      monthlyBudget -
+        totalSpent,
+      0,
+    )
+
+  /*
+   * =========================================
+   * CATEGORIES
+   * =========================================
+   */
+
+  const categoryTotals =
+    useMemo(() => {
+      return getCategoryTotals(
+        spendingExpenses,
+      )
+    }, [spendingExpenses])
+
+  const topCategory =
+    useMemo(() => {
+      return getTopCategory(
+        spendingExpenses,
+      )
+    }, [spendingExpenses])
+
+  /*
+   * =========================================
+   * DAILY DATA
+   * =========================================
+   */
+
+  const dailyTotals =
+    useMemo(() => {
+      return getDailyTotals(
+        spendingExpenses,
+      )
+    }, [spendingExpenses])
+
+  const highestSpendingDay =
+    useMemo(() => {
+      return getHighestSpendingDay(
+        spendingExpenses,
+      )
+    }, [spendingExpenses])
+
+  /*
+   * =========================================
+   * PREVIOUS MONTH
+   * =========================================
+   */
+
+  const previousMonthRange =
+    useMemo(() => {
+      const date =
+        new Date(
+          `${selectedMonth}-01T00:00:00`,
+        )
+
+      return getPreviousMonthRange(
+        date,
+      )
+    }, [selectedMonth])
+
+  const previousMonthExpenses =
+    useMemo(() => {
+      return getPeriodExpenses(
         expenses,
         previousMonthRange.start,
         previousMonthRange.end,
-      ),
-    [
+      ).filter(
+        (expense) =>
+          expense.transactionType !==
+          'credit',
+      )
+    }, [
       expenses,
-      previousMonthRange.start,
-      previousMonthRange.end,
-    ],
-  )
+      previousMonthRange,
+    ])
 
-  const previousMonthTotal = useMemo(
-    () =>
-      getTotalSpent(
-        previousMonthExpenses,
-      ),
-    [previousMonthExpenses],
-  )
+  const previousMonthSpent =
+    useMemo(() => {
+      return previousMonthExpenses.reduce(
+        (total, expense) =>
+          total +
+          Number(
+            expense.amount || 0,
+          ),
+        0,
+      )
+    }, [previousMonthExpenses])
 
-  const spendingChange = useMemo(
-    () =>
-      getSpendingChange(
-        totalSpent,
-        previousMonthTotal,
-      ),
-    [
+  const spendingChange =
+    getSpendingChange(
       totalSpent,
-      previousMonthTotal,
-    ],
-  )
-
-  const categoryChanges = useMemo(
-    () =>
-      getCategoryChanges(
-        periodExpenses,
-        previousMonthExpenses,
-      ),
-    [
-      periodExpenses,
-      previousMonthExpenses,
-    ],
-  )
+      previousMonthSpent,
+    )
 
   /*
-   * PDF insights
+   * =========================================
+   * CHART DATA
+   * =========================================
    */
-  const reportInsights = [
-    getTopCategoryInsight(
-      topCategory,
-    ),
-    getDailyAverageInsight(
-      averageDailySpending,
-    ),
-    getHighestDayInsight(
-      highestSpendingDay,
-    ),
-    getComparisonInsight(
-      spendingChange,
-      previousMonthTotal,
-    ),
-  ]
 
-  function handleDownloadPDF() {
-    generateMonthlyReport({
-      monthLabel: formatPeriodLabel(
-        period,
-        today,
-      ),
+  const categoryChartData =
+    useMemo(() => {
+      return categoryTotals
+        .slice(0, 7)
+        .map((item) => ({
+          name:
+            item.category,
+          value:
+            Number(
+              item.amount || 0,
+            ),
+        }))
+    }, [categoryTotals])
+
+  const dailyChartData =
+    useMemo(() => {
+      return dailyTotals.map(
+        (item) => ({
+          date:
+            formatShortDate(
+              item.date,
+            ),
+
+          amount:
+            Number(
+              item.amount || 0,
+            ),
+        }),
+      )
+    }, [dailyTotals])
+
+  /*
+   * =========================================
+   * INSIGHTS
+   * =========================================
+   */
+
+  const insights =
+    useMemo(() => {
+      const result = []
+
+      if (totalSpent === 0) {
+        result.push(
+          'There is not enough spending data for this month yet. Keep recording your transactions to build a useful spending history.',
+        )
+      }
+
+      if (monthlyBudget > 0) {
+        if (
+          totalSpent >
+          monthlyBudget
+        ) {
+          result.push(
+            `You have exceeded your monthly budget by ${formatCurrency(
+              totalSpent -
+                monthlyBudget,
+            )}.`,
+          )
+        } else if (
+          budgetUsed >= 80
+        ) {
+          result.push(
+            `You have used ${budgetUsed.toFixed(
+              0,
+            )}% of your monthly budget. Consider keeping discretionary spending lower for the rest of the month.`,
+          )
+        } else {
+          result.push(
+            `Your spending is currently ${budgetUsed.toFixed(
+              0,
+            )}% of your monthly budget, leaving ${formatCurrency(
+              budgetRemaining,
+            )} available.`,
+          )
+        }
+      }
+
+      if (topCategory) {
+        result.push(
+          `${topCategory.category} is currently your largest spending category at ${formatCurrency(
+            topCategory.amount,
+          )}.`,
+        )
+      }
+
+      if (
+        highestSpendingDay
+      ) {
+        result.push(
+          `Your highest spending day was ${formatFullDate(
+            highestSpendingDay.date,
+          )}, when you spent ${formatCurrency(
+            highestSpendingDay.amount,
+          )}.`,
+        )
+      }
+
+      if (
+        spendingChange !==
+          null &&
+        spendingChange !==
+          undefined
+      ) {
+        if (
+          spendingChange > 0
+        ) {
+          result.push(
+            `Your spending is ${Math.abs(
+              spendingChange,
+            ).toFixed(
+              1,
+            )}% higher than the previous month.`,
+          )
+        } else if (
+          spendingChange < 0
+        ) {
+          result.push(
+            `Your spending is ${Math.abs(
+              spendingChange,
+            ).toFixed(
+              1,
+            )}% lower than the previous month.`,
+          )
+        } else {
+          result.push(
+            'Your spending is almost unchanged compared with the previous month.',
+          )
+        }
+      }
+
+      return result.slice(0, 5)
+    }, [
       totalSpent,
-      averageDailySpending,
+      monthlyBudget,
+      budgetUsed,
+      budgetRemaining,
       topCategory,
       highestSpendingDay,
       spendingChange,
-      categoryTotals,
-      insights: reportInsights,
-    })
+      formatCurrency,
+    ])
+
+  /*
+   * =========================================
+   * DOWNLOAD PDF
+   * =========================================
+   */
+
+  async function handleDownloadPDF() {
+    try {
+      setDownloading(true)
+      setMessage('')
+      setError('')
+
+      /*
+       * INR is the base currency.
+       *
+       * Every amount in the database is
+       * stored in INR.
+       *
+       * currentRate converts:
+       *
+       * INR -> selected currency
+       */
+
+      const rate =
+        currency === 'INR'
+          ? 1
+          : Number(currentRate)
+
+      if (
+        !Number.isFinite(rate) ||
+        rate <= 0
+      ) {
+        throw new Error(
+          'Exchange rate is not available yet. Please wait a moment and try again.',
+        )
+      }
+
+      const monthLabel =
+        formatMonth(
+          selectedMonth,
+        )
+
+      generateMonthlyReport({
+        monthLabel,
+
+        totalSpent,
+
+        totalCredits,
+
+        monthlyBudget,
+
+        averageDailySpending,
+
+        topCategory,
+
+        highestSpendingDay,
+
+        spendingChange,
+
+        categoryTotals,
+
+        dailyExpenses:
+          dailyTotals,
+
+        insights,
+
+        /*
+         * Currency information
+         */
+
+        currency,
+
+        currencySymbol:
+          currencyInfo?.symbol ||
+          currency,
+
+        /*
+         * IMPORTANT:
+         * PDF uses this to convert
+         * all INR amounts.
+         */
+
+        exchangeRate: rate,
+      })
+
+      setMessage(
+        `Your ${currency} PDF report has been downloaded successfully.`,
+      )
+
+      setTimeout(() => {
+        setMessage('')
+      }, 3500)
+    } catch (err) {
+      console.error(
+        'PDF generation failed:',
+        err,
+      )
+
+      setError(
+        err?.message ||
+          'Unable to generate the PDF report. Please try again.',
+      )
+    } finally {
+      setDownloading(false)
+    }
   }
 
+  /*
+   * =========================================
+   * LOADING
+   * =========================================
+   */
+
+  if (loading) {
+    return (
+      <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
+        <div className="rounded-3xl border border-white/5 bg-[#111417] p-10 text-center">
+          <p className="text-sm text-zinc-500">
+            Preparing your financial report...
+          </p>
+        </div>
+      </div>
+    )
+  }
+
+  /*
+   * =========================================
+   * PAGE
+   * =========================================
+   */
+
   return (
-    <div className="mx-auto max-w-7xl">
+    <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
+
       {/* Header */}
+
       <section>
-        <div className="flex flex-col justify-between gap-5 sm:flex-row sm:items-start">
+        <div className="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
+
           <div>
-            <p className="text-sm text-zinc-500">
-              Spending analysis
+            <p className="text-xs font-medium uppercase tracking-[0.18em] text-violet-400">
+              Financial overview
             </p>
 
-            <h1 className="mt-2 text-3xl font-semibold tracking-tight">
+            <h1 className="mt-2 text-3xl font-semibold tracking-tight text-zinc-100">
               Reports
             </h1>
 
-            <p className="mt-2 max-w-2xl text-sm text-zinc-500">
-              Understand where your money went and
-              how your spending is changing.
+            <p className="mt-2 max-w-xl text-sm leading-6 text-zinc-500">
+              Understand where your money went,
+              how your spending compares, and
+              how closely you are following your
+              budget.
             </p>
           </div>
 
-          {/* PDF button */}
           <button
             type="button"
-            onClick={handleDownloadPDF}
-            className="rounded-xl bg-violet-500 px-4 py-2.5 text-sm font-medium text-white transition hover:bg-violet-400 active:scale-[0.98]"
+            onClick={
+              handleDownloadPDF
+            }
+            disabled={downloading}
+            className="inline-flex items-center justify-center gap-2 rounded-xl bg-violet-500 px-5 py-3 text-sm font-medium text-white shadow-lg shadow-violet-500/10 transition hover:bg-violet-400 disabled:cursor-not-allowed disabled:opacity-50"
           >
-            Download PDF
+            {downloading
+              ? 'Preparing PDF...'
+              : 'Download PDF'}
           </button>
+
         </div>
       </section>
 
-      {/* Period selector */}
-      <section className="mt-8">
-        <div className="inline-flex rounded-xl border border-white/5 bg-[#111417] p-1">
-          {[
-            {
-              label: 'Weekly',
-              value: 'weekly',
-            },
-            {
-              label: 'Monthly',
-              value: 'monthly',
-            },
-            {
-              label: 'Yearly',
-              value: 'yearly',
-            },
-          ].map((item) => (
+      {/* Error */}
+
+      {error && (
+        <section className="mt-6">
+          <div className="flex items-center justify-between gap-4 rounded-2xl border border-red-500/20 bg-red-500/[0.04] px-5 py-4">
+
+            <p className="text-sm text-red-400">
+              {error}
+            </p>
+
             <button
-              key={item.value}
               type="button"
-              onClick={() =>
-                setPeriod(item.value)
+              onClick={
+                loadReportData
               }
-              className={`rounded-lg px-4 py-2 text-sm transition ${
-                period === item.value
-                  ? 'bg-violet-500/10 text-violet-300'
-                  : 'text-zinc-500 hover:text-zinc-300'
-              }`}
+              className="shrink-0 rounded-lg border border-red-500/20 px-3 py-2 text-xs text-red-400 transition hover:bg-red-500/10"
             >
-              {item.label}
+              Try again
             </button>
-          ))}
+
+          </div>
+        </section>
+      )}
+
+      {/* Success */}
+
+      {message && (
+        <div className="fixed bottom-6 right-6 z-50 max-w-sm rounded-2xl border border-emerald-500/20 bg-[#151918] px-5 py-4 shadow-2xl shadow-black/30">
+          <p className="text-sm text-emerald-300">
+            {message}
+          </p>
         </div>
+      )}
+
+      {/* Report period */}
+
+      <section className="mt-8">
+
+        <div className="flex flex-col gap-5 rounded-3xl border border-white/5 bg-[#111417] p-5 sm:p-6 md:flex-row md:items-end md:justify-between">
+
+          <div>
+            <p className="text-xs font-medium uppercase tracking-wider text-zinc-600">
+              Report period
+            </p>
+
+            <h2 className="mt-1 text-lg font-medium text-zinc-200">
+              {formatMonth(
+                selectedMonth,
+              )}
+            </h2>
+
+            <p className="mt-1 text-xs text-zinc-600">
+              All figures are based on
+              transactions recorded during this
+              month.
+            </p>
+          </div>
+
+          <div>
+            <label
+              htmlFor="reportMonth"
+              className="mb-2 block text-xs text-zinc-500"
+            >
+              Select month
+            </label>
+
+            <input
+              id="reportMonth"
+              type="month"
+              value={
+                selectedMonth
+              }
+              onChange={(event) =>
+                setSelectedMonth(
+                  event.target.value,
+                )
+              }
+              className="rounded-xl border border-white/10 bg-[#0d0f11] px-4 py-3 text-sm text-zinc-200 outline-none transition focus:border-violet-500/50"
+            />
+          </div>
+
+        </div>
+
       </section>
 
-      {/* Current period */}
-      <section className="mt-6">
-        <p className="text-sm text-zinc-500">
-          {formatPeriodLabel(
-            period,
-            today,
-          )}
-        </p>
-      </section>
+      {/* Summary */}
 
-      {/* Summary cards */}
-      <section className="mt-5 grid gap-4 md:grid-cols-2 xl:grid-cols-5">
+      <section className="mt-6 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+
         <ReportCard
           label="Total spent"
-          value={`₹${totalSpent.toLocaleString(
-            'en-IN',
-          )}`}
-          description={`${periodExpenses.length} transactions`}
+          value={formatCurrency(
+            totalSpent,
+          )}
+          description={`${spendingExpenses.length} spending transactions`}
+          tone="red"
+        />
+
+        <ReportCard
+          label="Money received"
+          value={formatCurrency(
+            totalCredits,
+          )}
+          description={`${creditTransactions.length} credit transactions`}
+          tone="green"
+        />
+
+        <ReportCard
+          label="Monthly budget"
+          value={
+            monthlyBudget > 0
+              ? formatCurrency(
+                  monthlyBudget,
+                )
+              : 'Not set'
+          }
+          description={
+            monthlyBudget > 0
+              ? `${budgetUsed.toFixed(
+                  0,
+                )}% currently used`
+              : 'Create a budget to track progress'
+          }
+          tone="violet"
         />
 
         <ReportCard
           label="Daily average"
-          value={`₹${Math.round(
+          value={formatCurrency(
             averageDailySpending,
-          ).toLocaleString('en-IN')}`}
-          description="Average spending per day"
+          )}
+          description="Average spending across the month"
+          tone="neutral"
         />
 
-        <ReportCard
+      </section>
+
+      {/* Budget progress */}
+
+      <section className="mt-6">
+
+        <div className="rounded-3xl border border-white/5 bg-[#111417] p-6">
+
+          <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
+
+            <div>
+              <p className="text-sm font-medium text-zinc-200">
+                Budget progress
+              </p>
+
+              <p className="mt-1 text-xs text-zinc-600">
+                {monthlyBudget > 0
+                  ? `${formatCurrency(
+                      totalSpent,
+                    )} spent from ${formatCurrency(
+                      monthlyBudget,
+                    )}`
+                  : 'No monthly budget has been set.'}
+              </p>
+            </div>
+
+            {monthlyBudget > 0 && (
+              <p
+                className={`text-sm font-medium ${
+                  budgetUsed >= 100
+                    ? 'text-red-400'
+                    : budgetUsed >= 80
+                      ? 'text-amber-400'
+                      : 'text-violet-300'
+                }`}
+              >
+                {budgetUsed.toFixed(
+                  1,
+                )}
+                %
+              </p>
+            )}
+
+          </div>
+
+          <div className="mt-5 h-2 overflow-hidden rounded-full bg-white/5">
+
+            <div
+              className={`h-full rounded-full transition-all ${
+                budgetUsed >= 100
+                  ? 'bg-red-500'
+                  : budgetUsed >= 80
+                    ? 'bg-amber-500'
+                    : 'bg-violet-500'
+              }`}
+              style={{
+                width: `${Math.min(
+                  Math.max(
+                    budgetUsed,
+                    0,
+                  ),
+                  100,
+                )}%`,
+              }}
+            />
+
+          </div>
+
+          <div className="mt-3 flex justify-between text-xs text-zinc-600">
+
+            <span>
+              {monthlyBudget > 0
+                ? `${formatCurrency(
+                    budgetRemaining,
+                  )} remaining`
+                : 'Budget unavailable'}
+            </span>
+
+            <span>
+              {daysInMonth} days
+            </span>
+
+          </div>
+
+        </div>
+
+      </section>
+
+      {/* Charts */}
+
+      <section className="mt-6 grid gap-6 xl:grid-cols-2">
+
+        {/* Daily spending */}
+
+        <div className="rounded-3xl border border-white/5 bg-[#111417] p-6">
+
+          <div>
+            <p className="text-sm font-medium text-zinc-200">
+              Daily spending
+            </p>
+
+            <p className="mt-1 text-xs text-zinc-600">
+              Spending activity across{' '}
+              {formatMonth(
+                selectedMonth,
+              )}
+              .
+            </p>
+          </div>
+
+          <div className="mt-6 h-72">
+
+            {dailyChartData.length ===
+            0 ? (
+              <EmptyChart text="No spending recorded this month." />
+            ) : (
+              <ResponsiveContainer
+                width="100%"
+                height="100%"
+              >
+                <BarChart
+                  data={
+                    dailyChartData
+                  }
+                  margin={{
+                    top: 8,
+                    right: 8,
+                    left: -18,
+                    bottom: 0,
+                  }}
+                >
+
+                  <CartesianGrid
+                    vertical={false}
+                    stroke="rgba(255,255,255,0.05)"
+                  />
+
+                  <XAxis
+                    dataKey="date"
+                    tick={{
+                      fill: '#71717a',
+                      fontSize: 10,
+                    }}
+                    axisLine={false}
+                    tickLine={false}
+                    minTickGap={20}
+                  />
+
+                  <YAxis
+                    tick={{
+                      fill: '#71717a',
+                      fontSize: 10,
+                    }}
+                    axisLine={false}
+                    tickLine={false}
+                  />
+
+                  {/* IMPORTANT:
+                      cursor={false} removes
+                      the white/gray hover area.
+                  */}
+
+                  <Tooltip
+                    cursor={false}
+                    contentStyle={{
+                      background:
+                        '#181b1f',
+                      border:
+                        '1px solid rgba(255,255,255,0.08)',
+                      borderRadius:
+                        '14px',
+                      color:
+                        '#e4e4e7',
+                      boxShadow:
+                        '0 12px 30px rgba(0,0,0,0.35)',
+                    }}
+                    labelStyle={{
+                      color:
+                        '#f4f4f5',
+                      fontWeight: 500,
+                      marginBottom:
+                        '4px',
+                    }}
+                    itemStyle={{
+                      color:
+                        '#a78bfa',
+                    }}
+                    formatter={(
+                      value,
+                    ) => [
+                      formatCurrency(
+                        value,
+                      ),
+                      'Spent',
+                    ]}
+                  />
+
+                  <Bar
+                    dataKey="amount"
+                    radius={[
+                      5,
+                      5,
+                      0,
+                      0,
+                    ]}
+                    fill="#8b5cf6"
+                  />
+
+                </BarChart>
+              </ResponsiveContainer>
+            )}
+
+          </div>
+
+        </div>
+
+        {/* Category chart */}
+
+        <div className="rounded-3xl border border-white/5 bg-[#111417] p-6">
+
+          <div>
+            <p className="text-sm font-medium text-zinc-200">
+              Spending by category
+            </p>
+
+            <p className="mt-1 text-xs text-zinc-600">
+              Your largest spending areas.
+            </p>
+          </div>
+
+          <div className="mt-5 flex h-72 items-center justify-center">
+
+            {categoryChartData.length ===
+            0 ? (
+              <EmptyChart text="No category data yet." />
+            ) : (
+              <div className="grid h-full w-full grid-cols-2 items-center gap-4">
+
+                <ResponsiveContainer
+                  width="100%"
+                  height="100%"
+                >
+                  <PieChart>
+
+                    <Pie
+                      data={
+                        categoryChartData
+                      }
+                      dataKey="value"
+                      nameKey="name"
+                      innerRadius="58%"
+                      outerRadius="82%"
+                      paddingAngle={3}
+                    >
+                      {categoryChartData.map(
+                        (
+                          entry,
+                          index,
+                        ) => (
+                          <Cell
+                            key={
+                              entry.name
+                            }
+                            fill={
+                              CHART_COLORS[
+                                index %
+                                  CHART_COLORS.length
+                              ]
+                            }
+                          />
+                        ),
+                      )}
+                    </Pie>
+
+                    <Tooltip
+                      cursor={false}
+                      contentStyle={{
+                        background:
+                          '#181b1f',
+                        border:
+                          '1px solid rgba(255,255,255,0.08)',
+                        borderRadius:
+                          '14px',
+                        color:
+                          '#e4e4e7',
+                        boxShadow:
+                          '0 12px 30px rgba(0,0,0,0.35)',
+                      }}
+                      labelStyle={{
+                        color:
+                          '#f4f4f5',
+                        fontWeight: 500,
+                        marginBottom:
+                          '4px',
+                      }}
+                      itemStyle={{
+                        color:
+                          '#a78bfa',
+                      }}
+                      formatter={(
+                        value,
+                      ) =>
+                        formatCurrency(
+                          value,
+                        )
+                      }
+                    />
+
+                  </PieChart>
+                </ResponsiveContainer>
+
+                <div className="space-y-3">
+
+                  {categoryChartData.map(
+                    (
+                      item,
+                      index,
+                    ) => (
+                      <div
+                        key={
+                          item.name
+                        }
+                        className="flex items-center justify-between gap-3"
+                      >
+
+                        <div className="flex min-w-0 items-center gap-2">
+
+                          <span
+                            className="h-2.5 w-2.5 shrink-0 rounded-full"
+                            style={{
+                              backgroundColor:
+                                CHART_COLORS[
+                                  index %
+                                    CHART_COLORS.length
+                                ],
+                            }}
+                          />
+
+                          <span className="truncate text-xs text-zinc-400">
+                            {
+                              item.name
+                            }
+                          </span>
+
+                        </div>
+
+                        <span className="shrink-0 text-xs font-medium text-zinc-300">
+                          {formatCurrency(
+                            item.value,
+                          )}
+                        </span>
+
+                      </div>
+                    ),
+                  )}
+
+                </div>
+
+              </div>
+            )}
+
+          </div>
+
+        </div>
+
+      </section>
+
+      {/* Analysis */}
+
+      <section className="mt-6 grid gap-6 lg:grid-cols-3">
+
+        <AnalysisCard
           label="Top category"
           value={
             topCategory
               ? topCategory.category
-              : '—'
+              : 'No data'
           }
           description={
             topCategory
-              ? `₹${topCategory.amount.toLocaleString(
-                  'en-IN',
-                )}`
-              : 'No spending recorded'
+              ? formatCurrency(
+                  topCategory.amount,
+                )
+              : 'Record some expenses first.'
           }
         />
 
-        <ReportCard
+        <AnalysisCard
           label="Highest spending day"
           value={
             highestSpendingDay
-              ? `₹${highestSpendingDay.amount.toLocaleString(
-                  'en-IN',
-                )}`
-              : '—'
+              ? formatFullDate(
+                  highestSpendingDay.date,
+                )
+              : 'No data'
           }
           description={
             highestSpendingDay
-              ? formatDate(
-                  highestSpendingDay.date,
+              ? formatCurrency(
+                  highestSpendingDay.amount,
                 )
-              : 'No spending recorded'
+              : 'No daily spending recorded.'
           }
         />
 
-        <ReportCard
-          label="vs. previous month"
+        <AnalysisCard
+          label="Compared with previous month"
           value={
-            spendingChange === null
-              ? '—'
+            spendingChange ===
+                null ||
+            spendingChange ===
+              undefined
+              ? 'No comparison'
               : `${
-                  spendingChange > 0
+                  spendingChange >
+                  0
                     ? '+'
                     : ''
                 }${spendingChange.toFixed(
@@ -318,487 +1219,246 @@ function Reports() {
                 )}%`
           }
           description={
-            spendingChange === null
-              ? 'No previous month data'
-              : spendingChange > 0
-                ? 'Spending increased'
-                : spendingChange < 0
-                  ? 'Spending decreased'
-                  : 'No change'
+            spendingChange ===
+                null ||
+            spendingChange ===
+              undefined
+              ? 'Not enough previous-month data.'
+              : spendingChange >
+                0
+                ? 'Spending increased.'
+                : spendingChange <
+                    0
+                  ? 'Spending decreased.'
+                  : 'Spending stayed similar.'
+          }
+          positive={
+            spendingChange !==
+              null &&
+            spendingChange <
+              0
           }
         />
-      </section>
 
-      {/* Spending trend */}
-      <section className="mt-6 rounded-2xl border border-white/5 bg-[#111417] p-6">
-        <div>
-          <p className="text-sm text-zinc-500">
-            Spending trend
-          </p>
-
-          <p className="mt-1 text-lg font-medium">
-            How your spending is moving
-          </p>
-        </div>
-
-        <div className="mt-6">
-          <ReportTrend
-            expenses={periodExpenses}
-            period={period}
-          />
-        </div>
-      </section>
-
-      {/* Category breakdown */}
-      <section className="mt-6">
-        <div className="rounded-2xl border border-white/5 bg-[#111417] p-6">
-          <div>
-            <p className="text-sm text-zinc-500">
-              Category breakdown
-            </p>
-
-            <p className="mt-1 text-lg font-medium">
-              Where your money went
-            </p>
-          </div>
-
-          {categoryTotals.length === 0 ? (
-            <EmptyState
-              message="No expenses recorded for this period."
-            />
-          ) : (
-            <div className="mt-6 space-y-4">
-              {categoryTotals.map(
-                (category) => {
-                  const percentage =
-                    totalSpent > 0
-                      ? (category.amount /
-                          totalSpent) *
-                        100
-                      : 0
-
-                  return (
-                    <div
-                      key={category.category}
-                    >
-                      <div className="flex items-center justify-between gap-4">
-                        <span className="text-sm text-zinc-400">
-                          {category.category}
-                        </span>
-
-                        <div className="flex items-center gap-3">
-                          <span className="text-xs text-zinc-600">
-                            {percentage.toFixed(
-                              0,
-                            )}
-                            %
-                          </span>
-
-                          <span className="text-sm font-medium text-zinc-200">
-                            ₹
-                            {category.amount.toLocaleString(
-                              'en-IN',
-                            )}
-                          </span>
-                        </div>
-                      </div>
-
-                      <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-white/5">
-                        <div
-                          className="h-full rounded-full bg-violet-500"
-                          style={{
-                            width: `${percentage}%`,
-                          }}
-                        />
-                      </div>
-                    </div>
-                  )
-                },
-              )}
-            </div>
-          )}
-        </div>
-      </section>
-
-      {/* Month-over-month comparison */}
-      <section className="mt-6">
-        <div className="rounded-2xl border border-white/5 bg-[#111417] p-6">
-          <p className="text-sm text-zinc-500">
-            Month-over-month comparison
-          </p>
-
-          <p className="mt-1 text-lg font-medium">
-            Category changes
-          </p>
-
-          {categoryChanges.length === 0 ? (
-            <EmptyState
-              message="No category data available for comparison."
-            />
-          ) : (
-            <div className="mt-6 space-y-3">
-              {categoryChanges.map(
-                (category) => (
-                  <div
-                    key={category.category}
-                    className="flex items-center justify-between gap-4 rounded-xl border border-white/5 bg-[#0d0f11] px-4 py-3"
-                  >
-                    <div>
-                      <p className="text-sm text-zinc-300">
-                        {category.category}
-                      </p>
-
-                      <p className="mt-1 text-xs text-zinc-600">
-                        ₹
-                        {category.previousAmount.toLocaleString(
-                          'en-IN',
-                        )}{' '}
-                        → ₹
-                        {category.currentAmount.toLocaleString(
-                          'en-IN',
-                        )}
-                      </p>
-                    </div>
-
-                    <span
-                      className={`text-sm font-medium ${
-                        category.change === null
-                          ? 'text-zinc-600'
-                          : category.change > 0
-                            ? 'text-amber-400'
-                            : category.change < 0
-                              ? 'text-emerald-400'
-                              : 'text-zinc-500'
-                      }`}
-                    >
-                      {category.change === null
-                        ? 'New'
-                        : `${
-                            category.change >
-                            0
-                              ? '+'
-                              : ''
-                          }${category.change.toFixed(
-                            1,
-                          )}%`}
-                    </span>
-                  </div>
-                ),
-              )}
-            </div>
-          )}
-        </div>
       </section>
 
       {/* Insights */}
-      <section className="mt-6 pb-10">
-        <div className="rounded-2xl border border-violet-500/10 bg-violet-500/[0.03] p-6">
-          <p className="text-sm text-zinc-500">
-            Spending insights
-          </p>
 
-          <p className="mt-1 text-lg font-medium">
-            What BudgetWise noticed
-          </p>
+      <section className="mt-6 pb-12">
+
+        <div className="rounded-3xl border border-white/5 bg-[#111417] p-6">
+
+          <div>
+            <p className="text-sm font-medium text-zinc-200">
+              Financial insights
+            </p>
+
+            <p className="mt-1 text-xs leading-5 text-zinc-600">
+              A few observations based on your
+              activity this month.
+            </p>
+          </div>
 
           <div className="mt-5 space-y-3">
-            {reportInsights.map(
-              (insight, index) => (
-                <Insight
-                  key={index}
-                  text={insight}
-                />
-              ),
+
+            {insights.length ===
+            0 ? (
+              <div className="rounded-2xl border border-white/5 bg-[#0d0f11] p-5">
+                <p className="text-sm text-zinc-500">
+                  Keep recording your transactions
+                  and BudgetWise will have more
+                  information to analyze.
+                </p>
+              </div>
+            ) : (
+              insights.map(
+                (
+                  insight,
+                  index,
+                ) => (
+                  <div
+                    key={index}
+                    className="flex gap-4 rounded-2xl border border-white/5 bg-[#0d0f11] p-5"
+                  >
+
+                    <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-violet-500/10 text-sm text-violet-300">
+                      {index +
+                        1}
+                    </div>
+
+                    <p className="text-sm leading-6 text-zinc-400">
+                      {insight}
+                    </p>
+
+                  </div>
+                ),
+              )
             )}
+
           </div>
+
         </div>
+
       </section>
+
     </div>
   )
 }
 
-/* -------------------------------- */
-/* Report Card                      */
-/* -------------------------------- */
+/*
+ * =========================================
+ * REPORT CARD
+ * =========================================
+ */
 
 function ReportCard({
   label,
   value,
   description,
+  tone = 'neutral',
 }) {
+  const tones = {
+    red: {
+      border:
+        'border-red-500/10',
+      background:
+        'bg-red-500/[0.025]',
+      text:
+        'text-red-300',
+    },
+
+    green: {
+      border:
+        'border-emerald-500/10',
+      background:
+        'bg-emerald-500/[0.025]',
+      text:
+        'text-emerald-300',
+    },
+
+    violet: {
+      border:
+        'border-violet-500/10',
+      background:
+        'bg-violet-500/[0.025]',
+      text:
+        'text-violet-300',
+    },
+
+    neutral: {
+      border:
+        'border-white/5',
+      background:
+        'bg-[#111417]',
+      text:
+        'text-zinc-200',
+    },
+  }
+
+  const style =
+    tones[tone] ||
+    tones.neutral
+
   return (
-    <div className="rounded-2xl border border-white/5 bg-[#111417] p-5">
-      <p className="text-sm text-zinc-500">
+    <div
+      className={`rounded-3xl border ${style.border} ${style.background} p-5`}
+    >
+      <p className="text-xs text-zinc-600">
         {label}
       </p>
 
-      <p className="mt-3 truncate text-xl font-semibold tracking-tight text-zinc-100">
+      <p
+        className={`mt-3 text-xl font-semibold tracking-tight ${style.text}`}
+      >
         {value}
       </p>
 
-      <p className="mt-2 text-xs text-zinc-600">
+      <p className="mt-2 text-xs leading-5 text-zinc-600">
         {description}
       </p>
     </div>
   )
 }
 
-/* -------------------------------- */
-/* Spending Trend                   */
-/* -------------------------------- */
+/*
+ * =========================================
+ * ANALYSIS CARD
+ * =========================================
+ */
 
-function ReportTrend({
-  expenses,
-  period,
+function AnalysisCard({
+  label,
+  value,
+  description,
+  positive = false,
 }) {
-  if (expenses.length === 0) {
-    return (
-      <EmptyState message="No spending data available for this period." />
-    )
-  }
-
-  const dailyTotals = {}
-
-  expenses.forEach((expense) => {
-    if (!expense.date) {
-      return
-    }
-
-    if (!dailyTotals[expense.date]) {
-      dailyTotals[expense.date] = 0
-    }
-
-    dailyTotals[expense.date] +=
-      Number(expense.amount || 0)
-  })
-
-  const values = Object.entries(
-    dailyTotals,
-  ).sort(([dateA], [dateB]) =>
-    dateA.localeCompare(dateB),
-  )
-
-  const maxValue = Math.max(
-    ...values.map(([, amount]) => amount),
-    1,
-  )
-
   return (
-    <div>
-      <div className="flex h-56 items-end gap-2 overflow-x-auto pb-6">
-        {values.map(
-          ([date, amount]) => {
-            const height =
-              Math.max(
-                (amount / maxValue) * 100,
-                5,
-              )
-
-            return (
-              <div
-                key={date}
-                className="group flex min-w-10 flex-1 flex-col items-center justify-end"
-              >
-                <div className="relative w-full max-w-12">
-                  <div
-                    className="w-full rounded-t-lg bg-violet-500/70 transition group-hover:bg-violet-400"
-                    style={{
-                      height: `${height * 1.8}px`,
-                    }}
-                    title={`₹${amount.toLocaleString(
-                      'en-IN',
-                    )}`}
-                  />
-                </div>
-
-                <p className="mt-2 text-[10px] text-zinc-600">
-                  {formatShortDate(date)}
-                </p>
-              </div>
-            )
-          },
-        )}
-      </div>
+    <div className="rounded-3xl border border-white/5 bg-[#111417] p-6">
 
       <p className="text-xs text-zinc-600">
-        {period === 'monthly'
-          ? 'Daily spending for this month'
-          : period === 'weekly'
-            ? 'Daily spending for this week'
-            : 'Spending activity for this year'}
+        {label}
       </p>
+
+      <p
+        className={`mt-3 text-lg font-medium ${
+          positive
+            ? 'text-emerald-300'
+            : 'text-zinc-200'
+        }`}
+      >
+        {value}
+      </p>
+
+      <p className="mt-2 text-xs leading-5 text-zinc-600">
+        {description}
+      </p>
+
     </div>
   )
 }
 
-/* -------------------------------- */
-/* Insight                          */
-/* -------------------------------- */
+/*
+ * =========================================
+ * EMPTY CHART
+ * =========================================
+ */
 
-function Insight({ text }) {
+function EmptyChart({
+  text,
+}) {
   return (
-    <div className="rounded-xl border border-white/5 bg-[#111417] px-4 py-3">
-      <p className="text-sm text-zinc-400">
+    <div className="flex h-full w-full items-center justify-center rounded-2xl border border-white/5 bg-[#0d0f11]">
+      <p className="text-xs text-zinc-600">
         {text}
       </p>
     </div>
   )
 }
 
-/* -------------------------------- */
-/* Empty State                      */
-/* -------------------------------- */
+/*
+ * =========================================
+ * HELPERS
+ * =========================================
+ */
 
-function EmptyState({ message }) {
-  return (
-    <div className="mt-5 rounded-xl border border-white/5 bg-[#0d0f11] px-4 py-8 text-center">
-      <p className="text-sm text-zinc-600">
-        {message}
-      </p>
-    </div>
-  )
-}
+function getCurrentMonth() {
+  const date =
+    new Date()
 
-/* -------------------------------- */
-/* Period helpers                   */
-/* -------------------------------- */
-
-function getPeriodRange(
-  period,
-  today,
-) {
-  const year = today.getFullYear()
-  const month = today.getMonth()
-
-  if (period === 'weekly') {
-    const current = new Date(today)
-    const dayOfWeek =
-      current.getDay()
-
-    const start = new Date(current)
-
-    start.setDate(
-      current.getDate() - dayOfWeek,
-    )
-
-    const end = new Date(start)
-
-    end.setDate(
-      start.getDate() + 6,
-    )
-
-    return {
-      start: toDateString(start),
-      end: toDateString(end),
-    }
-  }
-
-  if (period === 'yearly') {
-    return {
-      start: `${year}-01-01`,
-      end: `${year}-12-31`,
-    }
-  }
-
-  const lastDay = new Date(
-    year,
-    month + 1,
-    0,
-  ).getDate()
-
-  return {
-    start: `${year}-${String(
-      month + 1,
-    ).padStart(2, '0')}-01`,
-    end: `${year}-${String(
-      month + 1,
-    ).padStart(2, '0')}-${String(
-      lastDay,
-    ).padStart(2, '0')}`,
-  }
-}
-
-function getDaysBetween(
-  startDate,
-  endDate,
-) {
-  const start = new Date(
-    `${startDate}T00:00:00`,
-  )
-
-  const end = new Date(
-    `${endDate}T00:00:00`,
-  )
-
-  const difference =
-    end.getTime() - start.getTime()
-
-  return (
-    Math.floor(
-      difference /
-        (1000 * 60 * 60 * 24),
-    ) + 1
-  )
-}
-
-function toDateString(date) {
   return `${date.getFullYear()}-${String(
     date.getMonth() + 1,
-  ).padStart(2, '0')}-${String(
-    date.getDate(),
   ).padStart(2, '0')}`
 }
 
-/* -------------------------------- */
-/* Formatting                       */
-/* -------------------------------- */
-
-function formatDate(dateString) {
-  const date = new Date(
-    `${dateString}T00:00:00`,
-  )
+function formatMonth(
+  month,
+) {
+  const date =
+    new Date(
+      `${month}-01T00:00:00`,
+    )
 
   return date.toLocaleDateString(
-    'en-IN',
-    {
-      day: 'numeric',
-      month: 'short',
-      year: 'numeric',
-    },
-  )
-}
-
-function formatShortDate(
-  dateString,
-) {
-  const date = new Date(
-    `${dateString}T00:00:00`,
-  )
-
-  return date.toLocaleDateString(
-    'en-IN',
-    {
-      day: 'numeric',
-      month: 'short',
-    },
-  )
-}
-
-function formatPeriodLabel(
-  period,
-  today,
-) {
-  if (period === 'weekly') {
-    return 'Current week'
-  }
-
-  if (period === 'yearly') {
-    return today
-      .getFullYear()
-      .toString()
-  }
-
-  return today.toLocaleDateString(
     'en-IN',
     {
       month: 'long',
@@ -807,76 +1467,63 @@ function formatPeriodLabel(
   )
 }
 
-/* -------------------------------- */
-/* Insights                         */
-/* -------------------------------- */
-
-function getTopCategoryInsight(
-  category,
+function formatShortDate(
+  dateString,
 ) {
-  if (!category) {
-    return 'Add some expenses to start generating spending insights.'
+  if (!dateString) {
+    return ''
   }
 
-  return `${category.category} is your highest spending category at ₹${category.amount.toLocaleString(
-    'en-IN',
-  )}.`
-}
+  const date =
+    new Date(
+      `${dateString}T00:00:00`,
+    )
 
-function getDailyAverageInsight(
-  average,
-) {
-  if (average <= 0) {
-    return 'There is not enough spending data to calculate your daily average.'
-  }
-
-  return `You're spending an average of ₹${Math.round(
-    average,
-  ).toLocaleString(
-    'en-IN',
-  )} per day during this period.`
-}
-
-function getHighestDayInsight(
-  day,
-) {
-  if (!day) {
-    return 'Your highest spending day will appear once you record expenses.'
-  }
-
-  return `Your highest spending day was ${formatDate(
-    day.date,
-  )}, when you spent ₹${day.amount.toLocaleString(
-    'en-IN',
-  )}.`
-}
-
-function getComparisonInsight(
-  change,
-  previousTotal,
-) {
   if (
-    change === null ||
-    previousTotal === 0
+    Number.isNaN(
+      date.getTime(),
+    )
   ) {
-    return 'Once you have spending data from the previous month, BudgetWise will compare the two periods.'
+    return dateString
   }
 
-  if (change > 0) {
-    return `Your spending increased by ${change.toFixed(
-      1,
-    )}% compared with the previous month.`
+  return date.toLocaleDateString(
+    'en-IN',
+    {
+      day: 'numeric',
+      month: 'short',
+    },
+  )
+}
+
+function formatFullDate(
+  dateString,
+) {
+  if (!dateString) {
+    return 'Unknown date'
   }
 
-  if (change < 0) {
-    return `Your spending decreased by ${Math.abs(
-      change,
-    ).toFixed(
-      1,
-    )}% compared with the previous month.`
+  const date =
+    new Date(
+      `${dateString}T00:00:00`,
+    )
+
+  if (
+    Number.isNaN(
+      date.getTime(),
+    )
+  ) {
+    return dateString
   }
 
-  return 'Your spending is almost identical to the previous month.'
+  return date.toLocaleDateString(
+    'en-IN',
+    {
+      day: 'numeric',
+      month: 'long',
+      year: 'numeric',
+    },
+  )
 }
 
 export default Reports

@@ -1,126 +1,226 @@
-export function getTotalSaved(goal) {
-  const contributionsTotal = goal.contributions.reduce(
-    (total, contribution) =>
-      total + contribution.amount,
-    0,
-  )
+export function getTotalSaved(
+  goal,
+) {
+  const contributions =
+    Array.isArray(
+      goal.contributions,
+    )
+      ? goal.contributions
+      : []
 
-  return goal.initialSavings + contributionsTotal
+  const contributionsTotal =
+    contributions.reduce(
+      (total, contribution) =>
+        total +
+        Number(
+          contribution.amount || 0,
+        ),
+      0,
+    )
+
+  return (
+    Number(
+      goal.initialSavings || 0,
+    ) +
+    contributionsTotal
+  )
 }
 
-export function getRemainingAmount(goal) {
-  const totalSaved = getTotalSaved(goal)
+export function getRemainingAmount(
+  goal,
+) {
+  const totalSaved =
+    getTotalSaved(goal)
 
   return Math.max(
-    goal.targetAmount - totalSaved,
+    Number(
+      goal.targetAmount || 0,
+    ) - totalSaved,
     0,
   )
 }
 
-export function getProgressPercentage(goal) {
-  if (goal.targetAmount <= 0) {
+export function getProgressPercentage(
+  goal,
+) {
+  const target =
+    Number(
+      goal.targetAmount || 0,
+    )
+
+  if (target <= 0) {
     return 0
   }
 
-  const totalSaved = getTotalSaved(goal)
+  const totalSaved =
+    getTotalSaved(goal)
 
   return Math.min(
-    (totalSaved / goal.targetAmount) * 100,
+    (totalSaved / target) *
+      100,
     100,
   )
 }
 
-export function getMonthlyContributions(goal) {
+export function getMonthlyContributions(
+  goal,
+) {
   const monthlyTotals = {}
 
-  goal.contributions.forEach((contribution) => {
-    const month = contribution.date.slice(0, 7)
-
-    if (!monthlyTotals[month]) {
-      monthlyTotals[month] = 0
-    }
-
-    monthlyTotals[month] += contribution.amount
-  })
-
-  return Object.entries(monthlyTotals)
-    .sort(([monthA], [monthB]) =>
-      monthA.localeCompare(monthB),
+  const contributions =
+    Array.isArray(
+      goal.contributions,
     )
-    .map(([month, amount]) => ({
-      month,
-      amount,
-    }))
+      ? goal.contributions
+      : []
+
+  contributions.forEach(
+    (contribution) => {
+      if (!contribution.date) {
+        return
+      }
+
+      const month =
+        contribution.date.slice(
+          0,
+          7,
+        )
+
+      if (!monthlyTotals[month]) {
+        monthlyTotals[month] = 0
+      }
+
+      monthlyTotals[month] +=
+        Number(
+          contribution.amount || 0,
+        )
+    },
+  )
+
+  return Object.entries(
+    monthlyTotals,
+  )
+    .sort(
+      ([monthA], [monthB]) =>
+        monthA.localeCompare(
+          monthB,
+        ),
+    )
+    .map(
+      ([
+        month,
+        amount,
+      ]) => ({
+        month,
+        amount,
+      }),
+    )
 }
 
-export function getAverageMonthlySaving(goal) {
+export function getAverageMonthlySaving(
+  goal,
+) {
   const monthlyContributions =
-    getMonthlyContributions(goal)
+    getMonthlyContributions(
+      goal,
+    )
 
-  if (monthlyContributions.length === 0) {
+  if (
+    monthlyContributions.length ===
+    0
+  ) {
     return 0
   }
 
-  const total = monthlyContributions.reduce(
-    (sum, item) => sum + item.amount,
-    0,
-  )
+  const total =
+    monthlyContributions.reduce(
+      (sum, item) =>
+        sum +
+        Number(
+          item.amount || 0,
+        ),
+      0,
+    )
 
-  return total / monthlyContributions.length
+  return (
+    total /
+    monthlyContributions.length
+  )
 }
 
-export function getEstimatedMonths(goal) {
-  const remaining = getRemainingAmount(goal)
+export function getEstimatedMonths(
+  goal,
+) {
+  const remaining =
+    getRemainingAmount(goal)
 
   if (remaining <= 0) {
     return 0
   }
 
   const averageMonthlySaving =
-    getAverageMonthlySaving(goal)
+    getAverageMonthlySaving(
+      goal,
+    )
 
-  if (averageMonthlySaving <= 0) {
+  if (
+    averageMonthlySaving <= 0
+  ) {
     return null
   }
 
   return Math.ceil(
-    remaining / averageMonthlySaving,
+    remaining /
+      averageMonthlySaving,
   )
 }
 
-export function getEstimatedCompletionDate(goal) {
-  const remaining = getRemainingAmount(goal)
+export function getEstimatedCompletionDate(
+  goal,
+) {
+  const remaining =
+    getRemainingAmount(goal)
 
   if (remaining <= 0) {
     return new Date()
   }
 
   const averageMonthlySaving =
-    getAverageMonthlySaving(goal)
+    getAverageMonthlySaving(
+      goal,
+    )
 
-  if (averageMonthlySaving <= 0) {
+  if (
+    averageMonthlySaving <= 0
+  ) {
     return null
   }
 
-  const months = Math.ceil(
-    remaining / averageMonthlySaving,
-  )
+  const months =
+    Math.ceil(
+      remaining /
+        averageMonthlySaving,
+    )
 
   const date = new Date()
 
   date.setMonth(
-    date.getMonth() + months,
+    date.getMonth() +
+      months,
   )
 
   return date
 }
 
-export function getRequiredMonthlySaving(goal) {
+export function getRequiredMonthlySaving(
+  goal,
+) {
   if (!goal.targetDate) {
     return null
   }
 
-  const remaining = getRemainingAmount(goal)
+  const remaining =
+    getRemainingAmount(goal)
 
   if (remaining <= 0) {
     return 0
@@ -128,31 +228,45 @@ export function getRequiredMonthlySaving(goal) {
 
   const today = new Date()
 
-  const targetDate = new Date(
-    `${goal.targetDate}T00:00:00`,
-  )
+  const targetDate =
+    new Date(
+      `${goal.targetDate}T00:00:00`,
+    )
 
   if (targetDate <= today) {
     return remaining
   }
 
   const months =
-    (targetDate.getFullYear() -
-      today.getFullYear()) *
+    (
+      targetDate.getFullYear() -
+      today.getFullYear()
+    ) *
       12 +
-    (targetDate.getMonth() -
-      today.getMonth())
+    (
+      targetDate.getMonth() -
+      today.getMonth()
+    )
 
-  const effectiveMonths = Math.max(
-    months,
-    1,
+  const effectiveMonths =
+    Math.max(
+      months,
+      1,
+    )
+
+  return (
+    remaining /
+    effectiveMonths
   )
-
-  return remaining / effectiveMonths
 }
 
-export function getGoalStatus(goal) {
-  if (getRemainingAmount(goal) <= 0) {
+export function getGoalStatus(
+  goal,
+) {
+  if (
+    getRemainingAmount(goal) <=
+    0
+  ) {
     return 'completed'
   }
 
@@ -161,18 +275,26 @@ export function getGoalStatus(goal) {
   }
 
   const averageMonthlySaving =
-    getAverageMonthlySaving(goal)
+    getAverageMonthlySaving(
+      goal,
+    )
 
   const requiredMonthlySaving =
-    getRequiredMonthlySaving(goal)
+    getRequiredMonthlySaving(
+      goal,
+    )
 
-  if (averageMonthlySaving <= 0) {
+  if (
+    averageMonthlySaving <= 0
+  ) {
     return 'no-history'
   }
 
   if (
+    requiredMonthlySaving !==
+      null &&
     averageMonthlySaving >=
-    requiredMonthlySaving
+      requiredMonthlySaving
   ) {
     return 'on-track'
   }

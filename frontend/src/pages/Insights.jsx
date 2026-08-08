@@ -1,7 +1,12 @@
-import { useMemo } from 'react'
+import {
+  useEffect,
+  useMemo,
+  useState,
+} from 'react'
 
-import { getExpenses } from '../services/expenseService'
-import { dashboardData } from '../data/dashboardData'
+import { supabase } from '../lib/supabaseClient'
+
+import { useCurrency } from '../context/CurrencyContext'
 
 import {
   getAverageExpense,
@@ -21,91 +26,404 @@ import {
 } from '../utils/reportCalculations'
 
 function Insights() {
-  const expenses = getExpenses()
+  const { formatCurrency } = useCurrency()
+
+  const [transactions, setTransactions] =
+    useState([])
+
+  const [budget, setBudget] =
+    useState(null)
+
+  const [loading, setLoading] =
+    useState(true)
+
+  const [error, setError] =
+    useState('')
+
+  /*
+   * =========================================
+   * CURRENT DATE
+   * =========================================
+   */
 
   const today = new Date()
 
-  const monthlyBudget = Number(
-    dashboardData?.monthlyBudget || 0,
-  )
+  const currentYear =
+    today.getFullYear()
+
+  const currentMonth =
+    today.getMonth()
+
+  const currentMonthStart =
+    `${currentYear}-${String(
+      currentMonth + 1,
+    ).padStart(2, '0')}-01`
 
   /*
-   * Current month expenses
+   * =========================================
+   * LOAD DATA
+   * =========================================
    */
-  const currentMonthExpenses = useMemo(() => {
-    const year = today.getFullYear()
-    const month = today.getMonth()
 
-    return expenses.filter((expense) => {
-      if (!expense.date) {
-        return false
+  useEffect(() => {
+    loadInsights()
+  }, [])
+
+  async function loadInsights() {
+    try {
+      setLoading(true)
+      setError('')
+
+      const {
+        data: {
+          user,
+        },
+        error: userError,
+      } =
+        await supabase.auth.getUser()
+
+      if (userError) {
+        throw userError
       }
 
-      const expenseDate = new Date(
-        `${expense.date}T00:00:00`,
+      if (!user) {
+        throw new Error(
+          'You must be signed in.',
+        )
+      }
+
+      const {
+        data: transactionData,
+        error: transactionError,
+      } =
+        await supabase
+          .from('expenses')
+          .select('*')
+          .eq(
+            'user_id',
+            user.id,
+          )
+          .order(
+            'expense_date',
+            {
+              ascending: false,
+            },
+          )
+          .order(
+            'created_at',
+            {
+              ascending: false,
+            },
+          )
+
+      if (transactionError) {
+        throw transactionError
+      }
+
+      const {
+        data: budgetData,
+        error: budgetError,
+      } =
+        await supabase
+          .from('budgets')
+          .select('*')
+          .eq(
+            'user_id',
+            user.id,
+          )
+          .eq(
+            'month',
+            currentMonthStart,
+          )
+          .maybeSingle()
+
+      if (budgetError) {
+        throw budgetError
+      }
+
+      const mappedTransactions =
+        (
+          transactionData || []
+        ).map(
+          (transaction) => ({
+            id: transaction.id,
+
+            name:
+              transaction.name ||
+              'Transaction',
+
+            amount: Number(
+              transaction.amount || 0,
+            ),
+
+            category:
+              transaction.category ||
+              'Other',
+
+            date:
+              transaction.expense_date,
+
+            notes:
+              transaction.notes ||
+              '',
+
+            transactionType:
+              transaction.transaction_type ||
+              'expense',
+          }),
+        )
+
+      setTransactions(
+        mappedTransactions,
       )
 
-      return (
-        expenseDate.getFullYear() === year &&
-        expenseDate.getMonth() === month
+      setBudget(
+        budgetData || null,
       )
-    })
-  }, [expenses])
+    } catch (err) {
+      console.error(
+        'Insights loading error:',
+        err,
+      )
+
+      setError(
+        err?.message ||
+          'Unable to load insights.',
+      )
+    } finally {
+      setLoading(false)
+    }
+  }
 
   /*
-   * Basic calculations
+   * =========================================
+   * CURRENT MONTH EXPENSES
+   * =========================================
    */
-  const totalSpent = useMemo(
-    () =>
-      getTotalSpent(
-        currentMonthExpenses,
-      ),
-    [currentMonthExpenses],
-  )
 
-  const averageExpense = useMemo(
-    () =>
-      getAverageExpense(
-        currentMonthExpenses,
-      ),
-    [currentMonthExpenses],
-  )
+  const currentMonthExpenses =
+    useMemo(() => {
+      return transactions.filter(
+        (transaction) => {
+          if (
+            transaction.transactionType ===
+            'credit'
+          ) {
+            return false
+          }
 
-  const largestExpense = useMemo(
-    () =>
-      getLargestExpense(
-        currentMonthExpenses,
-      ),
-    [currentMonthExpenses],
-  )
+          if (!transaction.date) {
+            return false
+          }
 
-  const categoryTotals = useMemo(
-    () =>
-      getCategoryTotals(
-        currentMonthExpenses,
-      ),
-    [currentMonthExpenses],
-  )
+          const date = new Date(
+            `${transaction.date}T00:00:00`,
+          )
 
-  const categoryShares = useMemo(
-    () =>
-      getCategoryShare(
+          return (
+            date.getFullYear() ===
+              currentYear &&
+            date.getMonth() ===
+              currentMonth
+          )
+        },
+      )
+    }, [
+      transactions,
+      currentYear,
+      currentMonth,
+    ])
+
+  /*
+   * =========================================
+   * CURRENT MONTH CREDITS
+   * =========================================
+   */
+
+  const currentMonthCredits =
+    useMemo(() => {
+      return transactions.filter(
+        (transaction) => {
+          if (
+            transaction.transactionType !==
+            'credit'
+          ) {
+            return false
+          }
+
+          if (!transaction.date) {
+            return false
+          }
+
+          const date = new Date(
+            `${transaction.date}T00:00:00`,
+          )
+
+          return (
+            date.getFullYear() ===
+              currentYear &&
+            date.getMonth() ===
+              currentMonth
+          )
+        },
+      )
+    }, [
+      transactions,
+      currentYear,
+      currentMonth,
+    ])
+
+  /*
+   * =========================================
+   * PREVIOUS MONTH
+   * =========================================
+   */
+
+  const previousMonthTransactions =
+    useMemo(() => {
+      const previousDate =
+        new Date(
+          currentYear,
+          currentMonth - 1,
+          1,
+        )
+
+      const previousYear =
+        previousDate.getFullYear()
+
+      const previousMonth =
+        previousDate.getMonth()
+
+      return transactions.filter(
+        (transaction) => {
+          if (
+            transaction.transactionType ===
+            'credit'
+          ) {
+            return false
+          }
+
+          if (!transaction.date) {
+            return false
+          }
+
+          const date = new Date(
+            `${transaction.date}T00:00:00`,
+          )
+
+          return (
+            date.getFullYear() ===
+              previousYear &&
+            date.getMonth() ===
+              previousMonth
+          )
+        },
+      )
+    }, [
+      transactions,
+      currentYear,
+      currentMonth,
+    ])
+
+  /*
+   * =========================================
+   * MONEY
+   * =========================================
+   */
+
+  const monthlyBudget =
+    Number(
+      budget?.amount || 0,
+    )
+
+  const totalSpent =
+    useMemo(() => {
+      return getTotalSpent(
+        currentMonthExpenses,
+      )
+    }, [
+      currentMonthExpenses,
+    ])
+
+  const totalCredits =
+    useMemo(() => {
+      return currentMonthCredits.reduce(
+        (total, transaction) =>
+          total +
+          Number(
+            transaction.amount || 0,
+          ),
+        0,
+      )
+    }, [
+      currentMonthCredits,
+    ])
+
+  const availableMoney =
+    monthlyBudget +
+    totalCredits -
+    totalSpent
+
+  /*
+   * =========================================
+   * SPENDING METRICS
+   * =========================================
+   */
+
+  const averageExpense =
+    useMemo(() => {
+      return getAverageExpense(
+        currentMonthExpenses,
+      )
+    }, [
+      currentMonthExpenses,
+    ])
+
+  const largestExpense =
+    useMemo(() => {
+      return getLargestExpense(
+        currentMonthExpenses,
+      )
+    }, [
+      currentMonthExpenses,
+    ])
+
+  const categoryTotals =
+    useMemo(() => {
+      return getCategoryTotals(
+        currentMonthExpenses,
+      )
+    }, [
+      currentMonthExpenses,
+    ])
+
+  const categoryShares =
+    useMemo(() => {
+      return getCategoryShare(
         categoryTotals,
         totalSpent,
-      ),
-    [
+      )
+    }, [
       categoryTotals,
       totalSpent,
-    ],
-  )
+    ])
+
+  const topCategory =
+    categoryShares.length > 0
+      ? categoryShares[0]
+      : null
 
   /*
-   * Budget calculations
+   * =========================================
+   * BUDGET
+   * =========================================
    */
-  const budgetUsage = getBudgetUsage(
-    totalSpent,
-    monthlyBudget,
-  )
+
+  const budgetUsage =
+    getBudgetUsage(
+      totalSpent,
+      monthlyBudget,
+    )
 
   const spendingStatus =
     getSpendingStatus(
@@ -114,15 +432,18 @@ function Insights() {
     )
 
   /*
-   * Days elapsed / days in month
+   * =========================================
+   * FORECAST
+   * =========================================
    */
+
   const daysElapsed =
     today.getDate()
 
   const daysInMonth =
     new Date(
-      today.getFullYear(),
-      today.getMonth() + 1,
+      currentYear,
+      currentMonth + 1,
       0,
     ).getDate()
 
@@ -142,8 +463,32 @@ function Insights() {
     )
 
   /*
-   * Insight messages
+   * =========================================
+   * PREVIOUS MONTH COMPARISON
+   * =========================================
    */
+
+  const previousMonthSpent =
+    getTotalSpent(
+      previousMonthTransactions,
+    )
+
+  let spendingChange = null
+
+  if (previousMonthSpent > 0) {
+    spendingChange =
+      ((totalSpent -
+        previousMonthSpent) /
+        previousMonthSpent) *
+      100
+  }
+
+  /*
+   * =========================================
+   * GENERATED INSIGHTS
+   * =========================================
+   */
+
   const budgetInsight =
     getBudgetInsight(
       totalSpent,
@@ -156,93 +501,149 @@ function Insights() {
       monthlyBudget,
     )
 
-  const topCategory =
-    categoryShares.length > 0
-      ? categoryShares[0]
-      : null
+  /*
+   * =========================================
+   * LOADING
+   * =========================================
+   */
+
+  if (loading) {
+    return (
+      <div className="flex min-h-[70vh] items-center justify-center">
+        <div className="text-center">
+          <div className="mx-auto h-8 w-8 animate-spin rounded-full border-2 border-white/10 border-t-violet-400" />
+
+          <p className="mt-4 text-sm text-zinc-500">
+            Preparing your insights...
+          </p>
+        </div>
+      </div>
+    )
+  }
+
+  /*
+   * =========================================
+   * ERROR
+   * =========================================
+   */
+
+  if (error) {
+    return (
+      <div className="mx-auto max-w-7xl">
+        <div className="rounded-2xl border border-red-500/20 bg-red-500/[0.04] p-6">
+          <p className="text-sm text-red-400">
+            {error}
+          </p>
+
+          <button
+            type="button"
+            onClick={
+              loadInsights
+            }
+            className="mt-4 rounded-xl border border-red-500/20 px-4 py-2.5 text-sm text-red-400 transition hover:bg-red-500/10"
+          >
+            Try again
+          </button>
+        </div>
+      </div>
+    )
+  }
 
   return (
     <div className="mx-auto max-w-7xl">
-      {/* Header */}
+
+      {/* HEADER */}
+
       <section>
-        <p className="text-sm text-zinc-500">
+        <p className="text-xs font-medium uppercase tracking-[0.18em] text-violet-400">
           Financial intelligence
         </p>
 
-        <h1 className="mt-2 text-3xl font-semibold tracking-tight">
+        <h1 className="mt-3 text-3xl font-semibold tracking-tight text-zinc-100">
           Insights
         </h1>
 
-        <p className="mt-2 text-sm text-zinc-500">
-          Understand your spending patterns and
-          make better financial decisions.
+        <p className="mt-2 max-w-2xl text-sm leading-6 text-zinc-500">
+          A clearer view of your spending,
+          budget health, and financial
+          direction.
         </p>
       </section>
 
-      {/* Main overview */}
-      <section className="mt-8 grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+      {/* OVERVIEW */}
+
+      <section className="mt-8 grid gap-4 sm:grid-cols-2 xl:grid-cols-5">
+
         <InsightCard
           label="Total spent"
-          value={`₹${totalSpent.toLocaleString(
-            'en-IN',
+          value={`-${formatCurrency(
+            totalSpent,
           )}`}
           description="Spent this month"
+          tone="danger"
+        />
+
+        <InsightCard
+          label="Money received"
+          value={`+${formatCurrency(
+            totalCredits,
+          )}`}
+          description="Credits this month"
+          tone="positive"
+        />
+
+        <InsightCard
+          label="Available"
+          value={formatCurrency(
+            availableMoney,
+          )}
+          description="Budget + credits - expenses"
+          tone="accent"
         />
 
         <InsightCard
           label="Budget usage"
-          value={`${budgetUsage.toFixed(1)}%`}
+          value={`${budgetUsage.toFixed(
+            1,
+          )}%`}
           description={
             monthlyBudget > 0
-              ? `₹${Math.max(
-                  monthlyBudget -
-                    totalSpent,
-                  0,
-                ).toLocaleString(
-                  'en-IN',
+              ? `${formatCurrency(
+                  Math.max(
+                    monthlyBudget -
+                      totalSpent,
+                    0,
+                  ),
                 )} remaining`
               : 'No budget configured'
           }
-          accent
         />
 
         <InsightCard
           label="Average expense"
-          value={`₹${Math.round(
-            averageExpense,
-          ).toLocaleString(
-            'en-IN',
-          )}`}
+          value={formatCurrency(
+            Math.round(
+              averageExpense,
+            ),
+          )}
           description="Average per transaction"
         />
 
-        <InsightCard
-          label="Top category"
-          value={
-            topCategory
-              ? topCategory.category
-              : '—'
-          }
-          description={
-            topCategory
-              ? `${topCategory.percentage.toFixed(
-                  1,
-                )}% of total spending`
-              : 'No spending data'
-          }
-        />
       </section>
 
-      {/* Budget health */}
+      {/* BUDGET HEALTH */}
+
       <section className="mt-6">
-        <div className="rounded-2xl border border-white/5 bg-[#111417] p-6">
+        <div className="rounded-2xl border border-white/[0.07] bg-[#111417] p-6 shadow-sm">
+
           <div className="flex flex-col justify-between gap-5 sm:flex-row sm:items-start">
+
             <div>
-              <p className="text-sm text-zinc-500">
+              <p className="text-xs font-medium uppercase tracking-wider text-zinc-600">
                 Budget health
               </p>
 
-              <h2 className="mt-1 text-xl font-medium">
+              <h2 className="mt-2 text-xl font-medium text-zinc-100">
                 {getBudgetHealthTitle(
                   spendingStatus,
                 )}
@@ -250,7 +651,7 @@ function Insights() {
             </div>
 
             <div
-              className={`rounded-full px-3 py-1 text-xs font-medium ${getStatusClasses(
+              className={`rounded-full px-3 py-1.5 text-xs font-medium ${getStatusClasses(
                 spendingStatus,
               )}`}
             >
@@ -258,162 +659,204 @@ function Insights() {
                 spendingStatus,
               )}
             </div>
+
           </div>
 
-          <div className="mt-6">
+          <div className="mt-7">
+
             <div className="flex items-center justify-between text-sm">
               <span className="text-zinc-500">
                 Monthly budget
               </span>
 
-              <span className="text-zinc-300">
-                ₹
-                {monthlyBudget.toLocaleString(
-                  'en-IN',
+              <span className="font-medium text-zinc-300">
+                {formatCurrency(
+                  monthlyBudget,
                 )}
               </span>
             </div>
 
-            <div className="mt-3 h-3 overflow-hidden rounded-full bg-white/5">
-              <div
-                className={`h-full rounded-full transition-all ${getProgressClasses(
-                  spendingStatus,
-                )}`}
-                style={{
-                  width: `${Math.min(
-                    budgetUsage,
-                    100,
-                  )}%`,
-                }}
-              />
-            </div>
+            {monthlyBudget > 0 ? (
+              <>
+                <div className="mt-3 h-2 overflow-hidden rounded-full bg-white/[0.06]">
+                  <div
+                    className={`h-full rounded-full transition-all ${getProgressClasses(
+                      spendingStatus,
+                    )}`}
+                    style={{
+                      width: `${Math.min(
+                        budgetUsage,
+                        100,
+                      )}%`,
+                    }}
+                  />
+                </div>
 
-            <div className="mt-2 flex items-center justify-between text-xs">
-              <span className="text-zinc-600">
-                {budgetUsage.toFixed(1)}%
-                used
-              </span>
+                <div className="mt-2 flex justify-between text-xs">
+                  <span className="text-zinc-600">
+                    {budgetUsage.toFixed(
+                      1,
+                    )}
+                    % used
+                  </span>
 
-              <span className="text-zinc-600">
-                {monthlyBudget > 0
-                  ? `₹${Math.max(
-                      monthlyBudget -
-                        totalSpent,
-                      0,
-                    ).toLocaleString(
-                      'en-IN',
-                    )} left`
-                  : 'Set a budget'}
-              </span>
-            </div>
+                  <span className="text-zinc-600">
+                    {budgetUsage >=
+                    100
+                      ? `${formatCurrency(
+                          Math.max(
+                            totalSpent -
+                              monthlyBudget,
+                            0,
+                          ),
+                        )} over`
+                      : `${formatCurrency(
+                          Math.max(
+                            monthlyBudget -
+                              totalSpent,
+                            0,
+                          ),
+                        )} left`}
+                  </span>
+                </div>
+              </>
+            ) : (
+              <div className="mt-4 rounded-xl border border-white/[0.06] bg-[#0d0f11] px-4 py-4">
+                <p className="text-sm leading-6 text-zinc-600">
+                  Set a monthly budget to
+                  start receiving budget
+                  health insights.
+                </p>
+              </div>
+            )}
+
           </div>
 
-          <div className="mt-6 rounded-xl border border-white/5 bg-[#0d0f11] px-4 py-4">
-            <p className="text-sm text-zinc-400">
+          <div className="mt-6 rounded-xl border border-white/[0.06] bg-[#0d0f11] px-4 py-4">
+            <p className="text-sm leading-6 text-zinc-400">
               {budgetInsight}
             </p>
           </div>
+
         </div>
       </section>
 
-      {/* Spending forecast */}
-      <section className="mt-6">
-        <div className="grid gap-4 lg:grid-cols-2">
-          <div className="rounded-2xl border border-white/5 bg-[#111417] p-6">
-            <p className="text-sm text-zinc-500">
-              End-of-month forecast
-            </p>
+      {/* FORECAST */}
 
-            <p className="mt-3 text-3xl font-semibold tracking-tight text-violet-300">
-              ₹
-              {Math.round(
+      <section className="mt-6 grid gap-4 lg:grid-cols-2">
+
+        <div className="rounded-2xl border border-white/[0.07] bg-[#111417] p-6">
+
+          <p className="text-xs font-medium uppercase tracking-wider text-zinc-600">
+            End-of-month forecast
+          </p>
+
+          <p className="mt-3 text-3xl font-semibold tracking-tight text-violet-300">
+            {formatCurrency(
+              Math.round(
                 projectedSpending,
-              ).toLocaleString(
-                'en-IN',
-              )}
-            </p>
+              ),
+            )}
+          </p>
 
-            <p className="mt-2 text-sm text-zinc-500">
-              Estimated total spending if your
-              current pace continues.
-            </p>
+          <p className="mt-2 max-w-xl text-sm leading-6 text-zinc-500">
+            Estimated total spending if
+            your current daily spending
+            pace continues.
+          </p>
 
-            <div className="mt-5 rounded-xl bg-violet-500/[0.04] px-4 py-4">
-              <p className="text-sm text-zinc-400">
-                {projectionInsight}
-              </p>
-            </div>
+          <div className="mt-5 rounded-xl border border-violet-500/10 bg-violet-500/[0.035] px-4 py-4">
+            <p className="text-sm leading-6 text-zinc-400">
+              {projectionInsight}
+            </p>
           </div>
 
-          <div className="rounded-2xl border border-white/5 bg-[#111417] p-6">
-            <p className="text-sm text-zinc-500">
-              Monthly outlook
-            </p>
+        </div>
 
-            <p className="mt-3 text-3xl font-semibold tracking-tight">
-              {projectedDifference >= 0
+        <div className="rounded-2xl border border-white/[0.07] bg-[#111417] p-6">
+
+          <p className="text-xs font-medium uppercase tracking-wider text-zinc-600">
+            Monthly outlook
+          </p>
+
+          <p className="mt-3 text-3xl font-semibold tracking-tight text-zinc-100">
+            {monthlyBudget <= 0
+              ? 'No budget'
+              : projectedDifference >=
+                  0
                 ? 'Under budget'
                 : 'Over budget'}
-            </p>
+          </p>
 
+          {monthlyBudget > 0 && (
             <p
               className={`mt-2 text-xl font-medium ${
-                projectedDifference >= 0
+                projectedDifference >=
+                0
                   ? 'text-emerald-400'
-                  : 'text-amber-400'
+                  : 'text-red-400'
               }`}
             >
               {projectedDifference >=
               0
-                ? `₹${Math.round(
+                ? '+'
+                : '-'}
+              {formatCurrency(
+                Math.abs(
+                  Math.round(
                     projectedDifference,
-                  ).toLocaleString(
-                    'en-IN',
-                  )} projected remaining`
-                : `₹${Math.abs(
-                    Math.round(
-                      projectedDifference,
-                    ),
-                  ).toLocaleString(
-                    'en-IN',
-                  )} projected over budget`}
+                  ),
+                ),
+              )}
             </p>
+          )}
 
-            <p className="mt-3 text-sm text-zinc-500">
-              Based on {daysElapsed}{' '}
-              days of spending in a{' '}
-              {daysInMonth}-day month.
-            </p>
-          </div>
+          <p className="mt-3 text-sm leading-6 text-zinc-500">
+            Based on {daysElapsed}{' '}
+            days of spending in a{' '}
+            {daysInMonth}-day month.
+          </p>
+
         </div>
+
       </section>
 
-      {/* Category analysis */}
+      {/* CATEGORY ANALYSIS */}
+
       <section className="mt-6">
-        <div className="rounded-2xl border border-white/5 bg-[#111417] p-6">
+        <div className="rounded-2xl border border-white/[0.07] bg-[#111417] p-6">
+
           <div>
-            <p className="text-sm text-zinc-500">
+            <p className="text-xs font-medium uppercase tracking-wider text-zinc-600">
               Spending by category
             </p>
 
-            <h2 className="mt-1 text-xl font-medium">
+            <h2 className="mt-2 text-xl font-medium text-zinc-100">
               Where your money is going
             </h2>
           </div>
 
-          {categoryShares.length === 0 ? (
+          {categoryShares.length ===
+          0 ? (
             <EmptyState />
           ) : (
-            <div className="mt-6 space-y-5">
+            <div className="mt-7 space-y-6">
+
               {categoryShares.map(
                 (category) => (
                   <div
-                    key={category.category}
+                    key={
+                      category.category
+                    }
                   >
+
                     <div className="flex items-center justify-between gap-4">
+
                       <div>
                         <p className="text-sm font-medium text-zinc-300">
-                          {category.category}
+                          {
+                            category.category
+                          }
                         </p>
 
                         <p className="mt-1 text-xs text-zinc-600">
@@ -424,17 +867,17 @@ function Insights() {
                         </p>
                       </div>
 
-                      <p className="text-sm font-medium text-zinc-200">
-                        ₹
-                        {category.amount.toLocaleString(
-                          'en-IN',
+                      <p className="text-sm font-medium text-red-400">
+                        -{formatCurrency(
+                          category.amount,
                         )}
                       </p>
+
                     </div>
 
-                    <div className="mt-2 h-2 overflow-hidden rounded-full bg-white/5">
+                    <div className="mt-3 h-1.5 overflow-hidden rounded-full bg-white/[0.05]">
                       <div
-                        className="h-full rounded-full bg-violet-500"
+                        className="h-full rounded-full bg-violet-500 transition-all"
                         style={{
                           width: `${Math.min(
                             category.percentage,
@@ -443,87 +886,185 @@ function Insights() {
                         }}
                       />
                     </div>
+
                   </div>
                 ),
               )}
+
             </div>
           )}
+
         </div>
       </section>
 
-      {/* Biggest expense */}
-      <section className="mt-6">
-        <div className="grid gap-4 md:grid-cols-2">
-          <div className="rounded-2xl border border-white/5 bg-[#111417] p-6">
-            <p className="text-sm text-zinc-500">
-              Largest transaction
-            </p>
+      {/* LARGEST EXPENSE + RECOMMENDATION */}
 
-            {largestExpense ? (
-              <>
-                <p className="mt-3 text-3xl font-semibold tracking-tight">
-                  ₹
-                  {Number(
-                    largestExpense.amount,
-                  ).toLocaleString(
-                    'en-IN',
-                  )}
-                </p>
+      <section className="mt-6 grid gap-4 md:grid-cols-2">
 
-                <p className="mt-2 text-sm text-zinc-300">
-                  {largestExpense.name}
-                </p>
+        <div className="rounded-2xl border border-white/[0.07] bg-[#111417] p-6">
 
-                <p className="mt-1 text-xs text-zinc-600">
-                  {largestExpense.category ||
-                    'Other'}{' '}
-                  ·{' '}
-                  {formatDate(
-                    largestExpense.date,
-                  )}
-                </p>
-              </>
-            ) : (
-              <p className="mt-4 text-sm text-zinc-600">
-                No expenses recorded yet.
+          <p className="text-xs font-medium uppercase tracking-wider text-zinc-600">
+            Largest expense
+          </p>
+
+          {largestExpense ? (
+            <>
+              <p className="mt-3 text-3xl font-semibold tracking-tight text-red-400">
+                -{formatCurrency(
+                  largestExpense.amount,
+                )}
               </p>
+
+              <p className="mt-2 text-sm font-medium text-zinc-300">
+                {largestExpense.name}
+              </p>
+
+              <p className="mt-1 text-xs text-zinc-600">
+                {largestExpense.category ||
+                  'Other'}{' '}
+                ·{' '}
+                {formatDate(
+                  largestExpense.date,
+                )}
+              </p>
+            </>
+          ) : (
+            <p className="mt-4 text-sm text-zinc-600">
+              No expenses recorded yet.
+            </p>
+          )}
+
+        </div>
+
+        <div className="rounded-2xl border border-emerald-500/10 bg-emerald-500/[0.025] p-6">
+
+          <p className="text-xs font-medium uppercase tracking-wider text-zinc-600">
+            BudgetWise recommendation
+          </p>
+
+          <p className="mt-3 text-lg font-medium leading-7 text-zinc-200">
+            {getRecommendation(
+              spendingStatus,
+              topCategory,
+              projectedDifference,
             )}
-          </div>
+          </p>
 
-          <div className="rounded-2xl border border-violet-500/10 bg-violet-500/[0.03] p-6">
-            <p className="text-sm text-zinc-500">
-              BudgetWise recommendation
-            </p>
+          <p className="mt-3 text-sm leading-6 text-zinc-500">
+            Based on your current month's
+            spending activity.
+          </p>
 
-            <p className="mt-3 text-lg font-medium text-zinc-200">
-              {getRecommendation(
-                spendingStatus,
-                topCategory,
-                projectedDifference,
+        </div>
+
+      </section>
+
+      {/* PREVIOUS MONTH */}
+
+      <section className="mt-6">
+        <div className="rounded-2xl border border-white/[0.07] bg-[#111417] p-6">
+
+          <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
+
+            <div>
+              <p className="text-xs font-medium uppercase tracking-wider text-zinc-600">
+                Compared with last month
+              </p>
+
+              <h2 className="mt-2 text-xl font-medium text-zinc-100">
+                Spending comparison
+              </h2>
+            </div>
+
+            <div className="text-left sm:text-right">
+
+              {spendingChange ===
+              null ? (
+                <p className="text-sm text-zinc-600">
+                  No previous-month
+                  spending data
+                </p>
+              ) : (
+                <>
+                  <p
+                    className={`text-2xl font-semibold ${
+                      spendingChange >
+                      0
+                        ? 'text-red-400'
+                        : spendingChange <
+                            0
+                          ? 'text-emerald-400'
+                          : 'text-zinc-300'
+                    }`}
+                  >
+                    {spendingChange >
+                    0
+                      ? '+'
+                      : ''}
+                    {spendingChange.toFixed(
+                      1,
+                    )}
+                    %
+                  </p>
+
+                  <p className="mt-1 text-xs text-zinc-600">
+                    {spendingChange >
+                    0
+                      ? 'More spent'
+                      : spendingChange <
+                          0
+                        ? 'Less spent'
+                        : 'No change'}
+                  </p>
+                </>
               )}
-            </p>
 
-            <p className="mt-3 text-sm text-zinc-500">
-              This recommendation is based on
-              your current month's spending
-              activity.
-            </p>
+            </div>
+
           </div>
+
+          <div className="mt-5 grid gap-3 sm:grid-cols-2">
+
+            <ComparisonBox
+              label="This month"
+              amount={totalSpent}
+              negative
+              formatCurrency={
+                formatCurrency
+              }
+            />
+
+            <ComparisonBox
+              label="Previous month"
+              amount={
+                previousMonthSpent
+              }
+              negative
+              formatCurrency={
+                formatCurrency
+              }
+            />
+
+          </div>
+
         </div>
       </section>
 
-      {/* Key insights */}
+      {/* KEY INSIGHTS */}
+
       <section className="mt-6 pb-10">
-        <div className="rounded-2xl border border-white/5 bg-[#111417] p-6">
-          <p className="text-sm text-zinc-500">
+        <div className="rounded-2xl border border-white/[0.07] bg-[#111417] p-6">
+
+          <p className="text-xs font-medium uppercase tracking-wider text-zinc-600">
             Key insights
           </p>
 
-          <h2 className="mt-1 text-xl font-medium">
+          <h2 className="mt-2 text-xl font-medium text-zinc-100">
             What BudgetWise noticed
           </h2>
 
           <div className="mt-5 grid gap-3">
+
             <InsightRow>
               {budgetInsight}
             </InsightRow>
@@ -534,56 +1075,106 @@ function Insights() {
 
             {topCategory && (
               <InsightRow>
-                {topCategory.category} accounts
-                for{' '}
+                {topCategory.category}{' '}
+                accounts for{' '}
                 {topCategory.percentage.toFixed(
                   1,
                 )}
-                % of your total spending this
-                month.
+                % of your total spending
+                this month.
               </InsightRow>
             )}
 
             {largestExpense && (
               <InsightRow>
-                Your largest transaction was ₹
-                {Number(
+                Your largest expense was{' '}
+                {formatCurrency(
                   largestExpense.amount,
-                ).toLocaleString(
-                  'en-IN',
                 )}{' '}
-                for {largestExpense.name}.
+                for{' '}
+                {largestExpense.name}.
               </InsightRow>
             )}
+
+            {totalCredits > 0 && (
+              <InsightRow>
+                You received{' '}
+                {formatCurrency(
+                  totalCredits,
+                )}{' '}
+                in credits this month.
+              </InsightRow>
+            )}
+
+            <InsightRow>
+              Your current average expense
+              is{' '}
+              {formatCurrency(
+                Math.round(
+                  averageExpense,
+                ),
+              )}{' '}
+              per transaction.
+            </InsightRow>
+
+            {spendingChange !==
+              null && (
+              <InsightRow>
+                Your spending is{' '}
+                {spendingChange > 0
+                  ? `${spendingChange.toFixed(
+                      1,
+                    )}% higher`
+                  : spendingChange <
+                      0
+                    ? `${Math.abs(
+                        spendingChange,
+                      ).toFixed(
+                        1,
+                      )}% lower`
+                    : 'about the same'}{' '}
+                compared with the previous
+                month.
+              </InsightRow>
+            )}
+
           </div>
+
         </div>
       </section>
+
     </div>
   )
 }
 
-/* -------------------------------- */
-/* Components                       */
-/* -------------------------------- */
+/*
+ * =========================================
+ * INSIGHT CARD
+ * =========================================
+ */
 
 function InsightCard({
   label,
   value,
   description,
-  accent = false,
+  tone = 'default',
 }) {
+  const toneClasses = {
+    danger: 'text-red-400',
+    positive: 'text-emerald-400',
+    accent: 'text-violet-300',
+    default: 'text-zinc-100',
+  }
+
   return (
-    <div className="rounded-2xl border border-white/5 bg-[#111417] p-5">
-      <p className="text-sm text-zinc-500">
+    <div className="rounded-2xl border border-white/[0.07] bg-[#111417] p-5 transition hover:border-white/[0.11]">
+
+      <p className="text-xs font-medium uppercase tracking-wider text-zinc-600">
         {label}
       </p>
 
       <p
-        className={`mt-3 text-2xl font-semibold tracking-tight ${
-          accent
-            ? 'text-violet-300'
-            : 'text-zinc-100'
-        }`}
+        className={`mt-3 text-2xl font-semibold tracking-tight ${toneClasses[tone]}`}
       >
         {value}
       </p>
@@ -591,38 +1182,97 @@ function InsightCard({
       <p className="mt-2 text-xs text-zinc-600">
         {description}
       </p>
+
     </div>
   )
 }
 
-function InsightRow({ children }) {
+/*
+ * =========================================
+ * COMPARISON BOX
+ * =========================================
+ */
+
+function ComparisonBox({
+  label,
+  amount,
+  negative = false,
+  formatCurrency,
+}) {
   return (
-    <div className="rounded-xl border border-white/5 bg-[#0d0f11] px-4 py-4">
+    <div className="rounded-xl border border-white/[0.06] bg-[#0d0f11] p-4">
+
+      <p className="text-xs uppercase tracking-wider text-zinc-600">
+        {label}
+      </p>
+
+      <p
+        className={`mt-2 text-lg font-semibold ${
+          negative
+            ? 'text-red-400'
+            : 'text-emerald-400'
+        }`}
+      >
+        {negative
+          ? '-'
+          : '+'}
+        {formatCurrency(amount)}
+      </p>
+
+    </div>
+  )
+}
+
+/*
+ * =========================================
+ * INSIGHT ROW
+ * =========================================
+ */
+
+function InsightRow({
+  children,
+}) {
+  return (
+    <div className="rounded-xl border border-white/[0.06] bg-[#0d0f11] px-4 py-4">
+
       <div className="flex gap-3">
-        <span className="mt-1 h-2 w-2 shrink-0 rounded-full bg-violet-400" />
+
+        <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-violet-400" />
 
         <p className="text-sm leading-6 text-zinc-400">
           {children}
         </p>
+
       </div>
+
     </div>
   )
 }
 
+/*
+ * =========================================
+ * EMPTY STATE
+ * =========================================
+ */
+
 function EmptyState() {
   return (
-    <div className="mt-6 rounded-xl border border-white/5 bg-[#0d0f11] px-4 py-10 text-center">
+    <div className="mt-6 rounded-xl border border-white/[0.06] bg-[#0d0f11] px-4 py-10 text-center">
+
       <p className="text-sm text-zinc-600">
         Add some expenses to start seeing
         category insights.
       </p>
+
     </div>
   )
 }
 
-/* -------------------------------- */
-/* Helpers                          */
-/* -------------------------------- */
+/*
+ * =========================================
+ * BUDGET STATUS
+ * =========================================
+ */
 
 function getBudgetHealthTitle(
   status,
@@ -686,6 +1336,12 @@ function getProgressClasses(status) {
   return 'bg-violet-500'
 }
 
+/*
+ * =========================================
+ * RECOMMENDATION
+ * =========================================
+ */
+
 function getRecommendation(
   status,
   topCategory,
@@ -710,6 +1366,12 @@ function getRecommendation(
   return 'Keep recording your expenses to receive more personalized recommendations.'
 }
 
+/*
+ * =========================================
+ * DATE
+ * =========================================
+ */
+
 function formatDate(dateString) {
   if (!dateString) {
     return 'Unknown date'
@@ -718,6 +1380,14 @@ function formatDate(dateString) {
   const date = new Date(
     `${dateString}T00:00:00`,
   )
+
+  if (
+    Number.isNaN(
+      date.getTime(),
+    )
+  ) {
+    return dateString
+  }
 
   return date.toLocaleDateString(
     'en-IN',

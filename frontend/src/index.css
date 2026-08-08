@@ -1,15 +1,104 @@
 @import "tailwindcss";
 
+/* =========================================================
+   BUDGETWISE
+   PREMIUM WARM DESIGN SYSTEM
+   ========================================================= */
+
+/* =========================================================
+   LIGHT THEME
+   ========================================================= */
+
+html[data-theme="light"] {
+  --bw-bg: #f4efe8;
+  --bw-bg-secondary: #eee7de;
+
+  --bw-surface: #fffdf9;
+  --bw-surface-soft: #faf6f0;
+  --bw-surface-hover: #f5efe7;
+
+  --bw-text: #292521;
+  --bw-text-strong: #211e1a;
+  --bw-text-secondary: #625a51;
+  --bw-text-muted: #81776d;
+  --bw-text-faint: #9d9388;
+
+  --bw-border: rgba(63, 52, 42, 0.11);
+  --bw-border-soft: rgba(63, 52, 42, 0.07);
+
+  --bw-accent: #7c3aed;
+  --bw-accent-light: #8b5cf6;
+  --bw-accent-soft: rgba(124, 58, 237, 0.08);
+
+  --bw-positive: #059669;
+  --bw-negative: #dc2626;
+
+  --bw-shadow:
+    rgba(61, 47, 32, 0.08);
+
+  color-scheme: light;
+}
+
+
+/* =========================================================
+   DARK THEME
+   Warm charcoal — NOT pure black
+   ========================================================= */
+
+html[data-theme="dark"] {
+  --bw-bg: #1b1917;
+  --bw-bg-secondary: #211e1b;
+
+  --bw-surface: #25211e;
+  --bw-surface-soft: #2b2723;
+  --bw-surface-hover: #322d28;
+
+  --bw-text: #f4eee7;
+  --bw-text-strong: #fffaf4;
+  --bw-text-secondary: #d0c6bb;
+  --bw-text-muted: #aaa095;
+  --bw-text-faint: #81766c;
+
+  --bw-border: rgba(255, 244, 230, 0.10);
+  --bw-border-soft: rgba(255, 244, 230, 0.065);
+
+  --bw-accent: #a78bfa;
+  --bw-accent-light: #c4b5fd;
+  --bw-accent-soft: rgba(167, 139, 250, 0.12);
+
+  --bw-positive: #34d399;
+  --bw-negative: #f87171;
+
+  --bw-shadow:
+    rgba(0, 0, 0, 0.20);
+
+  color-scheme: dark;
+}
+
+
+/* =========================================================
+   DEFAULT
+   ========================================================= */
+
 :root {
-  font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+  font-family:
+    Inter,
+    ui-sans-serif,
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
     sans-serif;
 
-  color: #f5f5f5;
-  background: #0b0d0f;
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
 }
+
+
+/* =========================================================
+   GLOBAL
+   ========================================================= */
 
 * {
   box-sizing: border-box;
@@ -22,7 +111,619 @@ body,
   margin: 0;
 }
 
+html {
+  background: var(--bw-bg);
+  color: var(--bw-text);
+
+  transition:
+    background-color 220ms ease,
+    color 220ms ease;
+}
+
 body {
   min-width: 320px;
-  background: #0b0d0f;
+  min-height: 100vh;
+
+  background: var(--bw-bg);
+  color: var(--bw-text);
+
+  transition:
+    background-color 220ms ease,
+    color 220ms ease;
+}
+
+
+/* =========================================================
+   TYPOGRAPHY
+   ========================================================= */
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  color: var(--bw-text-strong);
+  letter-spacing: -0.035em;
+}
+
+p {
+  color: inherit;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+
+/* =========================================================
+   FORM ELEMENTS
+   ========================================================= */
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+}
+
+input,
+select,
+textarea {
+  color: var(--bw-text);
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: var(--bw-text-faint);
+}
+
+
+/* =========================================================
+   SCROLLBAR
+   ========================================================= */
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color:
+    rgba(124, 58, 237, 0.30)
+    transparent;
+}
+
+*::-webkit-scrollbar {
+  width: 7px;
+  height: 7px;
+}
+
+*::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+*::-webkit-scrollbar-thumb {
+  background: rgba(124, 58, 237, 0.28);
+  border-radius: 999px;
+}
+
+*::-webkit-scrollbar-thumb:hover {
+  background: rgba(124, 58, 237, 0.45);
+}
+
+
+/* =========================================================
+   SELECTION
+   ========================================================= */
+
+::selection {
+  background: rgba(124, 58, 237, 0.18);
+  color: var(--bw-text-strong);
+}
+
+
+/* =========================================================
+   SMOOTH TRANSITIONS
+   ========================================================= */
+
+body,
+aside,
+header,
+main,
+button,
+input,
+select,
+textarea,
+[class*="rounded-"],
+[class*="border-"] {
+  transition:
+    background-color 220ms ease,
+    color 180ms ease,
+    border-color 180ms ease,
+    box-shadow 180ms ease;
+}
+
+
+/* =========================================================
+   MAIN APP BACKGROUNDS
+   ========================================================= */
+
+html[data-theme="light"]
+[class~="bg-[#0b0d0f]"],
+html[data-theme="light"]
+[class~="bg-[#0f1113]"],
+html[data-theme="light"]
+[class~="bg-[#0e1012]"] {
+  background-color: var(--bw-bg) !important;
+}
+
+html[data-theme="dark"]
+[class~="bg-[#0b0d0f]"],
+html[data-theme="dark"]
+[class~="bg-[#0f1113]"],
+html[data-theme="dark"]
+[class~="bg-[#0e1012]"] {
+  background-color: var(--bw-bg) !important;
+}
+
+
+/* =========================================================
+   CARDS
+   ========================================================= */
+
+html[data-theme="light"]
+[class~="bg-[#111417]"],
+html[data-theme="light"]
+[class~="bg-[#131619]"],
+html[data-theme="light"]
+[class~="bg-[#171a1d]"],
+html[data-theme="light"]
+[class~="bg-[#171a1e]"],
+html[data-theme="light"]
+[class~="bg-[#181b1f]"],
+html[data-theme="light"]
+[class~="bg-[#0d0f11]"] {
+  background-color: var(--bw-surface) !important;
+}
+
+html[data-theme="dark"]
+[class~="bg-[#111417]"],
+html[data-theme="dark"]
+[class~="bg-[#131619]"],
+html[data-theme="dark"]
+[class~="bg-[#171a1d]"],
+html[data-theme="dark"]
+[class~="bg-[#171a1e]"],
+html[data-theme="dark"]
+[class~="bg-[#181b1f]"],
+html[data-theme="dark"]
+[class~="bg-[#0d0f11]"] {
+  background-color: var(--bw-surface) !important;
+}
+
+
+/* =========================================================
+   TRANSPARENT WHITE SURFACES
+   ========================================================= */
+
+html[data-theme="light"]
+[class*="bg-white/[0.02]"] {
+  background-color:
+    rgba(80, 64, 48, 0.025) !important;
+}
+
+html[data-theme="light"]
+[class*="bg-white/[0.025]"] {
+  background-color:
+    rgba(80, 64, 48, 0.03) !important;
+}
+
+html[data-theme="light"]
+[class*="bg-white/[0.03]"] {
+  background-color:
+    rgba(80, 64, 48, 0.035) !important;
+}
+
+html[data-theme="light"]
+[class*="bg-white/[0.04]"] {
+  background-color:
+    rgba(80, 64, 48, 0.045) !important;
+}
+
+html[data-theme="light"]
+[class*="bg-white/[0.05]"] {
+  background-color:
+    rgba(80, 64, 48, 0.055) !important;
+}
+
+
+/* DARK */
+
+html[data-theme="dark"]
+[class*="bg-white/[0.02]"] {
+  background-color:
+    rgba(255, 244, 230, 0.025) !important;
+}
+
+html[data-theme="dark"]
+[class*="bg-white/[0.025]"] {
+  background-color:
+    rgba(255, 244, 230, 0.03) !important;
+}
+
+html[data-theme="dark"]
+[class*="bg-white/[0.03]"] {
+  background-color:
+    rgba(255, 244, 230, 0.035) !important;
+}
+
+html[data-theme="dark"]
+[class*="bg-white/[0.04]"] {
+  background-color:
+    rgba(255, 244, 230, 0.045) !important;
+}
+
+html[data-theme="dark"]
+[class*="bg-white/[0.05]"] {
+  background-color:
+    rgba(255, 244, 230, 0.055) !important;
+}
+
+
+/* =========================================================
+   BORDERS
+   ========================================================= */
+
+html[data-theme="light"]
+[class*="border-white"] {
+  border-color: var(--bw-border) !important;
+}
+
+html[data-theme="dark"]
+[class*="border-white"] {
+  border-color: var(--bw-border) !important;
+}
+
+html[data-theme="light"]
+[class*="divide-white"] > * + * {
+  border-color: var(--bw-border-soft) !important;
+}
+
+html[data-theme="dark"]
+[class*="divide-white"] > * + * {
+  border-color: var(--bw-border-soft) !important;
+}
+
+
+/* =========================================================
+   TEXT — LIGHT
+   ========================================================= */
+
+html[data-theme="light"] .text-zinc-100 {
+  color: #292521 !important;
+}
+
+html[data-theme="light"] .text-zinc-200 {
+  color: #35302b !important;
+}
+
+html[data-theme="light"] .text-zinc-300 {
+  color: #4b443d !important;
+}
+
+html[data-theme="light"] .text-zinc-400 {
+  color: #655d54 !important;
+}
+
+html[data-theme="light"] .text-zinc-500 {
+  color: #766d64 !important;
+}
+
+html[data-theme="light"] .text-zinc-600 {
+  color: #8b8177 !important;
+}
+
+html[data-theme="light"] .text-zinc-700 {
+  color: #9b9186 !important;
+}
+
+
+/* =========================================================
+   TEXT — DARK
+   ========================================================= */
+
+html[data-theme="dark"] .text-zinc-100 {
+  color: #f7f1e9 !important;
+}
+
+html[data-theme="dark"] .text-zinc-200 {
+  color: #eee7de !important;
+}
+
+html[data-theme="dark"] .text-zinc-300 {
+  color: #d2c8bd !important;
+}
+
+html[data-theme="dark"] .text-zinc-400 {
+  color: #b0a59a !important;
+}
+
+html[data-theme="dark"] .text-zinc-500 {
+  color: #968b80 !important;
+}
+
+html[data-theme="dark"] .text-zinc-600 {
+  color: #81766c !important;
+}
+
+html[data-theme="dark"] .text-zinc-700 {
+  color: #70665d !important;
+}
+
+
+/* =========================================================
+   SIDEBAR
+   ========================================================= */
+
+html[data-theme="light"] aside {
+  background:
+    linear-gradient(
+      180deg,
+      #fffdf9 0%,
+      #faf6f0 100%
+    ) !important;
+
+  color: var(--bw-text) !important;
+}
+
+html[data-theme="dark"] aside {
+  background:
+    linear-gradient(
+      180deg,
+      #211e1b 0%,
+      #1c1917 100%
+    ) !important;
+
+  color: var(--bw-text) !important;
+}
+
+
+/* =========================================================
+   HEADER
+   ========================================================= */
+
+html[data-theme="light"] header {
+  background:
+    rgba(255, 253, 249, 0.94) !important;
+
+  color: var(--bw-text) !important;
+
+  border-color: var(--bw-border) !important;
+}
+
+html[data-theme="dark"] header {
+  background:
+    rgba(29, 27, 25, 0.96) !important;
+
+  color: var(--bw-text) !important;
+
+  border-color: var(--bw-border) !important;
+}
+
+
+/* =========================================================
+   MAIN
+   ========================================================= */
+
+html[data-theme="light"] main {
+  background: var(--bw-bg) !important;
+  color: var(--bw-text) !important;
+}
+
+html[data-theme="dark"] main {
+  background: var(--bw-bg) !important;
+  color: var(--bw-text) !important;
+}
+
+
+/* =========================================================
+   INPUTS
+   ========================================================= */
+
+html[data-theme="light"] input,
+html[data-theme="light"] select,
+html[data-theme="light"] textarea {
+  background-color: var(--bw-surface-soft) !important;
+  color: var(--bw-text) !important;
+  border-color: var(--bw-border) !important;
+}
+
+html[data-theme="dark"] input,
+html[data-theme="dark"] select,
+html[data-theme="dark"] textarea {
+  background-color: var(--bw-surface-soft) !important;
+  color: var(--bw-text) !important;
+  border-color: var(--bw-border) !important;
+}
+
+
+/* =========================================================
+   FOCUS
+   ========================================================= */
+
+input:focus,
+select:focus,
+textarea:focus {
+  border-color:
+    rgba(124, 58, 237, 0.42) !important;
+
+  box-shadow:
+    0 0 0 3px
+    rgba(124, 58, 237, 0.07) !important;
+}
+
+
+/* =========================================================
+   VIOLET
+   ========================================================= */
+
+html[data-theme="light"] .text-violet-300,
+html[data-theme="light"] .text-violet-400 {
+  color: #7c3aed !important;
+}
+
+html[data-theme="dark"] .text-violet-300,
+html[data-theme="dark"] .text-violet-400 {
+  color: #a78bfa !important;
+}
+
+.bg-violet-500 {
+  background-color: #7c3aed !important;
+}
+
+
+/* =========================================================
+   POSITIVE
+   ========================================================= */
+
+html[data-theme="light"] .text-emerald-300,
+html[data-theme="light"] .text-emerald-400 {
+  color: #059669 !important;
+}
+
+html[data-theme="dark"] .text-emerald-300,
+html[data-theme="dark"] .text-emerald-400 {
+  color: #34d399 !important;
+}
+
+
+/* =========================================================
+   NEGATIVE
+   ========================================================= */
+
+html[data-theme="light"] .text-red-300,
+html[data-theme="light"] .text-red-400 {
+  color: #dc2626 !important;
+}
+
+html[data-theme="dark"] .text-red-300,
+html[data-theme="dark"] .text-red-400 {
+  color: #f87171 !important;
+}
+
+
+/* =========================================================
+   SIDEBAR NAV
+   ========================================================= */
+
+html[data-theme="light"] aside a {
+  color: #766d64 !important;
+}
+
+html[data-theme="light"] aside a:hover {
+  color: #292521 !important;
+
+  background:
+    rgba(124, 58, 237, 0.055) !important;
+}
+
+html[data-theme="dark"] aside a {
+  color: #a79d93 !important;
+}
+
+html[data-theme="dark"] aside a:hover {
+  color: #f4eee7 !important;
+
+  background:
+    rgba(255, 244, 230, 0.045) !important;
+}
+
+
+/* =========================================================
+   ACTIVE NAV
+   ========================================================= */
+
+html[data-theme="light"]
+aside a[aria-current="page"] {
+  background:
+    linear-gradient(
+      135deg,
+      #f0e7ff,
+      #eee5fb
+    ) !important;
+
+  color: #6d28d9 !important;
+}
+
+html[data-theme="dark"]
+aside a[aria-current="page"] {
+  background:
+    rgba(167, 139, 250, 0.12) !important;
+
+  color: #c4b5fd !important;
+}
+
+
+/* =========================================================
+   BUTTON HOVER
+   ========================================================= */
+
+html[data-theme="light"]
+[class*="hover:bg-white"]:hover {
+  background:
+    rgba(80, 64, 48, 0.045) !important;
+}
+
+html[data-theme="dark"]
+[class*="hover:bg-white"]:hover {
+  background:
+    rgba(255, 244, 230, 0.045) !important;
+}
+
+
+/* =========================================================
+   RECHARTS TOOLTIP
+   ========================================================= */
+
+html[data-theme="light"]
+.recharts-default-tooltip {
+  background-color: #fffdf9 !important;
+
+  border:
+    1px solid
+    rgba(63, 52, 42, 0.10) !important;
+
+  border-radius: 12px !important;
+
+  color: #292521 !important;
+
+  box-shadow:
+    0 14px 40px
+    rgba(61, 47, 32, 0.12) !important;
+}
+
+html[data-theme="dark"]
+.recharts-default-tooltip {
+  background-color: #2b2723 !important;
+
+  border:
+    1px solid
+    rgba(255, 244, 230, 0.10) !important;
+
+  border-radius: 12px !important;
+
+  color: #f4eee7 !important;
+
+  box-shadow:
+    0 14px 40px
+    rgba(0, 0, 0, 0.25) !important;
+}
+
+
+/* =========================================================
+   MOBILE
+   ========================================================= */
+
+@media (max-width: 640px) {
+  body {
+    font-size: 14px;
+  }
 }

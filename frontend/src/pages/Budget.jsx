@@ -1,25 +1,150 @@
-import { useState } from 'react'
+import {
+  useEffect,
+  useState,
+} from 'react'
+
 import BudgetSetup from '../components/BudgetSetup'
 
-function Budget() {
-  const [budget, setBudget] = useState({
-    amount: 30000,
-    days: 30,
-    startDate: '2026-08-01',
-    endDate: '2026-08-30',
-  })
+import {
+  getBudget,
+  saveBudget,
+} from '../services/budgetService'
 
-  function handleSaveBudget(newBudget) {
-    setBudget(newBudget)
+import {
+  useCurrency,
+} from '../context/CurrencyContext'
+
+function Budget() {
+  const {
+    formatCurrency,
+    ratesLoading,
+  } = useCurrency()
+
+  const [budget, setBudget] =
+    useState(null)
+
+  const [loading, setLoading] =
+    useState(true)
+
+  const [saving, setSaving] =
+    useState(false)
+
+  const [error, setError] =
+    useState('')
+
+  const [
+    selectedMonth,
+    setSelectedMonth,
+  ] = useState(
+    getCurrentMonth(),
+  )
+
+  useEffect(() => {
+    loadBudget(selectedMonth)
+  }, [selectedMonth])
+
+  async function loadBudget(
+    month,
+  ) {
+    try {
+      setLoading(true)
+      setError('')
+
+      const data =
+        await getBudget(
+          `${month}-01`,
+        )
+
+      setBudget(data)
+    } catch (error) {
+      console.error(
+        'Failed to load budget:',
+        error,
+      )
+
+      setError(
+        error?.message ||
+          'Unable to load budget.',
+      )
+
+      setBudget(null)
+    } finally {
+      setLoading(false)
+    }
   }
 
+  async function handleSaveBudget(
+    newBudget,
+  ) {
+    try {
+      setSaving(true)
+      setError('')
+
+      const savedBudget =
+        await saveBudget(
+          newBudget.amount,
+          newBudget.month,
+        )
+
+      setBudget(savedBudget)
+
+      setSelectedMonth(
+        savedBudget.month.slice(
+          0,
+          7,
+        ),
+      )
+    } catch (error) {
+      console.error(
+        'Failed to save budget:',
+        error,
+      )
+
+      setError(
+        error?.message ||
+          'Unable to save budget.',
+      )
+    } finally {
+      setSaving(false)
+    }
+  }
+
+  const amount =
+    Number(budget?.amount || 0)
+
+  const monthDate = budget
+    ? new Date(
+        `${budget.month}T00:00:00`,
+      )
+    : null
+
+  const daysInMonth =
+    monthDate
+      ? new Date(
+          monthDate.getFullYear(),
+          monthDate.getMonth() +
+            1,
+          0,
+        ).getDate()
+      : getDaysInSelectedMonth(
+          selectedMonth,
+        )
+
   const dailyBudget =
-    budget.amount / budget.days
+    amount > 0
+      ? amount / daysInMonth
+      : 0
+
+  const monthLabel =
+    formatMonth(selectedMonth)
 
   return (
     <div className="mx-auto max-w-7xl">
+
       {/* Header */}
+
       <section>
+
         <p className="text-sm text-zinc-500">
           Spending plan
         </p>
@@ -29,71 +154,232 @@ function Budget() {
         </h1>
 
         <p className="mt-2 text-sm text-zinc-500">
-          Create a budget that fits your timeline.
+          Create and manage your
+          monthly spending plan.
         </p>
+
+        {ratesLoading && (
+          <p className="mt-2 text-xs text-zinc-600">
+            Updating exchange rates...
+          </p>
+        )}
+
+      </section>
+
+      {/* Error */}
+
+      {error && (
+        <section className="mt-6">
+
+          <div className="rounded-xl border border-red-500/20 bg-red-500/[0.05] px-5 py-4">
+
+            <p className="text-sm text-red-400">
+              {error}
+            </p>
+
+            <button
+              type="button"
+              onClick={() =>
+                loadBudget(
+                  selectedMonth,
+                )
+              }
+              className="mt-3 rounded-lg border border-red-500/20 px-3 py-2 text-xs text-red-400 transition hover:bg-red-500/10"
+            >
+              Try again
+            </button>
+
+          </div>
+
+        </section>
+      )}
+
+      {/* Month selector */}
+
+      <section className="mt-8">
+
+        <div className="rounded-2xl border border-white/5 bg-[#111417] p-6">
+
+          <label
+            htmlFor="viewMonth"
+            className="block text-sm text-zinc-500"
+          >
+            View budget for
+          </label>
+
+          <input
+            id="viewMonth"
+            type="month"
+            value={selectedMonth}
+            onChange={(event) =>
+              setSelectedMonth(
+                event.target.value,
+              )
+            }
+            className="mt-3 rounded-xl border border-white/10 bg-[#0d0f11] px-4 py-3 text-sm text-zinc-200 outline-none focus:border-violet-500/50"
+          />
+
+        </div>
+
       </section>
 
       {/* Current budget */}
-      <section className="mt-8 grid gap-4 md:grid-cols-3">
+
+      <section className="mt-6 grid gap-4 md:grid-cols-3">
+
         <div className="rounded-2xl border border-white/5 bg-[#111417] p-6">
+
           <p className="text-sm text-zinc-500">
-            Budget
+            Monthly budget
           </p>
 
           <p className="mt-3 text-2xl font-semibold">
-            ₹{budget.amount.toLocaleString('en-IN')}
+            {formatCurrency(
+              amount,
+            )}
           </p>
+
+          <p className="mt-2 text-xs text-zinc-600">
+            {monthLabel}
+          </p>
+
         </div>
 
         <div className="rounded-2xl border border-white/5 bg-[#111417] p-6">
+
           <p className="text-sm text-zinc-500">
             Period
           </p>
 
           <p className="mt-3 text-2xl font-semibold">
-            {budget.days} days
+            {daysInMonth} days
           </p>
+
+          <p className="mt-2 text-xs text-zinc-600">
+            Full calendar month
+          </p>
+
         </div>
 
         <div className="rounded-2xl border border-violet-500/10 bg-violet-500/[0.03] p-6">
+
           <p className="text-sm text-zinc-500">
             Daily budget
           </p>
 
           <p className="mt-3 text-2xl font-semibold text-violet-300">
-            ₹{Math.floor(dailyBudget).toLocaleString('en-IN')}
+            {formatCurrency(
+              dailyBudget,
+              {
+                maximumFractionDigits: 0,
+              },
+            )}
           </p>
+
+          <p className="mt-2 text-xs text-zinc-600">
+            Based on {daysInMonth}{' '}
+            days
+          </p>
+
         </div>
+
       </section>
 
-      {/* Date range */}
-      <section className="mt-6 rounded-2xl border border-white/5 bg-[#111417] p-6">
-        <p className="text-sm text-zinc-500">
-          Budget period
-        </p>
+      {/* Status */}
 
-        <div className="mt-3 flex flex-wrap items-center gap-3 text-sm">
-          <span className="rounded-lg bg-white/[0.03] px-3 py-2 text-zinc-300">
-            {budget.startDate}
-          </span>
+      {!loading && !budget && (
+        <section className="mt-6">
 
-          <span className="text-zinc-700">
-            →
-          </span>
+          <div className="rounded-2xl border border-violet-500/10 bg-violet-500/[0.03] p-6">
 
-          <span className="rounded-lg bg-white/[0.03] px-3 py-2 text-zinc-300">
-            {budget.endDate}
-          </span>
-        </div>
-      </section>
+            <p className="text-sm font-medium text-violet-300">
+              No budget set for{' '}
+              {monthLabel}.
+            </p>
+
+            <p className="mt-2 text-sm text-zinc-500">
+              Enter an amount below to
+              create one.
+            </p>
+
+          </div>
+
+        </section>
+      )}
+
+      {/* Loading */}
+
+      {loading && (
+        <section className="mt-6">
+
+          <div className="rounded-2xl border border-white/5 bg-[#111417] p-6">
+
+            <p className="text-sm text-zinc-600">
+              Loading budget...
+            </p>
+
+          </div>
+
+        </section>
+      )}
 
       {/* Setup */}
+
       <section className="mt-8 pb-10">
+
         <BudgetSetup
+          budget={budget}
           onSave={handleSaveBudget}
+          saving={saving}
         />
+
       </section>
+
     </div>
+  )
+}
+
+function getCurrentMonth() {
+  const date = new Date()
+
+  const year =
+    date.getFullYear()
+
+  const month = String(
+    date.getMonth() + 1,
+  ).padStart(2, '0')
+
+  return `${year}-${month}`
+}
+
+function getDaysInSelectedMonth(
+  month,
+) {
+  const [
+    year,
+    monthNumber,
+  ] = month
+    .split('-')
+    .map(Number)
+
+  return new Date(
+    year,
+    monthNumber,
+    0,
+  ).getDate()
+}
+
+function formatMonth(month) {
+  const date = new Date(
+    `${month}-01T00:00:00`,
+  )
+
+  return date.toLocaleDateString(
+    'en-IN',
+    {
+      month: 'long',
+      year: 'numeric',
+    },
   )
 }
 

@@ -43,7 +43,8 @@ export function getCategoryTotals(
       amount,
     }))
     .sort(
-      (a, b) => b.amount - a.amount,
+      (a, b) =>
+        b.amount - a.amount,
     )
 }
 
@@ -85,12 +86,13 @@ export function getHighestSpendingDay(
     return null
   }
 
-  const [date, amount] = days.reduce(
-    (highest, current) =>
-      current[1] > highest[1]
-        ? current
-        : highest,
-  )
+  const [date, amount] =
+    days.reduce(
+      (highest, current) =>
+        current[1] > highest[1]
+          ? current
+          : highest,
+    )
 
   return {
     date,
@@ -173,16 +175,17 @@ export function getPreviousMonthRange(
     0,
   ).getDate()
 
-  return {
-    start: `${previousYear}-${String(
-      previousMonthNumber + 1,
-    ).padStart(2, '0')}-01`,
+  const monthString = String(
+    previousMonthNumber + 1,
+  ).padStart(2, '0')
 
-    end: `${previousYear}-${String(
-      previousMonthNumber + 1,
-    ).padStart(2, '0')}-${String(
-      lastDay,
-    ).padStart(2, '0')}`,
+  const lastDayString = String(
+    lastDay,
+  ).padStart(2, '0')
+
+  return {
+    start: `${previousYear}-${monthString}-01`,
+    end: `${previousYear}-${monthString}-${lastDayString}`,
   }
 }
 
@@ -228,15 +231,17 @@ export function getCategoryChanges(
 
   currentCategories.forEach(
     (category) => {
-      currentMap[category.category] =
-        category.amount
+      currentMap[
+        category.category
+      ] = category.amount
     },
   )
 
   previousCategories.forEach(
     (category) => {
-      previousMap[category.category] =
-        category.amount
+      previousMap[
+        category.category
+      ] = category.amount
     },
   )
 

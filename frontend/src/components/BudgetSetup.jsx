@@ -1,47 +1,221 @@
-import { useState } from 'react'
+import {
+  useEffect,
+  useState,
+} from 'react'
 
-const presetPeriods = [7, 15, 30, 60, 90]
+import {
+  useCurrency,
+} from '../context/CurrencyContext'
 
-function BudgetSetup({ onSave }) {
-  const [amount, setAmount] = useState('30000')
-  const [period, setPeriod] = useState(30)
-  const [customDays, setCustomDays] = useState('')
+function BudgetSetup({
+  budget,
+  onSave,
+  saving = false,
+}) {
+  const {
+    currency,
+    currencyInfo,
+    currentRate,
+    ratesLoading,
+    ratesError,
+    formatCurrency,
+  } = useCurrency()
+
+  const [amount, setAmount] =
+    useState('')
+
+  const [month, setMonth] =
+    useState(
+      getCurrentMonth(),
+    )
+
+  const [error, setError] =
+    useState('')
+
+  /*
+   * Populate existing budget.
+   *
+   * Database value is INR.
+   * Input value is selected currency.
+   */
+
+  useEffect(() => {
+    if (budget) {
+      const storedINR =
+        Number(
+          budget.amount || 0,
+        )
+
+      let displayAmount =
+        storedINR
+
+      if (
+        currency !== 'INR' &&
+        Number.isFinite(
+          Number(currentRate),
+        ) &&
+        Number(currentRate) > 0
+      ) {
+        displayAmount =
+          storedINR *
+          Number(currentRate)
+      }
+
+      setAmount(
+        displayAmount
+          ? String(
+              Math.round(
+                displayAmount * 100,
+              ) / 100,
+            )
+          : '',
+      )
+
+      setMonth(
+        budget.month.slice(
+          0,
+          7,
+        ),
+      )
+    } else {
+      setAmount('')
+    }
+  }, [
+    budget,
+    currency,
+    currentRate,
+  ])
 
   function handleSubmit(event) {
     event.preventDefault()
 
-    const numberOfDays =
-      period === 'custom'
-        ? Number(customDays)
-        : Number(period)
+    setError('')
 
-    const budgetAmount = Number(amount)
+    const enteredAmount =
+      Number(amount)
+
+    /*
+     * Validate.
+     */
 
     if (
-      budgetAmount <= 0 ||
-      numberOfDays <= 0
+      !amount ||
+      !Number.isFinite(
+        enteredAmount,
+      ) ||
+      enteredAmount <= 0
     ) {
+      setError(
+        `Please enter a valid budget amount in ${currencyInfo.code}.`,
+      )
+
       return
     }
 
-    const startDate = new Date()
+    if (!month) {
+      setError(
+        'Please select a budget month.',
+      )
 
-    const endDate = new Date(startDate)
+      return
+    }
 
-    endDate.setDate(
-      endDate.getDate() + numberOfDays - 1,
-    )
+    /*
+     * Exchange rate must be available
+     * when using a non-INR currency.
+     */
+
+    if (
+      currency !== 'INR' &&
+      (
+        ratesLoading ||
+        !Number.isFinite(
+          Number(currentRate),
+        ) ||
+        Number(currentRate) <= 0
+      )
+    ) {
+      setError(
+        'Exchange rates are still loading. Please try again in a moment.',
+      )
+
+      return
+    }
+
+    /*
+     * Convert selected currency
+     * back into INR.
+     *
+     * Example:
+     *
+     * USD 1000
+     *     ↓
+     * USD → INR
+     *     ↓
+     * INR amount saved
+     */
+
+    let amountInINR =
+      enteredAmount
+
+    if (currency !== 'INR') {
+      amountInINR =
+        enteredAmount /
+        Number(currentRate)
+    }
+
+    if (
+      !Number.isFinite(
+        amountInINR,
+      ) ||
+      amountInINR <= 0
+    ) {
+      setError(
+        'Unable to convert this budget amount. Please try again.',
+      )
+
+      return
+    }
+
+    /*
+     * Round to paise.
+     */
+
+    amountInINR =
+      Math.round(
+        amountInINR * 100,
+      ) / 100
+
+    const monthDate =
+      `${month}-01`
 
     onSave({
-      amount: budgetAmount,
-      days: numberOfDays,
-      startDate: startDate
-        .toISOString()
-        .split('T')[0],
-      endDate: endDate
-        .toISOString()
-        .split('T')[0],
+      amount: amountInINR,
+      month: monthDate,
     })
+  }
+
+  /*
+   * Preview stored INR value.
+   */
+
+  const enteredAmount =
+    Number(amount)
+
+  let storedINR =
+    enteredAmount
+
+  if (
+    currency !== 'INR' &&
+    Number.isFinite(
+      Number(currentRate),
+    ) &&
+    Number(currentRate) > 0 &&
+    enteredAmount > 0
+  ) {
+    storedINR =
+      enteredAmount /
+      Number(currentRate)
   }
 
   return (
@@ -49,18 +223,78 @@ function BudgetSetup({ onSave }) {
       onSubmit={handleSubmit}
       className="rounded-2xl border border-white/5 bg-[#111417] p-6"
     >
+
+      {/* Header */}
+
       <div>
-        <h2 className="text-lg font-medium tracking-tight">
-          Create a budget
-        </h2>
+
+        <p className="text-lg font-medium tracking-tight">
+          {budget
+            ? 'Update budget'
+            : 'Create a budget'}
+        </p>
 
         <p className="mt-1 text-sm text-zinc-500">
-          Choose how long this budget should last.
+          Set how much you want to
+          spend during a month.
         </p>
+
+      </div>
+
+      {/* Error */}
+
+      {error && (
+        <div className="mt-4 rounded-xl border border-red-500/20 bg-red-500/[0.05] px-4 py-3">
+
+          <p className="text-sm text-red-400">
+            {error}
+          </p>
+
+        </div>
+      )}
+
+      {/* Rate warning */}
+
+      {ratesError && (
+        <div className="mt-4 rounded-xl border border-amber-500/20 bg-amber-500/[0.05] px-4 py-3">
+
+          <p className="text-xs text-amber-400">
+            {ratesError}
+          </p>
+
+        </div>
+      )}
+
+      {/* Month */}
+
+      <div className="mt-6">
+
+        <label
+          htmlFor="budgetMonth"
+          className="mb-2 block text-sm text-zinc-400"
+        >
+          Budget month
+        </label>
+
+        <input
+          id="budgetMonth"
+          type="month"
+          value={month}
+          onChange={(event) =>
+            setMonth(
+              event.target.value,
+            )
+          }
+          disabled={saving}
+          className="w-full rounded-xl border border-white/10 bg-[#0d0f11] px-4 py-3 text-sm text-zinc-200 outline-none transition focus:border-violet-500/50 disabled:opacity-50"
+        />
+
       </div>
 
       {/* Amount */}
+
       <div className="mt-6">
+
         <label
           htmlFor="budgetAmount"
           className="mb-2 block text-sm text-zinc-400"
@@ -69,83 +303,122 @@ function BudgetSetup({ onSave }) {
         </label>
 
         <div className="flex items-center rounded-xl border border-white/10 bg-[#0d0f11] px-4 focus-within:border-violet-500/50">
+
           <span className="text-zinc-500">
-            ₹
+            {currencyInfo.symbol}
           </span>
 
           <input
             id="budgetAmount"
             type="number"
             min="1"
+            step="0.01"
             value={amount}
-            onChange={(event) =>
-              setAmount(event.target.value)
-            }
-            className="w-full bg-transparent px-3 py-3 text-sm text-zinc-100 outline-none"
+            onChange={(event) => {
+              setAmount(
+                event.target.value,
+              )
+              setError('')
+            }}
+            placeholder="Enter amount"
+            disabled={saving}
+            className="w-full bg-transparent px-3 py-3 text-sm text-zinc-100 outline-none placeholder:text-zinc-700 disabled:opacity-50"
           />
+
         </div>
-      </div>
 
-      {/* Preset periods */}
-      <div className="mt-6">
-        <p className="mb-3 text-sm text-zinc-400">
-          Budget period
-        </p>
+        <div className="mt-2 flex items-center justify-between">
 
-        <div className="grid grid-cols-3 gap-2 sm:grid-cols-5">
-          {presetPeriods.map((days) => (
-            <button
-              key={days}
-              type="button"
-              onClick={() => setPeriod(days)}
-              className={`rounded-xl border px-3 py-3 text-sm transition ${
-                period === days
-                  ? 'border-violet-500/40 bg-violet-500/10 text-violet-300'
-                  : 'border-white/5 bg-[#0d0f11] text-zinc-500 hover:border-white/10 hover:text-zinc-300'
-              }`}
-            >
-              {days} days
-            </button>
-          ))}
+          <p className="text-[11px] text-zinc-600">
+            Enter amount in{' '}
+            <span className="text-zinc-500">
+              {currencyInfo.code}
+            </span>
+          </p>
+
+          {ratesLoading &&
+            currency !==
+              'INR' && (
+            <p className="text-[11px] text-zinc-600">
+              Updating rate...
+            </p>
+          )}
+
         </div>
+
+        {/* INR storage preview */}
+
+        {currency !== 'INR' &&
+          enteredAmount > 0 &&
+          storedINR > 0 && (
+            <div className="mt-3 rounded-xl border border-white/5 bg-white/[0.02] px-3 py-2.5">
+
+              <div className="flex items-center justify-between">
+
+                <span className="text-xs text-zinc-600">
+                  Stored budget
+                </span>
+
+                <span className="text-xs font-medium text-zinc-400">
+                  ₹
+                  {storedINR.toLocaleString(
+                    'en-IN',
+                    {
+                      maximumFractionDigits:
+                        2,
+                    },
+                  )}
+                </span>
+
+              </div>
+
+            </div>
+          )}
+
       </div>
 
-      {/* Custom period */}
-      <div className="mt-4">
-        <button
-          type="button"
-          onClick={() => setPeriod('custom')}
-          className={`w-full rounded-xl border px-4 py-3 text-sm text-left transition ${
-            period === 'custom'
-              ? 'border-violet-500/40 bg-violet-500/10 text-violet-300'
-              : 'border-white/5 bg-[#0d0f11] text-zinc-500 hover:border-white/10'
-          }`}
-        >
-          Custom number of days
-        </button>
-
-        {period === 'custom' && (
-          <input
-            type="number"
-            min="1"
-            value={customDays}
-            onChange={(event) =>
-              setCustomDays(event.target.value)
-            }
-            placeholder="Enter number of days"
-            className="mt-3 w-full rounded-xl border border-white/10 bg-[#0d0f11] px-4 py-3 text-sm text-zinc-200 outline-none placeholder:text-zinc-700 focus:border-violet-500/50"
-          />
-        )}
-      </div>
+      {/* Save */}
 
       <button
         type="submit"
-        className="mt-6 rounded-xl bg-violet-500 px-5 py-3 text-sm font-medium text-white transition hover:bg-violet-400"
+        disabled={
+          saving ||
+          !amount ||
+          Number(amount) <=
+            0 ||
+          (
+            currency !== 'INR' &&
+            ratesLoading
+          )
+        }
+        className="mt-6 rounded-xl bg-violet-500 px-5 py-3 text-sm font-medium text-white transition hover:bg-violet-400 disabled:cursor-not-allowed disabled:opacity-50"
       >
-        Create budget
+        {saving
+          ? 'Saving...'
+          : currency !==
+                'INR' &&
+              ratesLoading
+            ? 'Updating exchange rate...'
+            : budget
+              ? 'Update budget'
+              : 'Save budget'}
       </button>
+
     </form>
   )
+}
+
+function getCurrentMonth() {
+  const date = new Date()
+
+  const year =
+    date.getFullYear()
+
+  const month = String(
+    date.getMonth() + 1,
+  ).padStart(2, '0')
+
+  return `${year}-${month}`
 }
 
 export default BudgetSetup
