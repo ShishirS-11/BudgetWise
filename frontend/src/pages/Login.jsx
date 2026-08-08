@@ -8,10 +8,22 @@ function Login() {
 
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
-  const [showPassword, setShowPassword] = useState(false)
-  const [rememberMe, setRememberMe] = useState(false)
-  const [loading, setLoading] = useState(false)
-  const [error, setError] = useState('')
+
+  const [showPassword, setShowPassword] =
+    useState(false)
+
+  const [rememberMe, setRememberMe] =
+    useState(false)
+
+  const [loading, setLoading] =
+    useState(false)
+
+  const [error, setError] =
+    useState('')
+
+  /* ============================================================
+     LOGIN
+  ============================================================ */
 
   async function handleSubmit(event) {
     event.preventDefault()
@@ -19,12 +31,16 @@ function Login() {
     setError('')
 
     if (!email.trim()) {
-      setError('Please enter your email address.')
+      setError(
+        'Please enter your email address.',
+      )
       return
     }
 
     if (!password) {
-      setError('Please enter your password.')
+      setError(
+        'Please enter your password.',
+      )
       return
     }
 
@@ -34,10 +50,11 @@ function Login() {
       const {
         data,
         error: loginError,
-      } = await supabase.auth.signInWithPassword({
-        email: email.trim(),
-        password,
-      })
+      } =
+        await supabase.auth.signInWithPassword({
+          email: email.trim(),
+          password,
+        })
 
       if (loginError) {
         throw loginError
@@ -67,6 +84,10 @@ function Login() {
     }
   }
 
+  /* ============================================================
+     FORGOT PASSWORD
+  ============================================================ */
+
   async function handleForgotPassword() {
     setError('')
 
@@ -82,13 +103,14 @@ function Login() {
     try {
       const {
         error: resetError,
-      } = await supabase.auth.resetPasswordForEmail(
-        email.trim(),
-        {
-          redirectTo:
-            `${window.location.origin}/reset-password`,
-        },
-      )
+      } =
+        await supabase.auth.resetPasswordForEmail(
+          email.trim(),
+          {
+            redirectTo:
+              `${window.location.origin}/reset-password`,
+          },
+        )
 
       if (resetError) {
         throw resetError
@@ -113,155 +135,61 @@ function Login() {
   }
 
   return (
-    <div
-      className="
-        budgetwise-login-page
-        relative
-        h-screen
-        w-full
-        overflow-hidden
-        bg-[#151716]
-        text-[#f5f0e7]
-      "
-    >
+    <div className="login-page">
 
-      {/* =====================================================
+      {/* ======================================================
           BACKGROUND DECORATION
       ====================================================== */}
 
       <div
         className="
-          pointer-events-none
-          absolute
-          -right-24
-          -top-24
-          h-[360px]
-          w-[360px]
-          rounded-full
-          bg-[#d99100]/10
+          login-decoration
+          login-decoration-one
         "
       />
 
       <div
         className="
-          pointer-events-none
-          absolute
-          -bottom-52
-          -left-40
-          h-[560px]
-          w-[560px]
-          rounded-full
-          border
-          border-[#d99100]/20
+          login-decoration
+          login-decoration-two
         "
       />
 
       <div
         className="
-          pointer-events-none
-          absolute
-          bottom-10
-          left-[44%]
-          h-28
-          w-28
-          rounded-full
-          bg-[#d99100]/10
+          login-decoration
+          login-decoration-three
         "
       />
 
-      {/* =====================================================
-          MAIN CONTENT
+      {/* ======================================================
+          MAIN
       ====================================================== */}
 
-      <div
-        className="
-          relative
-          z-10
-          mx-auto
-          flex
-          h-full
-          w-full
-          max-w-[1500px]
-          flex-col
-          px-7
-          py-7
-          lg:flex-row
-          lg:items-center
-          lg:gap-20
-          lg:px-16
-          lg:py-8
-        "
-      >
+      <div className="login-container">
 
-        {/* ===================================================
+        {/* ====================================================
             LEFT SIDE
-        ==================================================== */}
+        ===================================================== */}
 
-        <section
-          className="
-            flex
-            flex-1
-            flex-col
-            justify-between
-            py-2
-            lg:min-h-0
-          "
-        >
+        <section className="login-left">
 
           {/* BRAND */}
 
-          <div
-            className="
-              flex
-              items-center
-              gap-4
-            "
-          >
+          <div className="login-brand">
 
-            <div
-              className="
-                flex
-                h-16
-                w-16
-                shrink-0
-                items-center
-                justify-center
-                rounded-2xl
-                bg-[#e29a00]
-                text-3xl
-                shadow-[0_10px_35px_rgba(226,154,0,0.25)]
-              "
-            >
+            <div className="login-brand-icon">
               📊
             </div>
 
             <div>
 
-              <h1
-                className="
-                  font-serif
-                  text-4xl
-                  font-bold
-                  leading-none
-                  tracking-tight
-                  text-[#f7f2e8]
-                  sm:text-[42px]
-                "
-              >
+              <h1 className="login-brand-name">
                 BudgetWise
               </h1>
 
-              <p
-                className="
-                  mt-1
-                  text-[11px]
-                  font-bold
-                  uppercase
-                  tracking-[0.28em]
-                  text-[#e29a00]
-                "
-              >
-                Personal Finance
+              <p className="login-brand-subtitle">
+                PERSONAL FINANCE
               </p>
 
             </div>
@@ -271,55 +199,19 @@ function Login() {
 
           {/* HERO */}
 
-          <div
-            className="
-              mt-10
-              max-w-[650px]
-              lg:mt-0
-            "
-          >
+          <div className="login-hero">
 
-            <p
-              className="
-                mb-6
-                text-sm
-                font-bold
-                uppercase
-                tracking-[0.3em]
-                text-[#e29a00]
-                sm:text-base
-              "
-            >
-              Your money, your way
+            <p className="login-eyebrow">
+              YOUR MONEY, YOUR WAY
             </p>
 
-            <h2
-              className="
-                max-w-[650px]
-                font-serif
-                text-5xl
-                font-semibold
-                leading-[1.04]
-                tracking-tight
-                text-[#f5f0e7]
-                sm:text-6xl
-              "
-            >
+            <h2 className="login-title">
               Take control
               <br />
               of your money.
             </h2>
 
-            <p
-              className="
-                mt-7
-                max-w-[560px]
-                text-base
-                leading-7
-                text-[#bcb7ae]
-                sm:text-lg
-              "
-            >
+            <p className="login-description">
               Track expenses, set goals and save
               more every day.
             </p>
@@ -327,12 +219,7 @@ function Login() {
 
             {/* FEATURES */}
 
-            <div
-              className="
-                mt-9
-                space-y-5
-              "
-            >
+            <div className="login-features">
 
               <Feature
                 icon="💰"
@@ -354,134 +241,48 @@ function Login() {
           </div>
 
 
-          {/* BOTTOM TEXT */}
+          {/* DESKTOP FOOTER */}
 
-          <div
-            className="
-              hidden
-              text-sm
-              text-[#777a75]
-              lg:block
-            "
-          >
-            Simple money management for
-            everyday life.
-          </div>
+          <p className="login-footer">
+            Simple money management for everyday life.
+          </p>
 
         </section>
 
 
-        {/* ===================================================
-            RIGHT SIDE — LOGIN CARD
-        ==================================================== */}
+        {/* ====================================================
+            RIGHT SIDE
+        ===================================================== */}
 
-        <section
-          className="
-            flex
-            w-full
-            flex-1
-            items-center
-            justify-center
-            py-8
-            lg:max-w-[540px]
-            lg:py-0
-          "
-        >
+        <section className="login-right">
 
-          <div
-            className="
-              relative
-              w-full
-              max-w-[500px]
-              overflow-hidden
-              rounded-[22px]
-              border
-              border-[#393b38]
-              bg-[#242624]
-              px-8
-              py-9
-              shadow-[0_30px_80px_rgba(0,0,0,0.38)]
-              sm:px-10
-              sm:py-10
-            "
-          >
+          <div className="login-card">
 
-            {/* LEFT AMBER ACCENT LINES */}
+            {/* AMBER ACCENT */}
 
-            <div
-              className="
-                absolute
-                left-0
-                top-[100px]
-                h-20
-                w-[3px]
-                bg-[#e29a00]
-              "
-            />
-
-            <div
-              className="
-                absolute
-                left-0
-                top-[220px]
-                h-20
-                w-[3px]
-                bg-[#e29a00]
-              "
-            />
+            <div className="login-accent accent-one" />
+            <div className="login-accent accent-two" />
 
 
-            {/* LOGIN HEADER */}
+            {/* HEADER */}
 
-            <div
-              className="
-                text-center
-              "
-            >
+            <div className="login-card-header">
 
-              <h3
-                className="
-                  font-serif
-                  text-3xl
-                  font-semibold
-                  text-[#f7f2e8]
-                  sm:text-[34px]
-                "
-              >
+              <h3 className="login-card-title">
                 Welcome back!
               </h3>
 
-              <p
-                className="
-                  mt-2
-                  text-sm
-                  text-[#969b95]
-                  sm:text-[15px]
-                "
-              >
+              <p className="login-card-subtitle">
                 Login to continue
               </p>
 
             </div>
 
 
-            {/* ERROR MESSAGE */}
+            {/* ERROR */}
 
             {error && (
-              <div
-                className="
-                  mt-5
-                  rounded-xl
-                  border
-                  border-[#d99100]/30
-                  bg-[#d99100]/10
-                  px-4
-                  py-3
-                  text-sm
-                  leading-5
-                  text-[#f0c36b]
-                "
-              >
+              <div className="login-message">
                 {error}
               </div>
             )}
@@ -491,45 +292,23 @@ function Login() {
 
             <form
               onSubmit={handleSubmit}
-              className="
-                mt-8
-                space-y-5
-              "
+              className="login-form"
             >
 
               {/* EMAIL */}
 
-              <div>
+              <div className="login-field">
 
                 <label
                   htmlFor="email"
-                  className="
-                    mb-2
-                    block
-                    text-sm
-                    font-medium
-                    text-[#ddd8ce]
-                  "
+                  className="login-label"
                 >
                   Email
                 </label>
 
-                <div
-                  className="
-                    relative
-                  "
-                >
+                <div className="login-input-wrapper">
 
-                  <span
-                    className="
-                      absolute
-                      left-4
-                      top-1/2
-                      -translate-y-1/2
-                      text-base
-                      text-[#8e948d]
-                    "
-                  >
+                  <span className="login-input-icon">
                     ✉
                   </span>
 
@@ -544,26 +323,7 @@ function Login() {
                       )
                     }
                     placeholder="you@example.com"
-                    className="
-                      w-full
-                      rounded-xl
-                      border
-                      border-[#393c39]
-                      bg-[#2d302d]
-                      py-4
-                      pl-11
-                      pr-4
-                      text-base
-                      text-[#f2eee6]
-                      outline-none
-                      transition
-                      duration-200
-                      placeholder:text-[#777c76]
-                      focus:border-[#d99100]
-                      focus:bg-[#303330]
-                      focus:ring-2
-                      focus:ring-[#d99100]/20
-                    "
+                    className="login-input"
                   />
 
                 </div>
@@ -573,37 +333,18 @@ function Login() {
 
               {/* PASSWORD */}
 
-              <div>
+              <div className="login-field">
 
                 <label
                   htmlFor="password"
-                  className="
-                    mb-2
-                    block
-                    text-sm
-                    font-medium
-                    text-[#ddd8ce]
-                  "
+                  className="login-label"
                 >
                   Password
                 </label>
 
-                <div
-                  className="
-                    relative
-                  "
-                >
+                <div className="login-input-wrapper">
 
-                  <span
-                    className="
-                      absolute
-                      left-4
-                      top-1/2
-                      -translate-y-1/2
-                      text-base
-                      text-[#8e948d]
-                    "
-                  >
+                  <span className="login-input-icon">
                     🔒
                   </span>
 
@@ -622,26 +363,7 @@ function Login() {
                       )
                     }
                     placeholder="Enter your password"
-                    className="
-                      w-full
-                      rounded-xl
-                      border
-                      border-[#393c39]
-                      bg-[#2d302d]
-                      py-4
-                      pl-11
-                      pr-12
-                      text-base
-                      text-[#f2eee6]
-                      outline-none
-                      transition
-                      duration-200
-                      placeholder:text-[#777c76]
-                      focus:border-[#d99100]
-                      focus:bg-[#303330]
-                      focus:ring-2
-                      focus:ring-[#d99100]/20
-                    "
+                    className="login-input login-password-input"
                   />
 
                   <button
@@ -652,16 +374,7 @@ function Login() {
                           !current,
                       )
                     }
-                    className="
-                      absolute
-                      right-4
-                      top-1/2
-                      -translate-y-1/2
-                      text-base
-                      text-[#8e948d]
-                      transition
-                      hover:text-[#e29a00]
-                    "
+                    className="login-password-toggle"
                     aria-label={
                       showPassword
                         ? 'Hide password'
@@ -678,27 +391,11 @@ function Login() {
               </div>
 
 
-              {/* REMEMBER + FORGOT */}
+              {/* REMEMBER / FORGOT */}
 
-              <div
-                className="
-                  flex
-                  items-center
-                  justify-between
-                  gap-4
-                "
-              >
+              <div className="login-options">
 
-                <label
-                  className="
-                    flex
-                    cursor-pointer
-                    items-center
-                    gap-2
-                    text-sm
-                    text-[#aaa9a2]
-                  "
-                >
+                <label className="remember-label">
 
                   <input
                     type="checkbox"
@@ -708,11 +405,7 @@ function Login() {
                         event.target.checked,
                       )
                     }
-                    className="
-                      h-4
-                      w-4
-                      accent-[#d99100]
-                    "
+                    className="remember-checkbox"
                   />
 
                   <span>
@@ -728,14 +421,7 @@ function Login() {
                     handleForgotPassword
                   }
                   disabled={loading}
-                  className="
-                    text-sm
-                    font-medium
-                    text-[#e29a00]
-                    transition
-                    hover:text-[#f2b52f]
-                    disabled:opacity-50
-                  "
+                  className="forgot-button"
                 >
                   Forgot password?
                 </button>
@@ -748,27 +434,7 @@ function Login() {
               <button
                 type="submit"
                 disabled={loading}
-                className="
-                  mt-2
-                  flex
-                  w-full
-                  items-center
-                  justify-center
-                  rounded-xl
-                  bg-[#e29a00]
-                  px-4
-                  py-4
-                  text-base
-                  font-bold
-                  text-[#171817]
-                  shadow-[0_10px_25px_rgba(226,154,0,0.20)]
-                  transition
-                  duration-200
-                  hover:bg-[#f0a915]
-                  hover:shadow-[0_12px_30px_rgba(226,154,0,0.28)]
-                  disabled:cursor-not-allowed
-                  disabled:opacity-60
-                "
+                className="login-button"
               >
                 {loading
                   ? 'Logging in...'
@@ -780,24 +446,13 @@ function Login() {
 
             {/* SIGN UP */}
 
-            <p
-              className="
-                mt-7
-                text-center
-                text-sm
-                text-[#969a94]
-              "
-            >
+            <p className="signup-text">
+
               Don't have an account?{' '}
 
               <Link
                 to="/signup"
-                className="
-                  font-medium
-                  text-[#e29a00]
-                  transition
-                  hover:text-[#f2b52f]
-                "
+                className="signup-link"
               >
                 Sign up
               </Link>
@@ -816,7 +471,7 @@ function Login() {
 
 
 /* ============================================================
-   FEATURE COMPONENT
+   FEATURE
 ============================================================ */
 
 function Feature({
@@ -824,36 +479,13 @@ function Feature({
   text,
 }) {
   return (
-    <div
-      className="
-        flex
-        items-center
-        gap-5
-      "
-    >
+    <div className="login-feature">
 
-      <span
-        className="
-          flex
-          h-8
-          w-8
-          shrink-0
-          items-center
-          justify-center
-          text-lg
-        "
-      >
+      <span className="feature-icon">
         {icon}
       </span>
 
-      <span
-        className="
-          text-sm
-          font-medium
-          text-[#d0cbc1]
-          sm:text-[15px]
-        "
-      >
+      <span className="feature-text">
         {text}
       </span>
 

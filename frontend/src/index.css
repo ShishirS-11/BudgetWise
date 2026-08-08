@@ -6,11 +6,11 @@
 
 :root {
   font-family:
-    "DM Sans",
+    'DM Sans',
     system-ui,
     -apple-system,
     BlinkMacSystemFont,
-    "Segoe UI",
+    'Segoe UI',
     sans-serif;
 
   font-synthesis: none;
@@ -20,45 +20,35 @@
   -moz-osx-font-smoothing: grayscale;
 
   /* ==========================================================
-     BUDGETWISE — AMBER + CHARCOAL — LIGHT
+     BUDGETWISE — LIGHT
   ========================================================== */
 
-  --bw-bg: #f5f1e7;
-  --bw-surface: #fffdf8;
-  --bw-surface-soft: #f8f4e9;
-  --bw-surface-hover: #f0eadb;
+  --bw-bg: #f4f1f7;
+  --bw-surface: #fffdfb;
+  --bw-surface-soft: #f8f4fa;
+  --bw-surface-hover: #f0eaf5;
 
-  --bw-border: #ddd5c4;
-  --bw-border-strong: #cec4ae;
+  --bw-border: #e3dce8;
+  --bw-border-strong: #d5cbdc;
 
-  --bw-heading: #2c2a24;
-  --bw-text-strong: #302e28;
-  --bw-text: #4d4a41;
-  --bw-text-secondary: #716c60;
-  --bw-body: #777166;
-  --bw-muted: #9a9384;
-  --bw-text-muted: #9a9384;
+  --bw-heading: #342b3c;
+  --bw-text: #504858;
+  --bw-body: #716978;
+  --bw-muted: #98909e;
 
-  --bw-accent: #c28a22;
-  --bw-accent-hover: #a97116;
-  --bw-accent-soft: #ead39a;
-  --bw-accent-text: #8a6014;
+  --bw-primary: #7652a5;
+  --bw-primary-hover: #64428e;
+  --bw-primary-soft: #eee5f7;
 
-  --bw-primary: #c28a22;
-  --bw-primary-hover: #a97116;
-  --bw-primary-soft: #ead39a;
+  --bw-success: #4f8a71;
+  --bw-success-soft: #e3f0e9;
 
-  --bw-success: #4d8065;
-  --bw-success-soft: #e1eee6;
+  --bw-danger: #c65b63;
+  --bw-danger-soft: #fae7e9;
 
-  --bw-danger: #b85d4d;
-  --bw-danger-soft: #f6e4df;
+  --bw-warning: #b5833d;
+  --bw-warning-soft: #f7eddc;
 
-  --bw-warning: #ad7b32;
-  --bw-warning-soft: #f5ead3;
-
-  --bw-shadow:
-    0 12px 35px rgba(62, 52, 33, 0.07);
 
   /* ==========================================================
      TRIPWISE — LIGHT
@@ -91,6 +81,7 @@
     0 12px 35px rgba(51, 72, 67, 0.06);
 }
 
+
 /* ============================================================
    DARK MODE
 ============================================================ */
@@ -98,46 +89,36 @@
 html[data-theme="dark"] {
 
   /* ==========================================================
-     BUDGETWISE — DARK CHARCOAL + AMBER
+     BUDGETWISE — DARK
   ========================================================== */
 
-  --bw-bg: #151410;
+  --bw-bg: #111015;
 
-  --bw-surface: #201e18;
-  --bw-surface-soft: #28251e;
-  --bw-surface-hover: #302c22;
+  --bw-surface: #19171d;
+  --bw-surface-soft: #211e27;
+  --bw-surface-hover: #28232f;
 
-  --bw-border: #3b372c;
-  --bw-border-strong: #4b4537;
+  --bw-border: #302b36;
+  --bw-border-strong: #3d3545;
 
-  --bw-heading: #f7f0df;
-  --bw-text-strong: #f5efdf;
-  --bw-text: #ddd5c3;
-  --bw-text-secondary: #b3aa98;
-  --bw-body: #aaa18f;
-  --bw-muted: #817a6b;
-  --bw-text-muted: #817a6b;
+  --bw-heading: #f1eaf5;
+  --bw-text: #ddd4e2;
+  --bw-body: #b7adbd;
+  --bw-muted: #857b8c;
 
-  --bw-accent: #e0ad3e;
-  --bw-accent-hover: #efbd50;
-  --bw-accent-soft: #5c471c;
-  --bw-accent-text: #f1c65e;
+  --bw-primary: #a47bd0;
+  --bw-primary-hover: #b58bdf;
+  --bw-primary-soft: #30233f;
 
-  --bw-primary: #e0ad3e;
-  --bw-primary-hover: #efbd50;
-  --bw-primary-soft: #5c471c;
-
-  --bw-success: #72ad8a;
+  --bw-success: #70b396;
   --bw-success-soft: #203a31;
 
-  --bw-danger: #dc806c;
-  --bw-danger-soft: #40251f;
+  --bw-danger: #df777f;
+  --bw-danger-soft: #402529;
 
   --bw-warning: #d0a15b;
   --bw-warning-soft: #3c311f;
 
-  --bw-shadow:
-    0 16px 45px rgba(0, 0, 0, 0.26);
 
   /* ==========================================================
      TRIPWISE — DARK
@@ -170,6 +151,7 @@ html[data-theme="dark"] {
     0 14px 40px rgba(0, 0, 0, 0.22);
 }
 
+
 /* ============================================================
    GLOBAL RESET
 ============================================================ */
@@ -181,9 +163,6 @@ html[data-theme="dark"] {
 html {
   min-height: 100%;
   background: var(--bw-bg);
-  transition:
-    background-color 300ms ease,
-    color 300ms ease;
 }
 
 body {
@@ -224,16 +203,18 @@ a {
   text-decoration: none;
 }
 
+
 /* ============================================================
    TYPOGRAPHY
 ============================================================ */
 
 .font-serif {
   font-family:
-    "Playfair Display",
+    'Playfair Display',
     Georgia,
     serif;
 }
+
 
 /* ============================================================
    BUDGETWISE ROOT
@@ -259,73 +240,6 @@ a {
   color: var(--bw-heading);
 }
 
-/* ============================================================
-   BUDGETWISE CARDS
-============================================================ */
-
-.budgetwise-card {
-  background: var(--bw-surface);
-  border: 1px solid var(--bw-border);
-  color: var(--bw-text);
-
-  box-shadow: var(--bw-shadow);
-
-  transition:
-    background-color 300ms ease,
-    border-color 300ms ease,
-    color 300ms ease,
-    box-shadow 300ms ease,
-    transform 250ms ease;
-}
-
-.budgetwise-card:hover {
-  border-color: var(--bw-border-strong);
-}
-
-/* ============================================================
-   BUDGETWISE TEXT
-============================================================ */
-
-.budgetwise-title {
-  color: var(--bw-heading);
-  font-family:
-    "Playfair Display",
-    Georgia,
-    serif;
-}
-
-.budgetwise-body {
-  color: var(--bw-body);
-}
-
-.budgetwise-muted {
-  color: var(--bw-muted);
-}
-
-.budgetwise-accent {
-  color: var(--bw-accent);
-}
-
-/* ============================================================
-   BUDGETWISE INPUT
-============================================================ */
-
-.budgetwise-input {
-  background: var(--bw-surface);
-  border: 1px solid var(--bw-border);
-  color: var(--bw-text);
-}
-
-.budgetwise-input::placeholder {
-  color: var(--bw-muted);
-}
-
-.budgetwise-input:focus {
-  outline: none;
-  border-color: var(--bw-accent);
-  box-shadow:
-    0 0 0 3px rgba(194, 138, 34, 0.12);
-}
 
 /* ============================================================
    TRIPWISE ROOT
@@ -350,6 +264,7 @@ a {
 .tripwise-root h6 {
   color: var(--tw-heading);
 }
+
 
 /* ============================================================
    TRIPWISE CARDS
@@ -382,6 +297,7 @@ a {
   transform: translateY(-2px);
 }
 
+
 /* ============================================================
    TRIPWISE CARD TEXT
 ============================================================ */
@@ -390,7 +306,7 @@ a {
   color: var(--tw-heading);
 
   font-family:
-    "Playfair Display",
+    'Playfair Display',
     Georgia,
     serif;
 }
@@ -410,6 +326,7 @@ a {
   color: var(--tw-link-hover);
 }
 
+
 /* ============================================================
    TRIPWISE ICON
 ============================================================ */
@@ -421,6 +338,7 @@ a {
     background-color 300ms ease;
 }
 
+
 /* ============================================================
    TRIPWISE DECORATION
 ============================================================ */
@@ -428,6 +346,7 @@ a {
 .tripwise-decoration {
   background: var(--tw-decoration);
 }
+
 
 /* ============================================================
    SCROLLBAR
@@ -452,20 +371,22 @@ html[data-theme="dark"] ::-webkit-scrollbar-thumb {
   background: #4b5550;
 }
 
+
 /* ============================================================
    SELECTION
 ============================================================ */
 
 ::selection {
-  background: rgba(194, 138, 34, 0.22);
+  background: rgba(118, 82, 165, 0.22);
 }
 
 .tripwise-root ::selection {
   background: rgba(82, 125, 113, 0.25);
 }
 
+
 /* ============================================================
-   MOBILE
+   MOBILE GLOBAL
 ============================================================ */
 
 @media (max-width: 768px) {
@@ -473,26 +394,961 @@ html[data-theme="dark"] ::-webkit-scrollbar-thumb {
     overflow-x: hidden;
   }
 }
+
+
 /* ============================================================
-   LOGIN PAGE — FULL VIEWPORT
+   BUDGETWISE LOGIN PAGE
+   AMBER + CHARCOAL
 ============================================================ */
 
-html:has(.budgetwise-login-page),
-body:has(.budgetwise-login-page),
-#root:has(.budgetwise-login-page) {
-  height: 100%;
-  min-height: 100%;
-  margin: 0;
-  background: #151716;
-}
+.login-page {
+  position: relative;
 
-body:has(.budgetwise-login-page) {
-  overflow: hidden;
-}
-
-.budgetwise-login-page {
   width: 100%;
-  height: 100vh;
-  min-height: 100vh;
+
+  min-height: 100dvh;
+
+  overflow-x: hidden;
+  overflow-y: auto;
+
+  background: #151716;
+
+  color: #f5f0e7;
+
+  -webkit-overflow-scrolling: touch;
+}
+
+
+/* ============================================================
+   LOGIN DECORATIONS
+============================================================ */
+
+.login-decoration {
+  position: absolute;
+
+  pointer-events: none;
+
+  z-index: 0;
+}
+
+.login-decoration-one {
+  width: 360px;
+  height: 360px;
+
+  right: -120px;
+  top: -120px;
+
+  border-radius: 9999px;
+
+  background: rgba(217, 145, 0, 0.10);
+}
+
+.login-decoration-two {
+  width: 560px;
+  height: 560px;
+
+  left: -190px;
+  bottom: -280px;
+
+  border-radius: 9999px;
+
+  border: 1px solid rgba(217, 145, 0, 0.20);
+}
+
+.login-decoration-three {
+  width: 120px;
+  height: 120px;
+
+  left: 44%;
+  bottom: 30px;
+
+  border-radius: 9999px;
+
+  background: rgba(217, 145, 0, 0.08);
+}
+
+
+/* ============================================================
+   LOGIN CONTAINER
+============================================================ */
+
+.login-container {
+  position: relative;
+
+  z-index: 1;
+
+  display: flex;
+
+  width: 100%;
+
+  max-width: 1500px;
+
+  min-height: 100dvh;
+
+  margin: 0 auto;
+
+  padding: 32px 64px;
+
+  align-items: center;
+
+  gap: 80px;
+}
+
+
+/* ============================================================
+   LOGIN LEFT
+============================================================ */
+
+.login-left {
+  display: flex;
+
+  flex: 1;
+
+  min-width: 0;
+
+  min-height: 650px;
+
+  flex-direction: column;
+
+  justify-content: space-between;
+}
+
+
+/* ============================================================
+   BRAND
+============================================================ */
+
+.login-brand {
+  display: flex;
+
+  align-items: center;
+
+  gap: 16px;
+}
+
+.login-brand-icon {
+  display: flex;
+
+  width: 64px;
+  height: 64px;
+
+  flex-shrink: 0;
+
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 16px;
+
+  background: #e29a00;
+
+  font-size: 30px;
+
+  box-shadow:
+    0 10px 35px rgba(226, 154, 0, 0.25);
+}
+
+.login-brand-name {
+  margin: 0;
+
+  font-family:
+    'Playfair Display',
+    Georgia,
+    serif;
+
+  font-size: 42px;
+
+  font-weight: 700;
+
+  line-height: 1;
+
+  letter-spacing: -0.02em;
+
+  color: #f7f2e8;
+}
+
+.login-brand-subtitle {
+  margin: 5px 0 0;
+
+  font-size: 11px;
+
+  font-weight: 700;
+
+  letter-spacing: 0.28em;
+
+  color: #e29a00;
+}
+
+
+/* ============================================================
+   LOGIN HERO
+============================================================ */
+
+.login-hero {
+  max-width: 650px;
+}
+
+.login-eyebrow {
+  margin: 0 0 24px;
+
+  font-size: 14px;
+
+  font-weight: 700;
+
+  letter-spacing: 0.30em;
+
+  color: #e29a00;
+}
+
+.login-title {
+  margin: 0;
+
+  font-family:
+    'Playfair Display',
+    Georgia,
+    serif;
+
+  font-size: 60px;
+
+  font-weight: 600;
+
+  line-height: 1.04;
+
+  letter-spacing: -0.025em;
+
+  color: #f5f0e7;
+}
+
+.login-description {
+  max-width: 560px;
+
+  margin: 28px 0 0;
+
+  font-size: 18px;
+
+  line-height: 1.75;
+
+  color: #bcb7ae;
+}
+
+
+/* ============================================================
+   FEATURES
+============================================================ */
+
+.login-features {
+  display: flex;
+
+  margin-top: 36px;
+
+  flex-direction: column;
+
+  gap: 20px;
+}
+
+.login-feature {
+  display: flex;
+
+  align-items: center;
+
+  gap: 20px;
+}
+
+.feature-icon {
+  display: flex;
+
+  width: 32px;
+  height: 32px;
+
+  flex-shrink: 0;
+
+  align-items: center;
+  justify-content: center;
+
+  font-size: 19px;
+}
+
+.feature-text {
+  font-size: 15px;
+
+  font-weight: 500;
+
+  color: #d0cbc1;
+}
+
+
+/* ============================================================
+   LOGIN FOOTER
+============================================================ */
+
+.login-footer {
+  margin: 0;
+
+  font-size: 14px;
+
+  color: #777a75;
+}
+
+
+/* ============================================================
+   LOGIN RIGHT
+============================================================ */
+
+.login-right {
+  display: flex;
+
+  width: 100%;
+
+  max-width: 540px;
+
+  flex: 1;
+
+  align-items: center;
+  justify-content: center;
+}
+
+
+/* ============================================================
+   LOGIN CARD
+============================================================ */
+
+.login-card {
+  position: relative;
+
+  width: 100%;
+
+  max-width: 500px;
+
   overflow: hidden;
+
+  padding: 40px;
+
+  border: 1px solid #393b38;
+
+  border-radius: 22px;
+
+  background: #242624;
+
+  box-shadow:
+    0 30px 80px rgba(0, 0, 0, 0.38);
+}
+
+
+/* ============================================================
+   AMBER ACCENT
+============================================================ */
+
+.login-accent {
+  position: absolute;
+
+  left: 0;
+
+  width: 3px;
+
+  height: 80px;
+
+  background: #e29a00;
+}
+
+.accent-one {
+  top: 100px;
+}
+
+.accent-two {
+  top: 220px;
+}
+
+
+/* ============================================================
+   CARD HEADER
+============================================================ */
+
+.login-card-header {
+  text-align: center;
+}
+
+.login-card-title {
+  margin: 0;
+
+  font-family:
+    'Playfair Display',
+    Georgia,
+    serif;
+
+  font-size: 34px;
+
+  font-weight: 600;
+
+  color: #f7f2e8;
+}
+
+.login-card-subtitle {
+  margin: 8px 0 0;
+
+  font-size: 15px;
+
+  color: #969b95;
+}
+
+
+/* ============================================================
+   ERROR MESSAGE
+============================================================ */
+
+.login-message {
+  margin-top: 20px;
+
+  padding: 12px 16px;
+
+  border: 1px solid rgba(217, 145, 0, 0.30);
+
+  border-radius: 12px;
+
+  background: rgba(217, 145, 0, 0.10);
+
+  font-size: 14px;
+
+  line-height: 1.5;
+
+  color: #f0c36b;
+}
+
+
+/* ============================================================
+   LOGIN FORM
+============================================================ */
+
+.login-form {
+  display: flex;
+
+  margin-top: 32px;
+
+  flex-direction: column;
+
+  gap: 20px;
+}
+
+
+/* ============================================================
+   FIELD
+============================================================ */
+
+.login-field {
+  width: 100%;
+}
+
+.login-label {
+  display: block;
+
+  margin-bottom: 8px;
+
+  font-size: 14px;
+
+  font-weight: 500;
+
+  color: #ddd8ce;
+}
+
+
+/* ============================================================
+   INPUT
+============================================================ */
+
+.login-input-wrapper {
+  position: relative;
+
+  width: 100%;
+}
+
+.login-input-icon {
+  position: absolute;
+
+  left: 16px;
+  top: 50%;
+
+  transform: translateY(-50%);
+
+  pointer-events: none;
+
+  font-size: 16px;
+
+  color: #8e948d;
+}
+
+.login-input {
+  width: 100%;
+
+  min-height: 54px;
+
+  padding: 15px 16px 15px 44px;
+
+  border: 1px solid #393c39;
+
+  border-radius: 12px;
+
+  outline: none;
+
+  background: #2d302d;
+
+  color: #f2eee6;
+
+  font-size: 16px;
+
+  transition:
+    border-color 200ms ease,
+    background-color 200ms ease,
+    box-shadow 200ms ease;
+}
+
+.login-input::placeholder {
+  color: #777c76;
+}
+
+.login-input:focus {
+  border-color: #d99100;
+
+  background: #303330;
+
+  box-shadow:
+    0 0 0 3px rgba(217, 145, 0, 0.12);
+}
+
+.login-password-input {
+  padding-right: 50px;
+}
+
+.login-password-toggle {
+  position: absolute;
+
+  right: 16px;
+  top: 50%;
+
+  transform: translateY(-50%);
+
+  border: 0;
+
+  background: transparent;
+
+  color: #8e948d;
+
+  font-size: 16px;
+
+  transition:
+    color 200ms ease;
+}
+
+.login-password-toggle:hover {
+  color: #e29a00;
+}
+
+
+/* ============================================================
+   OPTIONS
+============================================================ */
+
+.login-options {
+  display: flex;
+
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 16px;
+}
+
+.remember-label {
+  display: flex;
+
+  align-items: center;
+
+  gap: 8px;
+
+  cursor: pointer;
+
+  font-size: 14px;
+
+  color: #aaa9a2;
+}
+
+.remember-checkbox {
+  width: 16px;
+  height: 16px;
+
+  accent-color: #d99100;
+}
+
+.forgot-button {
+  padding: 0;
+
+  border: 0;
+
+  background: transparent;
+
+  font-size: 14px;
+
+  font-weight: 500;
+
+  color: #e29a00;
+
+  transition:
+    color 200ms ease;
+}
+
+.forgot-button:hover {
+  color: #f2b52f;
+}
+
+.forgot-button:disabled {
+  opacity: 0.5;
+}
+
+
+/* ============================================================
+   LOGIN BUTTON
+============================================================ */
+
+.login-button {
+  width: 100%;
+
+  min-height: 54px;
+
+  margin-top: 2px;
+
+  padding: 15px 16px;
+
+  border: 0;
+
+  border-radius: 12px;
+
+  background: #e29a00;
+
+  color: #171817;
+
+  font-size: 16px;
+
+  font-weight: 700;
+
+  box-shadow:
+    0 10px 25px rgba(226, 154, 0, 0.20);
+
+  transition:
+    background-color 200ms ease,
+    box-shadow 200ms ease,
+    transform 200ms ease;
+}
+
+.login-button:hover {
+  background: #f0a915;
+
+  box-shadow:
+    0 12px 30px rgba(226, 154, 0, 0.28);
+
+  transform: translateY(-1px);
+}
+
+.login-button:disabled {
+  cursor: not-allowed;
+
+  opacity: 0.6;
+
+  transform: none;
+}
+
+
+/* ============================================================
+   SIGNUP
+============================================================ */
+
+.signup-text {
+  margin: 28px 0 0;
+
+  text-align: center;
+
+  font-size: 14px;
+
+  color: #969a94;
+}
+
+.signup-link {
+  font-weight: 500;
+
+  color: #e29a00;
+
+  transition:
+    color 200ms ease;
+}
+
+.signup-link:hover {
+  color: #f2b52f;
+}
+
+
+/* ============================================================
+   MOBILE LOGIN
+============================================================ */
+
+@media (max-width: 1023px) {
+
+  html:has(.login-page),
+  body:has(.login-page),
+  #root:has(.login-page) {
+    height: auto;
+
+    min-height: 100%;
+  }
+
+  body:has(.login-page) {
+    overflow-x: hidden;
+
+    overflow-y: auto;
+  }
+
+  .login-page {
+    min-height: 100dvh;
+
+    height: auto;
+
+    overflow-x: hidden;
+
+    overflow-y: auto;
+  }
+
+  .login-container {
+    min-height: auto;
+
+    height: auto;
+
+    flex-direction: column;
+
+    align-items: stretch;
+
+    gap: 48px;
+
+    padding: 32px 24px 48px;
+  }
+
+  .login-left {
+    min-height: auto;
+
+    width: 100%;
+
+    gap: 40px;
+  }
+
+  .login-hero {
+    max-width: 100%;
+  }
+
+  .login-title {
+    font-size: 48px;
+  }
+
+  .login-description {
+    font-size: 16px;
+
+    line-height: 1.7;
+  }
+
+  .login-footer {
+    display: none;
+  }
+
+  .login-right {
+    width: 100%;
+
+    max-width: none;
+
+    padding: 0;
+
+    align-items: flex-start;
+  }
+
+  .login-card {
+    width: 100%;
+
+    max-width: 520px;
+
+    margin: 0 auto;
+
+    padding: 32px 24px;
+  }
+
+  .login-decoration-three {
+    display: none;
+  }
+}
+
+
+/* ============================================================
+   SMALL PHONES
+============================================================ */
+
+@media (max-width: 640px) {
+
+  .login-container {
+    padding:
+      24px
+      18px
+      40px;
+
+    gap: 42px;
+  }
+
+  .login-brand {
+    gap: 12px;
+  }
+
+  .login-brand-icon {
+    width: 52px;
+    height: 52px;
+
+    border-radius: 14px;
+
+    font-size: 24px;
+  }
+
+  .login-brand-name {
+    font-size: 32px;
+  }
+
+  .login-brand-subtitle {
+    font-size: 9px;
+
+    letter-spacing: 0.22em;
+  }
+
+  .login-eyebrow {
+    margin-bottom: 18px;
+
+    font-size: 11px;
+
+    letter-spacing: 0.22em;
+  }
+
+  .login-title {
+    font-size: 42px;
+
+    line-height: 1.06;
+  }
+
+  .login-description {
+    margin-top: 20px;
+
+    font-size: 15px;
+
+    line-height: 1.65;
+  }
+
+  .login-features {
+    margin-top: 28px;
+
+    gap: 16px;
+  }
+
+  .login-feature {
+    gap: 14px;
+  }
+
+  .feature-text {
+    font-size: 14px;
+  }
+
+  .login-card {
+    padding: 28px 20px;
+
+    border-radius: 18px;
+  }
+
+  .login-card-title {
+    font-size: 29px;
+  }
+
+  .login-card-subtitle {
+    font-size: 14px;
+  }
+
+  .login-form {
+    margin-top: 26px;
+
+    gap: 18px;
+  }
+
+  .login-options {
+    align-items: flex-start;
+  }
+
+  .remember-label,
+  .forgot-button {
+    font-size: 12px;
+  }
+
+  .login-input {
+    min-height: 52px;
+
+    font-size: 16px;
+  }
+
+  .login-button {
+    min-height: 52px;
+
+    font-size: 15px;
+  }
+}
+
+
+/* ============================================================
+   VERY SMALL PHONES
+============================================================ */
+
+@media (max-width: 380px) {
+
+  .login-container {
+    padding:
+      20px
+      14px
+      36px;
+
+    gap: 36px;
+  }
+
+  .login-brand-name {
+    font-size: 29px;
+  }
+
+  .login-title {
+    font-size: 37px;
+  }
+
+  .login-card {
+    padding: 25px 17px;
+  }
+
+  .login-card-title {
+    font-size: 27px;
+  }
+
+  .login-options {
+    flex-direction: column;
+
+    align-items: flex-start;
+
+    gap: 10px;
+  }
+}
+
+
+/* ============================================================
+   MOBILE SAFETY
+============================================================ */
+
+@media (hover: none) and (pointer: coarse) {
+
+  .login-input {
+    font-size: 16px;
+  }
+
+  .login-button,
+  .forgot-button,
+  .login-password-toggle {
+    -webkit-tap-highlight-color:
+      transparent;
+  }
 }
