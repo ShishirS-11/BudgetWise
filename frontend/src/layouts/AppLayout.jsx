@@ -76,6 +76,11 @@ function AppLayout() {
 
   const navigate = useNavigate()
 
+
+  /* ==========================================================
+     MENUS
+  ========================================================== */
+
   const [
     menuOpen,
     setMenuOpen,
@@ -92,9 +97,19 @@ function AppLayout() {
   ] = useState(false)
 
   const [
+    mobileMenuOpen,
+    setMobileMenuOpen,
+  ] = useState(false)
+
+  const [
     currencySearch,
     setCurrencySearch,
   ] = useState('')
+
+
+  /* ==========================================================
+     THEME
+  ========================================================== */
 
   const [
     theme,
@@ -106,6 +121,11 @@ function AppLayout() {
       ) || 'light'
     )
   })
+
+
+  /* ==========================================================
+     REFS
+  ========================================================== */
 
   const menuRef = useRef(null)
   const notificationRef = useRef(null)
@@ -181,9 +201,8 @@ function AppLayout() {
   ========================================================== */
 
   useEffect(() => {
-    function handleOutsideClick(
-      event,
-    ) {
+    function handleOutsideClick(event) {
+
       if (
         menuRef.current &&
         !menuRef.current.contains(
@@ -241,9 +260,7 @@ function AppLayout() {
   }
 
 
-  function handleCurrencyChange(
-    code,
-  ) {
+  function handleCurrencyChange(code) {
     setCurrency(code)
     setCurrencyOpen(false)
     setCurrencySearch('')
@@ -255,6 +272,7 @@ function AppLayout() {
       await signOut()
 
       setMenuOpen(false)
+      setMobileMenuOpen(false)
 
       navigate(
         '/login',
@@ -273,12 +291,14 @@ function AppLayout() {
 
   function openSettings() {
     setMenuOpen(false)
+    setMobileMenuOpen(false)
     navigate('/settings')
   }
 
 
   function openTripWise() {
     setMenuOpen(false)
+    setMobileMenuOpen(false)
     navigate('/tripwise')
   }
 
@@ -292,8 +312,9 @@ function AppLayout() {
 
       <div className="flex min-h-screen">
 
+
         {/* ==================================================
-            SIDEBAR
+            DESKTOP SIDEBAR
         ================================================== */}
 
         <aside
@@ -444,6 +465,7 @@ function AppLayout() {
 
         <div className="flex min-w-0 flex-1 flex-col">
 
+
           {/* =================================================
               TOP BAR
           ================================================= */}
@@ -460,7 +482,7 @@ function AppLayout() {
               border-b
               border-[var(--bw-border)]
               bg-[var(--bw-bg)]/95
-              px-5
+              px-4
               backdrop-blur-xl
               sm:px-8
               lg:px-10
@@ -542,6 +564,7 @@ function AppLayout() {
 
             <div className="flex items-center gap-2">
 
+
               {/* CURRENCY */}
 
               <div
@@ -552,6 +575,7 @@ function AppLayout() {
                 <button
                   type="button"
                   onClick={() => {
+
                     setCurrencyOpen(
                       (current) =>
                         !current,
@@ -559,6 +583,7 @@ function AppLayout() {
 
                     setMenuOpen(false)
                     setNotificationsOpen(false)
+                    setMobileMenuOpen(false)
                   }}
                   className="
                     flex
@@ -578,9 +603,7 @@ function AppLayout() {
                 >
 
                   <span className="text-sm text-[var(--bw-accent)]">
-                    {getCurrencyEmoji(
-                      currency,
-                    )}
+                    {getCurrencyEmoji(currency)}
                   </span>
 
                   <span className="font-medium text-[var(--bw-text-secondary)]">
@@ -659,6 +682,7 @@ function AppLayout() {
                     <div className="max-h-72 overflow-y-auto p-2">
 
                       {filteredCurrencies.length === 0 ? (
+
                         <p
                           className="
                             px-3
@@ -670,9 +694,12 @@ function AppLayout() {
                         >
                           No currencies found.
                         </p>
+
                       ) : (
+
                         filteredCurrencies.map(
                           (item) => (
+
                             <button
                               key={item.code}
                               type="button"
@@ -692,8 +719,7 @@ function AppLayout() {
                                 text-left
                                 transition
                                 ${
-                                  item.code ===
-                                  currency
+                                  item.code === currency
                                     ? 'bg-[var(--bw-accent-soft)] text-[var(--bw-accent-text)]'
                                     : 'text-[var(--bw-text-secondary)] hover:bg-[var(--bw-surface-hover)]'
                                 }
@@ -717,8 +743,10 @@ function AppLayout() {
                               </span>
 
                             </button>
+
                           ),
                         )
+
                       )}
 
                     </div>
@@ -772,6 +800,7 @@ function AppLayout() {
                 <button
                   type="button"
                   onClick={() => {
+
                     setNotificationsOpen(
                       (current) =>
                         !current,
@@ -779,6 +808,7 @@ function AppLayout() {
 
                     setMenuOpen(false)
                     setCurrencyOpen(false)
+                    setMobileMenuOpen(false)
                   }}
                   className="
                     relative
@@ -816,6 +846,7 @@ function AppLayout() {
 
 
                 {notificationsOpen && (
+
                   <div
                     className="
                       absolute
@@ -864,6 +895,7 @@ function AppLayout() {
                     </div>
 
                   </div>
+
                 )}
 
               </div>
@@ -879,6 +911,7 @@ function AppLayout() {
                 <button
                   type="button"
                   onClick={() => {
+
                     setMenuOpen(
                       (current) =>
                         !current,
@@ -886,6 +919,7 @@ function AppLayout() {
 
                     setNotificationsOpen(false)
                     setCurrencyOpen(false)
+                    setMobileMenuOpen(false)
                   }}
                   className="
                     flex
@@ -908,6 +942,7 @@ function AppLayout() {
 
 
                 {menuOpen && (
+
                   <div
                     className="
                       absolute
@@ -1107,6 +1142,7 @@ function AppLayout() {
                     </button>
 
                   </div>
+
                 )}
 
               </div>
@@ -1116,21 +1152,447 @@ function AppLayout() {
           </header>
 
 
-          {/* CONTENT */}
+          {/* =================================================
+              CONTENT
+          ================================================= */}
 
           <main
             className="
               min-w-0
               flex-1
-              px-5
-              py-7
+              px-4
+              pb-24
+              pt-5
               sm:px-8
+              sm:pb-24
+              sm:pt-7
               lg:px-10
               lg:py-9
             "
           >
             <Outlet />
           </main>
+
+
+          {/* =================================================
+              MOBILE BOTTOM NAVIGATION
+          ================================================= */}
+
+          <nav
+            className="
+              fixed
+              bottom-0
+              left-0
+              right-0
+              z-50
+              border-t
+              border-[var(--bw-border)]
+              bg-[var(--bw-surface)]/95
+              px-2
+              pt-2
+              shadow-[0_-8px_30px_rgba(0,0,0,0.08)]
+              backdrop-blur-xl
+              lg:hidden
+            "
+            style={{
+              paddingBottom:
+                'calc(0.5rem + env(safe-area-inset-bottom))',
+            }}
+          >
+
+            <div className="mx-auto flex max-w-lg items-center justify-around">
+
+              <MobileBudgetNavItem
+                item={navigation[0]}
+              />
+
+              <MobileBudgetNavItem
+                item={navigation[1]}
+              />
+
+              <MobileBudgetNavItem
+                item={navigation[2]}
+              />
+
+              <MobileBudgetNavItem
+                item={navigation[3]}
+              />
+
+              <button
+                type="button"
+                onClick={() => {
+
+                  setMobileMenuOpen(
+                    (current) =>
+                      !current,
+                  )
+
+                  setMenuOpen(false)
+                  setNotificationsOpen(false)
+                  setCurrencyOpen(false)
+                }}
+                className="
+                  flex
+                  min-w-[60px]
+                  flex-col
+                  items-center
+                  gap-1
+                  rounded-xl
+                  px-2
+                  py-1.5
+                  text-[10px]
+                  font-medium
+                  text-[var(--bw-text-secondary)]
+                "
+              >
+
+                <span
+                  className="
+                    flex
+                    h-8
+                    w-8
+                    items-center
+                    justify-center
+                    rounded-xl
+                    bg-[var(--bw-surface-soft)]
+                    text-base
+                  "
+                >
+                  ☰
+                </span>
+
+                <span>
+                  More
+                </span>
+
+              </button>
+
+            </div>
+
+          </nav>
+
+
+          {/* =================================================
+              MOBILE MORE MENU
+          ================================================= */}
+
+          {mobileMenuOpen && (
+
+            <div
+              className="
+                fixed
+                bottom-[76px]
+                left-3
+                right-3
+                z-[60]
+                max-h-[70vh]
+                overflow-y-auto
+                rounded-2xl
+                border
+                border-[var(--bw-border)]
+                bg-[var(--bw-surface)]
+                p-3
+                shadow-2xl
+                lg:hidden
+              "
+            >
+
+              <div className="mb-2 px-2 py-2">
+
+                <p
+                  className="
+                    font-serif
+                    text-lg
+                    font-semibold
+                    text-[var(--bw-text-strong)]
+                  "
+                >
+                  More
+                </p>
+
+                <p
+                  className="
+                    mt-1
+                    text-xs
+                    text-[var(--bw-text-secondary)]
+                  "
+                >
+                  BudgetWise workspace
+                </p>
+
+              </div>
+
+
+              {/* GOALS */}
+
+              <MobileBudgetMoreItem
+                item={navigation[4]}
+                onClick={() =>
+                  setMobileMenuOpen(false)
+                }
+              />
+
+
+              {/* REPORTS */}
+
+              <MobileBudgetMoreItem
+                item={navigation[5]}
+                onClick={() =>
+                  setMobileMenuOpen(false)
+                }
+              />
+
+
+              {/* INSIGHTS */}
+
+              <MobileBudgetMoreItem
+                item={navigation[6]}
+                onClick={() =>
+                  setMobileMenuOpen(false)
+                }
+              />
+
+
+              {/* SETTINGS */}
+
+              <button
+                type="button"
+                onClick={openSettings}
+                className="
+                  flex
+                  w-full
+                  items-center
+                  gap-3
+                  rounded-xl
+                  px-3
+                  py-3
+                  text-left
+                  text-sm
+                  font-medium
+                  text-[var(--bw-text-secondary)]
+                  transition
+                  hover:bg-[var(--bw-surface-hover)]
+                "
+              >
+
+                <span
+                  className="
+                    flex
+                    h-10
+                    w-10
+                    items-center
+                    justify-center
+                    rounded-xl
+                    bg-[var(--bw-surface-soft)]
+                  "
+                >
+                  ⚙️
+                </span>
+
+                <span className="flex-1">
+                  Settings
+                </span>
+
+                <span>
+                  →
+                </span>
+
+              </button>
+
+
+              {/* TRIPWISE */}
+
+              <button
+                type="button"
+                onClick={openTripWise}
+                className="
+                  flex
+                  w-full
+                  items-center
+                  gap-3
+                  rounded-xl
+                  px-3
+                  py-3
+                  text-left
+                  text-sm
+                  font-medium
+                  text-[var(--bw-text-secondary)]
+                  transition
+                  hover:bg-[var(--bw-surface-hover)]
+                "
+              >
+
+                <span
+                  className="
+                    flex
+                    h-10
+                    w-10
+                    items-center
+                    justify-center
+                    rounded-xl
+                    bg-[var(--tw-icon-bg)]
+                    text-lg
+                  "
+                >
+                  ✈️
+                </span>
+
+                <span className="flex-1">
+                  TripWise
+                </span>
+
+                <span>
+                  →
+                </span>
+
+              </button>
+
+
+              {/* THEME */}
+
+              <button
+                type="button"
+                onClick={toggleTheme}
+                className="
+                  flex
+                  w-full
+                  items-center
+                  gap-3
+                  rounded-xl
+                  px-3
+                  py-3
+                  text-left
+                  text-sm
+                  font-medium
+                  text-[var(--bw-text-secondary)]
+                  transition
+                  hover:bg-[var(--bw-surface-hover)]
+                "
+              >
+
+                <span
+                  className="
+                    flex
+                    h-10
+                    w-10
+                    items-center
+                    justify-center
+                    rounded-xl
+                    bg-[var(--bw-surface-soft)]
+                  "
+                >
+                  {theme === 'dark'
+                    ? '☀️'
+                    : '🌙'}
+                </span>
+
+                <span className="flex-1">
+                  {theme === 'dark'
+                    ? 'Light mode'
+                    : 'Dark mode'}
+                </span>
+
+              </button>
+
+
+              {/* CURRENCY */}
+
+              <button
+                type="button"
+                onClick={() => {
+
+                  setMobileMenuOpen(false)
+                  setCurrencyOpen(true)
+
+                }}
+                className="
+                  flex
+                  w-full
+                  items-center
+                  gap-3
+                  rounded-xl
+                  px-3
+                  py-3
+                  text-left
+                  text-sm
+                  font-medium
+                  text-[var(--bw-text-secondary)]
+                  transition
+                  hover:bg-[var(--bw-surface-hover)]
+                "
+              >
+
+                <span
+                  className="
+                    flex
+                    h-10
+                    w-10
+                    items-center
+                    justify-center
+                    rounded-xl
+                    bg-[var(--bw-surface-soft)]
+                    text-lg
+                  "
+                >
+                  {getCurrencyEmoji(currency)}
+                </span>
+
+                <span className="flex-1">
+                  Currency
+                </span>
+
+                <span>
+                  {currency}
+                </span>
+
+              </button>
+
+
+              {/* SIGN OUT */}
+
+              <button
+                type="button"
+                onClick={handleSignOut}
+                className="
+                  flex
+                  w-full
+                  items-center
+                  gap-3
+                  rounded-xl
+                  px-3
+                  py-3
+                  text-left
+                  text-sm
+                  font-medium
+                  text-[var(--bw-danger)]
+                  transition
+                  hover:bg-[var(--bw-danger-soft)]
+                "
+              >
+
+                <span
+                  className="
+                    flex
+                    h-10
+                    w-10
+                    items-center
+                    justify-center
+                    rounded-xl
+                    bg-[var(--bw-danger-soft)]
+                  "
+                >
+                  ↪
+                </span>
+
+                <span>
+                  Sign out
+                </span>
+
+              </button>
+
+            </div>
+
+          )}
 
         </div>
 
@@ -1142,7 +1604,118 @@ function AppLayout() {
 
 
 /* ============================================================
-   NAV ITEM
+   MOBILE BUDGET NAV ITEM
+============================================================ */
+
+function MobileBudgetNavItem({
+  item,
+}) {
+  const Icon = item.icon
+
+  return (
+    <NavLink
+      to={item.path}
+      end={item.end}
+      className={({ isActive }) =>
+        [
+          'flex min-w-[60px] flex-col items-center gap-1 rounded-xl px-2 py-1.5 text-[10px] font-medium transition',
+
+          isActive
+            ? 'text-[var(--bw-accent-text)]'
+            : 'text-[var(--bw-text-secondary)]',
+        ].join(' ')
+      }
+    >
+      {({ isActive }) => (
+        <>
+          <span
+            className="
+              flex
+              h-8
+              w-8
+              items-center
+              justify-center
+              rounded-xl
+            "
+          >
+
+            <span
+              className={
+                isActive
+                  ? 'text-[var(--bw-accent)]'
+                  : 'text-[var(--bw-text-muted)]'
+              }
+            >
+              <Icon />
+            </span>
+
+          </span>
+
+          <span>
+            {item.label}
+          </span>
+        </>
+      )}
+    </NavLink>
+  )
+}
+
+
+/* ============================================================
+   MOBILE MORE ITEM
+============================================================ */
+
+function MobileBudgetMoreItem({
+  item,
+  onClick,
+}) {
+  const Icon = item.icon
+
+  return (
+    <NavLink
+      to={item.path}
+      end={item.end}
+      onClick={onClick}
+      className={({ isActive }) =>
+        [
+          'flex w-full items-center gap-3 rounded-xl px-3 py-3 text-left text-sm font-medium transition',
+
+          isActive
+            ? 'bg-[var(--bw-accent-soft)] text-[var(--bw-accent-text)]'
+            : 'text-[var(--bw-text-secondary)] hover:bg-[var(--bw-surface-hover)]',
+        ].join(' ')
+      }
+    >
+
+      <span
+        className="
+          flex
+          h-10
+          w-10
+          items-center
+          justify-center
+          rounded-xl
+          bg-[var(--bw-surface-soft)]
+        "
+      >
+        <Icon />
+      </span>
+
+      <span className="flex-1">
+        {item.label}
+      </span>
+
+      <span>
+        →
+      </span>
+
+    </NavLink>
+  )
+}
+
+
+/* ============================================================
+   DESKTOP NAV ITEM
 ============================================================ */
 
 function BudgetNavItem({
@@ -1193,6 +1766,7 @@ function BudgetNavItem({
               "
             />
           )}
+
         </>
       )}
     </NavLink>
@@ -1220,9 +1794,7 @@ function getCurrentDate() {
    CURRENCY EMOJI
 ============================================================ */
 
-function getCurrencyEmoji(
-  currency,
-) {
+function getCurrencyEmoji(currency) {
   const map = {
     INR: '₹',
     USD: '$',
@@ -1268,34 +1840,10 @@ function Icon({
 function OverviewIcon() {
   return (
     <Icon>
-      <rect
-        x="4"
-        y="4"
-        width="6"
-        height="6"
-        rx="1"
-      />
-      <rect
-        x="14"
-        y="4"
-        width="6"
-        height="6"
-        rx="1"
-      />
-      <rect
-        x="4"
-        y="14"
-        width="6"
-        height="6"
-        rx="1"
-      />
-      <rect
-        x="14"
-        y="14"
-        width="6"
-        height="6"
-        rx="1"
-      />
+      <rect x="4" y="4" width="6" height="6" rx="1" />
+      <rect x="14" y="4" width="6" height="6" rx="1" />
+      <rect x="4" y="14" width="6" height="6" rx="1" />
+      <rect x="14" y="14" width="6" height="6" rx="1" />
     </Icon>
   )
 }
@@ -1352,21 +1900,9 @@ function BudgetIcon() {
 function GoalsIcon() {
   return (
     <Icon>
-      <circle
-        cx="12"
-        cy="12"
-        r="8"
-      />
-      <circle
-        cx="12"
-        cy="12"
-        r="4"
-      />
-      <circle
-        cx="12"
-        cy="12"
-        r="1"
-      />
+      <circle cx="12" cy="12" r="8" />
+      <circle cx="12" cy="12" r="4" />
+      <circle cx="12" cy="12" r="1" />
     </Icon>
   )
 }
@@ -1397,11 +1933,7 @@ function InsightsIcon() {
 function SettingsIcon() {
   return (
     <Icon>
-      <circle
-        cx="12"
-        cy="12"
-        r="3"
-      />
+      <circle cx="12" cy="12" r="3" />
 
       <path d="M19.4 15a1.7 1.7 0 0 0 .3 1.9l.1.1-1.8 1.8-.1-.1a1.7 1.7 0 0 0-1.9-.3 1.7 1.7 0 0 0-1 1.5v.1h-2.6v-.1a1.7 1.7 0 0 0-1-1.5 1.7 1.7 0 0 0-1.9.3l-.1.1-1.8-1.8.1-.1a1.7 1.7 0 0 0 .3-1.9 1.7 1.7 0 0 0-1.5-1H7.4v-2.6h.1a1.7 1.7 0 0 0 1.5-1 1.7 1.7 0 0 0-.3-1.9l-.1-.1 1.8-1.8.1.1a1.7 1.7 0 0 0 1.9.3 1.7 1.7 0 0 0 1-1.5v-.1H16v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.9.3l.1-.1 1.8 1.8-.1.1a1.7 1.7 0 0 0-.3 1.9 1.7 1.7 0 0 0 1.5 1h.1V14h-.1a1.7 1.7 0 0 0-1.5 1Z" />
     </Icon>

@@ -4,10 +4,19 @@ import {
   useNavigate,
 } from 'react-router-dom'
 
+import {
+  useState,
+} from 'react'
+
 import { useTheme } from '../hooks/useTheme'
 
 
+/* ============================================================
+   TRIPWISE LAYOUT
+============================================================ */
+
 function TripWiseLayout() {
+
   const navigate = useNavigate()
 
   const {
@@ -15,6 +24,15 @@ function TripWiseLayout() {
     toggleTheme,
   } = useTheme()
 
+  const [
+    mobileMenuOpen,
+    setMobileMenuOpen,
+  ] = useState(false)
+
+
+  /* ==========================================================
+     NAVIGATION
+  ========================================================== */
 
   const navigation = [
     {
@@ -51,6 +69,10 @@ function TripWiseLayout() {
   ]
 
 
+  /* ==========================================================
+     RENDER
+  ========================================================== */
+
   return (
     <div className="tripwise-root min-h-screen">
 
@@ -58,7 +80,7 @@ function TripWiseLayout() {
 
 
         {/* =================================================
-            SIDEBAR
+            DESKTOP SIDEBAR
         ================================================= */}
 
         <aside
@@ -92,7 +114,12 @@ function TripWiseLayout() {
               onClick={() =>
                 navigate('/tripwise')
               }
-              className="flex items-center gap-3 text-left"
+              className="
+                flex
+                items-center
+                gap-3
+                text-left
+              "
             >
 
               <div
@@ -110,7 +137,6 @@ function TripWiseLayout() {
               >
                 ✈️
               </div>
-
 
               <div>
 
@@ -164,7 +190,6 @@ function TripWiseLayout() {
               Trip workspace
             </p>
 
-
             <div className="space-y-1.5">
 
               {navigation.map(
@@ -179,9 +204,7 @@ function TripWiseLayout() {
                       to={item.path}
                       end={item.end}
 
-                      className={({
-                        isActive,
-                      }) =>
+                      className={({ isActive }) =>
                         [
                           'group flex items-center gap-3 rounded-xl px-3 py-3 text-sm font-medium transition-all duration-200',
 
@@ -192,9 +215,7 @@ function TripWiseLayout() {
                       }
                     >
 
-                      {({
-                        isActive,
-                      }) => (
+                      {({ isActive }) => (
                         <>
                           <span
                             className={`
@@ -215,11 +236,9 @@ function TripWiseLayout() {
                             <Icon />
                           </span>
 
-
                           <span>
                             {item.label}
                           </span>
-
 
                           {isActive && (
                             <span
@@ -246,7 +265,7 @@ function TripWiseLayout() {
           </nav>
 
 
-          {/* THEME */}
+          {/* DESKTOP BOTTOM ACTIONS */}
 
           <div
             className="
@@ -255,6 +274,8 @@ function TripWiseLayout() {
               p-4
             "
           >
+
+            {/* THEME */}
 
             <button
               type="button"
@@ -368,7 +389,9 @@ function TripWiseLayout() {
         >
 
 
-          {/* TOP BAR */}
+          {/* =================================================
+              TOP BAR
+          ================================================= */}
 
           <header
             className="
@@ -376,21 +399,85 @@ function TripWiseLayout() {
               top-0
               z-40
               flex
-              h-[74px]
+              min-h-[74px]
               items-center
               justify-between
               border-b
               border-[var(--tw-border)]
               bg-[var(--tw-header)]
-              px-5
+              px-4
               backdrop-blur-md
               transition-colors
               duration-300
               sm:px-8
+              lg:px-10
             "
           >
 
-            <div>
+            {/* MOBILE BRAND */}
+
+            <button
+              type="button"
+              onClick={() =>
+                navigate('/tripwise')
+              }
+              className="
+                flex
+                items-center
+                gap-3
+                text-left
+                lg:hidden
+              "
+            >
+
+              <div
+                className="
+                  flex
+                  h-10
+                  w-10
+                  items-center
+                  justify-center
+                  rounded-xl
+                  bg-[var(--tw-icon-bg)]
+                  text-lg
+                "
+              >
+                ✈️
+              </div>
+
+              <div>
+
+                <p
+                  className="
+                    font-serif
+                    text-lg
+                    font-semibold
+                    text-[var(--tw-heading)]
+                  "
+                >
+                  TripWise
+                </p>
+
+                <p
+                  className="
+                    text-[8px]
+                    font-medium
+                    uppercase
+                    tracking-[0.16em]
+                    text-[var(--tw-muted)]
+                  "
+                >
+                  Travel together
+                </p>
+
+              </div>
+
+            </button>
+
+
+            {/* DESKTOP DATE */}
+
+            <div className="hidden lg:block">
 
               <p
                 className="
@@ -414,6 +501,8 @@ function TripWiseLayout() {
 
             </div>
 
+
+            {/* HEADER ACTIONS */}
 
             <div className="flex items-center gap-2">
 
@@ -447,7 +536,7 @@ function TripWiseLayout() {
               </button>
 
 
-              {/* THEME BUTTON */}
+              {/* THEME */}
 
               <button
                 type="button"
@@ -499,6 +588,7 @@ function TripWiseLayout() {
                   hover:bg-[var(--tw-icon-bg)]
                 "
               >
+
                 🔔
 
                 <span
@@ -512,6 +602,7 @@ function TripWiseLayout() {
                     bg-[#79b59f]
                   "
                 />
+
               </button>
 
 
@@ -539,24 +630,345 @@ function TripWiseLayout() {
           </header>
 
 
-          {/* PAGE */}
+          {/* =================================================
+              PAGE
+          ================================================= */}
 
           <main
             className="
               min-w-0
               flex-1
               bg-[var(--tw-bg)]
-              px-5
-              py-7
+              px-4
+              pb-24
+              pt-5
               transition-colors
               duration-300
               sm:px-8
+              sm:pb-24
+              sm:pt-7
               lg:px-10
+              lg:pb-0
               lg:py-9
             "
           >
             <Outlet />
           </main>
+
+
+          {/* =================================================
+              MOBILE BOTTOM NAVIGATION
+          ================================================= */}
+
+          <nav
+            className="
+              fixed
+              bottom-0
+              left-0
+              right-0
+              z-50
+              border-t
+              border-[var(--tw-border)]
+              bg-[var(--tw-header)]/95
+              px-2
+              pt-2
+              shadow-[0_-8px_30px_rgba(0,0,0,0.08)]
+              backdrop-blur-xl
+              lg:hidden
+            "
+            style={{
+              paddingBottom:
+                'calc(0.5rem + env(safe-area-inset-bottom))',
+            }}
+          >
+
+            <div className="mx-auto flex max-w-lg items-center justify-around">
+
+              <MobileTripNavItem
+                item={navigation[0]}
+              />
+
+              <MobileTripNavItem
+                item={navigation[1]}
+              />
+
+              <MobileTripNavItem
+                item={navigation[3]}
+              />
+
+              <MobileTripNavItem
+                item={navigation[4]}
+              />
+
+              <button
+                type="button"
+                onClick={() =>
+                  setMobileMenuOpen(
+                    (current) =>
+                      !current,
+                  )
+                }
+                className="
+                  flex
+                  min-w-[60px]
+                  flex-col
+                  items-center
+                  gap-1
+                  rounded-xl
+                  px-2
+                  py-1.5
+                  text-[10px]
+                  font-medium
+                  text-[var(--tw-body)]
+                "
+              >
+
+                <span
+                  className="
+                    flex
+                    h-8
+                    w-8
+                    items-center
+                    justify-center
+                    rounded-xl
+                    bg-[var(--tw-icon-bg)]
+                    text-base
+                  "
+                >
+                  ☰
+                </span>
+
+                <span>
+                  More
+                </span>
+
+              </button>
+
+            </div>
+
+          </nav>
+
+
+          {/* =================================================
+              MOBILE MORE MENU
+          ================================================= */}
+
+          {mobileMenuOpen && (
+
+            <div
+              className="
+                fixed
+                bottom-[76px]
+                left-3
+                right-3
+                z-[60]
+                max-h-[70vh]
+                overflow-y-auto
+                rounded-2xl
+                border
+                border-[var(--tw-border)]
+                bg-[var(--tw-card)]
+                p-3
+                shadow-2xl
+                lg:hidden
+              "
+            >
+
+              <div className="mb-2 px-2 py-2">
+
+                <p
+                  className="
+                    font-serif
+                    text-lg
+                    font-semibold
+                    text-[var(--tw-heading)]
+                  "
+                >
+                  TripWise
+                </p>
+
+                <p
+                  className="
+                    mt-1
+                    text-xs
+                    text-[var(--tw-muted)]
+                  "
+                >
+                  Trip workspace
+                </p>
+
+              </div>
+
+
+              {/* CALENDAR */}
+
+              <MobileTripMoreItem
+                item={navigation[2]}
+                onClick={() =>
+                  setMobileMenuOpen(false)
+                }
+              />
+
+
+              {/* PAYMENTS */}
+
+              <MobileTripMoreItem
+                item={navigation[5]}
+                onClick={() =>
+                  setMobileMenuOpen(false)
+                }
+              />
+
+
+              {/* CREATE TRIP */}
+
+              <button
+                type="button"
+                onClick={() => {
+                  setMobileMenuOpen(false)
+                  navigate('/tripwise/create')
+                }}
+                className="
+                  flex
+                  w-full
+                  items-center
+                  gap-3
+                  rounded-xl
+                  px-3
+                  py-3
+                  text-left
+                  text-sm
+                  font-medium
+                  text-[var(--tw-body)]
+                  transition
+                  hover:bg-[var(--tw-card-hover)]
+                "
+              >
+
+                <span
+                  className="
+                    flex
+                    h-10
+                    w-10
+                    items-center
+                    justify-center
+                    rounded-xl
+                    bg-[var(--tw-icon-bg)]
+                  "
+                >
+                  ➕
+                </span>
+
+                <span className="flex-1">
+                  Create Trip
+                </span>
+
+                <span>
+                  →
+                </span>
+
+              </button>
+
+
+              {/* THEME */}
+
+              <button
+                type="button"
+                onClick={toggleTheme}
+                className="
+                  flex
+                  w-full
+                  items-center
+                  gap-3
+                  rounded-xl
+                  px-3
+                  py-3
+                  text-left
+                  text-sm
+                  font-medium
+                  text-[var(--tw-body)]
+                  transition
+                  hover:bg-[var(--tw-card-hover)]
+                "
+              >
+
+                <span
+                  className="
+                    flex
+                    h-10
+                    w-10
+                    items-center
+                    justify-center
+                    rounded-xl
+                    bg-[var(--tw-icon-bg)]
+                  "
+                >
+                  {theme === 'dark'
+                    ? '☀️'
+                    : '🌙'}
+                </span>
+
+                <span className="flex-1">
+                  {theme === 'dark'
+                    ? 'Light mode'
+                    : 'Dark mode'}
+                </span>
+
+              </button>
+
+
+              {/* BUDGETWISE */}
+
+              <button
+                type="button"
+                onClick={() => {
+                  setMobileMenuOpen(false)
+                  navigate('/')
+                }}
+                className="
+                  flex
+                  w-full
+                  items-center
+                  gap-3
+                  rounded-xl
+                  px-3
+                  py-3
+                  text-left
+                  text-sm
+                  font-medium
+                  text-[var(--tw-body)]
+                  transition
+                  hover:bg-[var(--tw-card-hover)]
+                "
+              >
+
+                <span
+                  className="
+                    flex
+                    h-10
+                    w-10
+                    items-center
+                    justify-center
+                    rounded-xl
+                    bg-[var(--tw-icon-bg)]
+                  "
+                >
+                  ←
+                </span>
+
+                <span className="flex-1">
+                  BudgetWise
+                </span>
+
+                <span>
+                  →
+                </span>
+
+              </button>
+
+            </div>
+
+          )}
 
         </div>
 
@@ -568,8 +980,120 @@ function TripWiseLayout() {
 
 
 /* ============================================================
+   MOBILE TRIP NAV ITEM
+============================================================ */
+
+function MobileTripNavItem({
+  item,
+}) {
+  const Icon = item.icon
+
+  return (
+    <NavLink
+      to={item.path}
+      end={item.end}
+      className={({ isActive }) =>
+        [
+          'flex min-w-[60px] flex-col items-center gap-1 rounded-xl px-2 py-1.5 text-[10px] font-medium transition',
+
+          isActive
+            ? 'text-[var(--tw-link)]'
+            : 'text-[var(--tw-body)]',
+        ].join(' ')
+      }
+    >
+      {({ isActive }) => (
+        <>
+          <span
+            className="
+              flex
+              h-8
+              w-8
+              items-center
+              justify-center
+              rounded-xl
+            "
+          >
+
+            <span
+              className={
+                isActive
+                  ? 'text-[var(--tw-link)]'
+                  : 'text-[var(--tw-muted)]'
+              }
+            >
+              <Icon />
+            </span>
+
+          </span>
+
+          <span>
+            {item.label}
+          </span>
+
+        </>
+      )}
+    </NavLink>
+  )
+}
+
+
+/* ============================================================
+   MOBILE MORE ITEM
+============================================================ */
+
+function MobileTripMoreItem({
+  item,
+  onClick,
+}) {
+  const Icon = item.icon
+
+  return (
+    <NavLink
+      to={item.path}
+      end={item.end}
+      onClick={onClick}
+      className={({ isActive }) =>
+        [
+          'flex w-full items-center gap-3 rounded-xl px-3 py-3 text-left text-sm font-medium transition',
+
+          isActive
+            ? 'bg-[var(--tw-icon-bg)] text-[var(--tw-link)]'
+            : 'text-[var(--tw-body)] hover:bg-[var(--tw-card-hover)]',
+        ].join(' ')
+      }
+    >
+
+      <span
+        className="
+          flex
+          h-10
+          w-10
+          items-center
+          justify-center
+          rounded-xl
+          bg-[var(--tw-icon-bg)]
+        "
+      >
+        <Icon />
+      </span>
+
+      <span className="flex-1">
+        {item.label}
+      </span>
+
+      <span>
+        →
+      </span>
+
+    </NavLink>
+  )
+}
+
+
+/* ============================================================
    DATE
-   ============================================================ */
+============================================================ */
 
 function getCurrentDate() {
   return new Intl.DateTimeFormat(
@@ -585,7 +1109,7 @@ function getCurrentDate() {
 
 /* ============================================================
    ICON WRAPPER
-   ============================================================ */
+============================================================ */
 
 function Icon({
   children,
@@ -610,7 +1134,7 @@ function Icon({
 
 /* ============================================================
    TRIPS ICON
-   ============================================================ */
+============================================================ */
 
 function TripsIcon() {
   return (
@@ -642,7 +1166,7 @@ function TripsIcon() {
 
 /* ============================================================
    ITINERARY ICON
-   ============================================================ */
+============================================================ */
 
 function ItineraryIcon() {
   return (
@@ -667,7 +1191,7 @@ function ItineraryIcon() {
 
 /* ============================================================
    CALENDAR ICON
-   ============================================================ */
+============================================================ */
 
 function CalendarIcon() {
   return (
@@ -699,7 +1223,7 @@ function CalendarIcon() {
 
 /* ============================================================
    EXPENSES ICON
-   ============================================================ */
+============================================================ */
 
 function ExpensesIcon() {
   return (
@@ -724,7 +1248,7 @@ function ExpensesIcon() {
 
 /* ============================================================
    MEMBERS ICON
-   ============================================================ */
+============================================================ */
 
 function MembersIcon() {
   return (
@@ -751,7 +1275,7 @@ function MembersIcon() {
 
 /* ============================================================
    PAYMENTS ICON
-   ============================================================ */
+============================================================ */
 
 function PaymentsIcon() {
   return (
