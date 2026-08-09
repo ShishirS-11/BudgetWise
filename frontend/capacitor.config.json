@@ -1,5 +1,13 @@
 {
   "appId": "com.budgetwise.app",
   "appName": "BudgetWise",
-  "webDir": "dist"
+  "webDir": "dist",
+  "plugins": {
+    "SplashScreen": {
+      "launchAutoHide": true,
+      "launchShowDuration": 1500,
+      "backgroundColor": "#151716",
+      "showSpinner": false
+    }
+  }
 }
